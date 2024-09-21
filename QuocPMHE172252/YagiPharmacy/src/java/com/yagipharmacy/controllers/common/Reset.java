@@ -102,7 +102,9 @@ public class Reset extends HttpServlet implements AuthorizationService {
                         String verifyLink = "http://localhost:9999/YagiPharmacy/ResetAccept?email=" + findingUser.getUserEmail();
                         String tagLink = "<h2>Verify Code: " + activeCode + "</h2>";
                         boolean sendMailSuccess = MailService.sentEmail(findingUser.getUserEmail(), "Your active code", tagLink);
-                        response.sendRedirect("Login?register=success");
+                        request.setAttribute("email", findingUser.getUserEmail());
+                        request.setAttribute("notice", "Xác minh thành công kiểm tra email để nhận mã kích hoạt");
+                        request.getRequestDispatcher("ResetAccept.jsp").forward(request, response);
                     }
                 } else {
                     request.setAttribute("error", "Tài khoản chưa cập nhật email");
@@ -113,6 +115,9 @@ public class Reset extends HttpServlet implements AuthorizationService {
                 doGet(request, response);
             }
         } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Đang có sự cô vui lòng thử lại sau");
+            doGet(request, response);
         }
     }
 

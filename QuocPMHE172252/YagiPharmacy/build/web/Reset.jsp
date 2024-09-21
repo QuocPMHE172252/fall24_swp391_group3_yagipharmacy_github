@@ -135,7 +135,7 @@
 
         <form action="Reset" method="post">
             <img src="https://cms-prod.s3-sgn09.fptcloud.com/smalls/Logo_LC_Default_2e36f42b6b.svg" alt="">
-            <h2>Đăng nhập</h2>
+            <h2>Xác minh tài khoản</h2>
             <div class="form-group date">
                 <label for="email_phone">Số điện thoại hoặc email</label>
                 <input type="text" id="email_phone" name="emailPhone" placeholder="Select your email or phone number" value="${emailPhone}">

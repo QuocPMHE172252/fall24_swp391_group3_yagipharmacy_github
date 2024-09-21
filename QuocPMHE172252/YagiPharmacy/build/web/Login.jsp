@@ -127,11 +127,15 @@
                 color: red;
                 font-size: 12px;
             }
+            .notice{
+                color: green;
+                font-size: 12px;
+            }
         </style>
     </head>
 
     <body>
-
+        
         <form action="Login" method="post">
             <img src="https://cms-prod.s3-sgn09.fptcloud.com/smalls/Logo_LC_Default_2e36f42b6b.svg" alt="">
             <h2>Đăng nhập</h2>
@@ -151,8 +155,11 @@
             </div>
             <div style="display: flex; flex-direction: column; justify-content: center; align-items: center">
                 <span class="error" id="error">${error}</span><br>
+                <span class="notice" id="notice">${notice}</span><br>
             </div>
-            <a href="Register">Bạn chưa có tài khoản?</a>
+            <div style="display: flex;flex-direction: row; justify-content: space-between">
+                <a href="Register">Bạn chưa có tài khoản?</a><a href="Reset">Bạn quên mật khẩu?</a>
+            </div>
         </form>
     </body>
     <script>

@@ -124,21 +124,75 @@
                 color: red;
                 font-size: 12px;
             }
+            .notice{
+                color: green;
+                font-size: 12px;
+            }
         </style>
     </head>
     <body>
-        <form action="Verify" method="post">
+        <form action="Verify" method="post" id="verify_form">
             <img src="https://cms-prod.s3-sgn09.fptcloud.com/smalls/Logo_LC_Default_2e36f42b6b.svg" alt="">
             <h2>Kích hoạt tài khoản</h2>
             <input type="hidden" id="email" name="email" value="${email}">
             <div class="form-group activecode">
-                <label for="email">Nhập mã xác thực</label>
+                <label for="activecode">Nhập mã xác thực</label>
                 <input type="text" id="activecode" name="activecode" placeholder="Enter your active code" value="">
-                <br><span class="error" id="activecode_error">${error}</span>
+                <br><span class="error" id="activecode_error">${activecodeError}</span>
+            </div>
+            <div class="form-group password">
+                <label for="email">Nhập mật khẩu mới</label>
+                <input type="password" id="password" name="password" placeholder="Enter your new password" value="">
+                <br><span class="error" id="password_error"></span>
+            </div>
+            <div class="form-group password">
+                <label for="email">Nhập lại mật khẩu</label>
+                <input type="password" id="repassword" name="repassword" placeholder="Enter your password again" value="">
+                <br><span class="error" id="repassword_error"></span>
+            </div>
+            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center">
+                <span class="error" id="error">${error}</span><br>
+                <span class="notice" id="notice">${notice}</span><br>
             </div>
             <div class="form-group submit-btn">
-                <input type="submit" value="Xác thực">
+                <input type="button" value="Xác thực" onclick="validateSubmit()">
             </div>
         </form>
     </body>
+    <script>
+        function validateSubmit() {
+            var password = document.getElementById("password").value;
+            var repassword = document.getElementById("repassword").value;
+            document.getElementById("password_error").innerHTML = '';
+            document.getElementById("repassword_error").innerHTML = '';
+            document.getElementById("activecode_error").innerHTML = '';
+            var check = true;
+            if (!isValidPassword(password)) {
+                check = false;
+                document.getElementById("password_error").innerHTML = 'Mật khẩu phải chứa từ 8-16 kí tự gồm chữ in hoa chữ thường và số!';
+            }
+            if (password !== repassword) {
+                check = false;
+                document.getElementById("repassword_error").innerHTML = 'Mật khẩu nhập lại không khớp';
+            }
+            if(check){
+                document.getElementById("verify_form").submit();
+            }
+        }
+        function isValidPassword(password) {
+            if (password.length < 8 || password.length > 16) {
+                return false;
+            }
+            if (!/[A-Z]/.test(password)) {
+                return false;
+            }
+            if (!/[a-z]/.test(password)) {
+                return false;
+            }
+            if (!/\d/.test(password)) {
+                return false;
+            }
+            return true;
+        }
+    </script>
 </html>
