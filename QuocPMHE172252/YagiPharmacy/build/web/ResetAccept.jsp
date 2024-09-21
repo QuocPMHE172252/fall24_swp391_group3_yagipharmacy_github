@@ -131,7 +131,7 @@
         </style>
     </head>
     <body>
-        <form action="Verify" method="post" id="verify_form">
+        <form action="ResetAccept" method="post" id="verify_form">
             <img src="https://cms-prod.s3-sgn09.fptcloud.com/smalls/Logo_LC_Default_2e36f42b6b.svg" alt="">
             <h2>Kích hoạt tài khoản</h2>
             <input type="hidden" id="email" name="email" value="${email}">
