@@ -3,11 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Code_Work_Space/YagiPharmacy/src/java/com/yagipharmacy/controllers/common/Login.java</file>
-            <file>file:/C:/Code_Work_Space/YagiPharmacy/src/java/com/yagipharmacy/DAO/NewsDAO.java</file>
-            <file>file:/C:/Code_Work_Space/YagiPharmacy/src/java/com/yagipharmacy/constant/variables/SystemVariable.java</file>
-            <file>file:/C:/Code_Work_Space/YagiPharmacy/src/java/com/yagipharmacy/JDBC/RowMapper.java</file>
-            <file>file:/C:/Code_Work_Space/YagiPharmacy/src/java/com/yagipharmacy/entities/ProductImage.java</file>
+            <file>file:/C:/Users/Tunkyo/Documents/YagiPharma/Tungvqhe181238/YagiPharmacy/web/WEB-INF/web.xml</file>
+            <file>file:/C:/Users/Tunkyo/Documents/YagiPharma/Tungvqhe181238/YagiPharmacy/src/java/com/yagipharmacy/entities/ProductCategory.java</file>
+            <file>file:/C:/Users/Tunkyo/Documents/YagiPharma/Tungvqhe181238/YagiPharmacy/src/java/com/yagipharmacy/DAO/CategoryDAO.java</file>
+            <file>file:/C:/Users/Tunkyo/Documents/YagiPharma/Tungvqhe181238/YagiPharmacy/src/java/com/yagipharmacy/DAO/PriceDAO.java</file>
+            <file>file:/C:/Users/Tunkyo/Documents/YagiPharma/Tungvqhe181238/YagiPharmacy/web/index.html</file>
+            <file>file:/C:/Users/Tunkyo/Documents/YagiPharma/Tungvqhe181238/YagiPharmacy/src/java/com/yagipharmacy/controllers/common/Login.java</file>
         </group>
     </open-files>
 </project-private>
