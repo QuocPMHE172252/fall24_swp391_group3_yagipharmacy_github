@@ -63,7 +63,13 @@ public class Register extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("Register.jsp").forward(request, response);
+        User userAuth = (User) request.getSession().getAttribute("userAuth");
+        if (userAuth != null) {
+            response.sendRedirect("Login");
+        } else {
+            request.getRequestDispatcher("Register.jsp").forward(request, response);
+        }
+
     }
 
     /**
@@ -121,7 +127,6 @@ public class Register extends HttpServlet {
             e.printStackTrace();
             request.setAttribute("systemError", "Hệ thống gặp sự cố vui lòng thử lại sau");
         }
-        
 
     }
 
