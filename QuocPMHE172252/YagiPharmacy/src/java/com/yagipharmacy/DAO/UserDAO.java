@@ -24,7 +24,7 @@ public class UserDAO implements RowMapper<User> {
 
     @Override
     public User mapRow(ResultSet rs) throws SQLException {
-        Long dateTime = CalculatorService.parseLong(rs.getString("created_time"));
+        Long dateTime = CalculatorService.parseLong(rs.getString("created_date"));
         return User.builder()
                 .userId(rs.getLong("user_id"))
                 .userName(rs.getString("user_name"))
@@ -177,6 +177,44 @@ public class UserDAO implements RowMapper<User> {
             e.printStackTrace();
         }
         return check > 0;
+    }
+    
+    public User getUserByPhone(String phone) throws SQLException, ClassNotFoundException {
+        String sql = """
+                     SELECT * FROM [user] WHERE user_phone = ?
+                     """;
+        User user = User.builder()
+                .userId(0L)
+                .build();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, phone);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                user = mapRow(rs);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+    
+    public User getUserByEmail(String email) throws SQLException, ClassNotFoundException {
+        String sql = """
+                     SELECT * FROM [user] WHERE user_email = ?
+                     """;
+        User user = User.builder()
+                .userId(0L)
+                .build();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                user = mapRow(rs);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 
 }
