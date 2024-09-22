@@ -24,7 +24,8 @@ public class UserDAO implements RowMapper<User> {
 
     @Override
     public User mapRow(ResultSet rs) throws SQLException {
-        Long dateTime = CalculatorService.parseLong(rs.getString("created_time"));
+        Long dateTime = CalculatorService.parseLong(rs.getString("created_date"));
+        Long dateOfBirthTime = CalculatorService.parseLong(rs.getString("date_of_birth"));
         return User.builder()
                 .userId(rs.getLong("user_id"))
                 .userName(rs.getString("user_name"))
@@ -35,6 +36,11 @@ public class UserDAO implements RowMapper<User> {
                 .userAvatar(rs.getString("user_avatar"))
                 .userBank(rs.getString("user_bank"))
                 .userBankCode(rs.getString("user_bank_code"))
+                .userProvince(rs.getString("user_province"))
+                .userDistrict(rs.getString("user_district"))
+                .userCommune(rs.getString("user_commune"))
+                .specificAddress(rs.getString("specific_address"))
+                .dateOfBirth(new Date(dateOfBirthTime))
                 .createdDate(new Date(dateTime)) // Assumes it's stored as a DATE or TIMESTAMP in DB
                 .activeCode(rs.getString("active_code"))
                 .isActive(rs.getBoolean("is_active"))
@@ -54,12 +60,17 @@ public class UserDAO implements RowMapper<User> {
                          user_avatar,
                          user_bank,
                          user_bank_code,
+                         user_province,
+                         user_district,
+                         user_commune,
+                         specific_address,
+                         date_of_birth,
                          created_date,
                          active_code,
                          is_active,
                          is_deleted
                      )
-                     VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+                     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
                      """;
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
@@ -71,10 +82,15 @@ public class UserDAO implements RowMapper<User> {
             ps.setObject(6, t.getUserAvatar());
             ps.setObject(7, t.getUserBank());
             ps.setObject(8, t.getUserBankCode());
-            ps.setObject(9, t.getCreatedDate().getTime() + "");
-            ps.setObject(10, t.getActiveCode());
-            ps.setObject(11, t.isActive());
-            ps.setObject(12, t.isDeleted());
+            ps.setObject(9, t.getUserProvince());
+            ps.setObject(10, t.getUserDistrict());
+            ps.setObject(11, t.getUserCommune());
+            ps.setObject(12, t.getSpecificAddress());
+            ps.setObject(13, t.getDateOfBirth()!=null?t.getDateOfBirth().getTime()+"":null);
+            ps.setObject(14, t.getCreatedDate().getTime() + "");
+            ps.setObject(15, t.getActiveCode());
+            ps.setObject(16, t.isActive());
+            ps.setObject(17, t.isDeleted());
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -132,6 +148,11 @@ public class UserDAO implements RowMapper<User> {
                          user_avatar = ?,
                          user_bank = ?,
                          user_bank_code = ?,
+                         user_province = ?,
+                         user_district = ?,
+                         user_commune = ?,
+                         specific_address = ?,
+                         date_of_birth = ?,
                          created_date = ?,
                          active_code = ?,
                          is_active = ?,
@@ -149,11 +170,16 @@ public class UserDAO implements RowMapper<User> {
             ps.setObject(6, t.getUserAvatar());
             ps.setObject(7, t.getUserBank());
             ps.setObject(8, t.getUserBankCode());
-            ps.setObject(9, t.getCreatedDate().getTime() + "");
-            ps.setObject(10, t.getActiveCode());
-            ps.setObject(11, t.isActive());
-            ps.setObject(12, t.isDeleted());
-            ps.setObject(13, CalculatorService.parseLong(id));
+            ps.setObject(9, t.getUserProvince());
+            ps.setObject(10, t.getUserDistrict());
+            ps.setObject(11, t.getUserCommune());
+            ps.setObject(12, t.getSpecificAddress());
+            ps.setObject(13, t.getDateOfBirth().getTime()+"");
+            ps.setObject(14, t.getCreatedDate().getTime() + "");
+            ps.setObject(15, t.getActiveCode());
+            ps.setObject(16, t.isActive());
+            ps.setObject(17, t.isDeleted());
+            ps.setObject(18, CalculatorService.parseLong(id));
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -177,6 +203,44 @@ public class UserDAO implements RowMapper<User> {
             e.printStackTrace();
         }
         return check > 0;
+    }
+    
+    public User getUserByPhone(String phone) throws SQLException, ClassNotFoundException {
+        String sql = """
+                     SELECT * FROM [user] WHERE user_phone = ?
+                     """;
+        User user = User.builder()
+                .userId(0L)
+                .build();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, phone);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                user = mapRow(rs);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+    
+    public User getUserByEmail(String email) throws SQLException, ClassNotFoundException {
+        String sql = """
+                     SELECT * FROM [user] WHERE user_email = ?
+                     """;
+        User user = User.builder()
+                .userId(0L)
+                .build();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                user = mapRow(rs);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 
 }
