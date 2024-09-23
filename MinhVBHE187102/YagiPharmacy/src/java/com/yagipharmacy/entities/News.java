@@ -30,6 +30,7 @@ public class News {
     private String newsContent;
     private String newsImage;
     private String newsHashtag;
+    private Long updatedId;
     private Date createdDate;
     private boolean isDeleted;
 }

@@ -33,6 +33,7 @@ public class NewsDAO implements RowMapper<News> {
                 .newsContent(rs.getString("news_content"))
                 .newsImage(rs.getString("news_image"))
                 .newsHashtag(rs.getString("news_hashtag"))
+                .updatedId(rs.getLong("updated_id"))
                 .createdDate(new Date(dateTime))
                 .isDeleted(rs.getBoolean("is_deleted"))
                 .build();
@@ -48,10 +49,11 @@ public class NewsDAO implements RowMapper<News> {
                          news_content,
                          news_image,
                          news_hashtag,
+                         updated_id,
                          created_date,
                          is_deleted
                      )
-                     VALUES (?,?,?,?,?,?,?,?)
+                     VALUES (?,?,?,?,?,?,?,?,?)
                      """;
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
@@ -61,8 +63,9 @@ public class NewsDAO implements RowMapper<News> {
             ps.setObject(4, t.getNewsContent());
             ps.setObject(5, t.getNewsImage());
             ps.setObject(6, t.getNewsHashtag());
-            ps.setObject(7, t.getCreatedDate().getTime()+"");
-            ps.setObject(8, t.isDeleted());
+            ps.setObject(7, t.getUpdatedId());
+            ps.setObject(8, t.getCreatedDate().getTime()+"");
+            ps.setObject(9, t.isDeleted());
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -120,10 +123,11 @@ public class NewsDAO implements RowMapper<News> {
                          news_content = ?,
                          news_image = ?,
                          news_hashtag = ?,
+                         updated_id = ?,
                          created_date = ?,
                          is_deleted = ?
                      WHERE
-                         post_id = ?;
+                         news_id = ?;
                      """;
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
@@ -133,9 +137,10 @@ public class NewsDAO implements RowMapper<News> {
             ps.setObject(4, t.getNewsContent());
             ps.setObject(5, t.getNewsImage());
             ps.setObject(6, t.getNewsHashtag());
-            ps.setObject(7, t.getCreatedDate().getTime()+"");
-            ps.setObject(8, t.isDeleted());
-            ps.setObject(9, CalculatorService.parseLong(id));
+            ps.setObject(7, t.getUpdatedId());
+            ps.setObject(8, t.getCreatedDate().getTime()+"");
+            ps.setObject(9, t.isDeleted());
+            ps.setObject(10, CalculatorService.parseLong(id));
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -158,6 +163,23 @@ public class NewsDAO implements RowMapper<News> {
             e.printStackTrace();
         }
         return check > 0;
+    }
+    
+    public List<News> getAllNewsNotDeleted() throws SQLException, ClassNotFoundException {
+        String sql = """
+                     SELECT *
+                     FROM [news] where [is_deleted] = 0
+                     """;
+        List<News> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs)); // Call the mapRow method to convert ResultSet to Post object
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
 }
