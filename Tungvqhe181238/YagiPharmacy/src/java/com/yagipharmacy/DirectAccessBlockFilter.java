@@ -27,14 +27,15 @@ public class DirectAccessBlockFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
         String requestURI = httpRequest.getRequestURI();
-
-        if (requestURI != null && (requestURI.endsWith(".jsp") || requestURI.endsWith(".html"))) {
-            // Chặn truy cập trực tiếp, chuyển hướng đến Servlet khác hoặc trang lỗi
-            HttpServletResponse httpResponse = (HttpServletResponse) response;
-            httpResponse.sendRedirect("/StuQuiz/ErrorPage"); // Hoặc chuyển hướng đến Servlet khác
-        } else {
-            chain.doFilter(request, response);
-        }
+//
+//        if (requestURI != null && (requestURI.endsWith(".jsp") || requestURI.endsWith(".html") )) {
+//            // Chặn truy cập trực tiếp, chuyển hướng đến Servlet khác hoặc trang lỗi
+//            HttpServletResponse httpResponse = (HttpServletResponse) response;
+//            httpResponse.sendRedirect("/StuQuiz/ErrorPage"); // Hoặc chuyển hướng đến Servlet khác
+//        } else {
+//            chain.doFilter(request, response);
+//        }
+        chain.doFilter(request, response);
     }
 
     public void destroy() {

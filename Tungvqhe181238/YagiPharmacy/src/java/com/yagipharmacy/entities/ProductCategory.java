@@ -22,12 +22,14 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class ProductCategory {
+
     private Long productCategoryId;
     private Long productCategoryParentId;
+    private Long productCategoryLevel;
     private String productCategoryCode;
     private String productCategoryName;
     private String productCategoryDetail;
     private boolean isDeleted;
+    private ProductCategory parentCategory;
 
-    
 }

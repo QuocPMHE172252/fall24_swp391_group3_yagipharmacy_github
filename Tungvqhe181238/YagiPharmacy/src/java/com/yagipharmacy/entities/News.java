@@ -31,6 +31,7 @@ public class News {
     private String newsImage;
     private String newsHashtag;
     private Long updatedId;
-    private Date createdDate;
+    private String createdDate;
     private boolean isDeleted;
+    private  NewsCategory category;
 }

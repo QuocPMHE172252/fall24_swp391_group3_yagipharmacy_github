@@ -24,19 +24,28 @@ public class NewsDAO implements RowMapper<News> {
 
     @Override
     public News mapRow(ResultSet rs) throws SQLException {
-        Long dateTime = CalculatorService.parseLong(rs.getString("created_date"));
-        return News.builder()
-                .newsId(rs.getLong("news_id"))
-                .newsCategoryId(rs.getLong("news_category_id"))
-                .creatorId(rs.getLong("creator_id"))
-                .newsTitle(rs.getString("news_title"))
-                .newsContent(rs.getString("news_content"))
-                .newsImage(rs.getString("news_image"))
-                .newsHashtag(rs.getString("news_hashtag"))
-                .updatedId(rs.getLong("updated_id"))
-                .createdDate(new Date(dateTime))
-                .isDeleted(rs.getBoolean("is_deleted"))
-                .build();
+        try {
+            News nn = News.builder()
+                    .newsId(rs.getLong("news_id"))
+                    .newsCategoryId(rs.getLong("news_category_id"))
+                    .creatorId(rs.getLong("creator_id"))
+                    .newsTitle(rs.getString("news_title"))
+                    .newsContent(rs.getString("news_content"))
+                    .newsImage(rs.getString("news_image"))
+                    .newsHashtag(rs.getString("news_hashtag"))
+                    .updatedId(rs.getLong("updated_id"))
+                    .createdDate(rs.getString("created_date"))
+                    .isDeleted(rs.getBoolean("is_deleted"))
+                    .build();
+
+            nn.setCategory(new NewsCategoryDAO().getById(rs.getString("news_category_id")));
+            return nn;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     @Override
@@ -53,7 +62,7 @@ public class NewsDAO implements RowMapper<News> {
                          created_date,
                          is_deleted
                      )
-                     VALUES (?,?,?,?,?,?,?,?,?)
+                     VALUES (?,?,?,?,?,?,?,getdate(),?)
                      """;
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
@@ -64,8 +73,7 @@ public class NewsDAO implements RowMapper<News> {
             ps.setObject(5, t.getNewsImage());
             ps.setObject(6, t.getNewsHashtag());
             ps.setObject(7, t.getUpdatedId());
-            ps.setObject(8, t.getCreatedDate().getTime()+"");
-            ps.setObject(9, t.isDeleted());
+            ps.setObject(8, t.isDeleted());
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,7 +101,7 @@ public class NewsDAO implements RowMapper<News> {
 
     @Override
     public News getById(String id) throws SQLException, ClassNotFoundException {
-       String sql = """
+        String sql = """
                      SELECT *
                      FROM [news] WHERE news_id = ?
                      """;
@@ -114,7 +122,7 @@ public class NewsDAO implements RowMapper<News> {
 
     @Override
     public boolean updateById(String id, News t) throws SQLException, ClassNotFoundException {
-       String sql = """
+        String sql = """
                      UPDATE [news]
                      SET
                          news_category_id = ?,
@@ -124,23 +132,22 @@ public class NewsDAO implements RowMapper<News> {
                          news_image = ?,
                          news_hashtag = ?,
                          updated_id = ?,
-                         created_date = ?,
+                         created_date = getdate(),
                          is_deleted = ?
                      WHERE
                          news_id = ?;
                      """;
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
-            ps.setObject(1,t.getNewsCategoryId());
+            ps.setObject(1, t.getNewsCategoryId());
             ps.setObject(2, t.getCreatorId());
             ps.setObject(3, t.getNewsTitle());
             ps.setObject(4, t.getNewsContent());
             ps.setObject(5, t.getNewsImage());
             ps.setObject(6, t.getNewsHashtag());
             ps.setObject(7, t.getUpdatedId());
-            ps.setObject(8, t.getCreatedDate().getTime()+"");
-            ps.setObject(9, t.isDeleted());
-            ps.setObject(10, CalculatorService.parseLong(id));
+            ps.setObject(8, t.isDeleted());
+            ps.setObject(9, CalculatorService.parseLong(id));
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

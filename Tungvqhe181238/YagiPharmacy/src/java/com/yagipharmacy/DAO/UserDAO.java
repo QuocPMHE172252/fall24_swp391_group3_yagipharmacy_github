@@ -24,7 +24,6 @@ public class UserDAO implements RowMapper<User> {
 
     @Override
     public User mapRow(ResultSet rs) throws SQLException {
-        Long dateTime = CalculatorService.parseLong(rs.getString("created_time"));
         return User.builder()
                 .userId(rs.getLong("user_id"))
                 .userName(rs.getString("user_name"))
@@ -35,7 +34,12 @@ public class UserDAO implements RowMapper<User> {
                 .userAvatar(rs.getString("user_avatar"))
                 .userBank(rs.getString("user_bank"))
                 .userBankCode(rs.getString("user_bank_code"))
-                .createdDate(new Date(dateTime)) // Assumes it's stored as a DATE or TIMESTAMP in DB
+                .userProvince(rs.getString("user_province"))
+                .userDistrict(rs.getString("user_district"))
+                .userCommune(rs.getString("user_commune"))
+                .specificAddress(rs.getString("specific_address"))
+                .dateOfBirth(rs.getString("date_of_birth"))
+                .createdDate(rs.getString("created_date"))
                 .activeCode(rs.getString("active_code"))
                 .isActive(rs.getBoolean("is_active"))
                 .isDeleted(rs.getBoolean("is_deleted"))
@@ -45,22 +49,27 @@ public class UserDAO implements RowMapper<User> {
     @Override
     public boolean addNew(User t) throws SQLException, ClassNotFoundException {
         String sql = """
-                     INSERT INTO [user] (
-                         [user_name],
-                         user_phone,
-                         user_email,
-                         user_password,
-                         role_level,
-                         user_avatar,
-                         user_bank,
-                         user_bank_code,
-                         created_date,
-                         active_code,
-                         is_active,
-                         is_deleted
-                     )
-                     VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
-                     """;
+                 INSERT INTO [user] (
+                     [user_name],
+                     user_phone,
+                     user_email,
+                     user_password,
+                     role_level,
+                     user_avatar,
+                     user_bank,
+                     user_bank_code,
+                     user_province,
+                     user_district,
+                     user_commune,
+                     specific_address,
+                     date_of_birth,
+                     created_date,
+                     active_code,
+                     is_active,
+                     is_deleted
+                 )
+                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?, getDate(), ?, ?, ?)
+                 """;
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
             ps.setObject(1, t.getUserName());
@@ -71,10 +80,14 @@ public class UserDAO implements RowMapper<User> {
             ps.setObject(6, t.getUserAvatar());
             ps.setObject(7, t.getUserBank());
             ps.setObject(8, t.getUserBankCode());
-            ps.setObject(9, t.getCreatedDate().getTime() + "");
-            ps.setObject(10, t.getActiveCode());
-            ps.setObject(11, t.isActive());
-            ps.setObject(12, t.isDeleted());
+            ps.setObject(9, t.getUserProvince());
+            ps.setObject(10, t.getUserDistrict());
+            ps.setObject(11, t.getUserCommune());
+            ps.setObject(12, t.getSpecificAddress());
+            ps.setObject(13, t.getDateOfBirth());
+            ps.setObject(14, t.getActiveCode());
+            ps.setObject(15, t.isActive());
+            ps.setObject(16, t.isDeleted());
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -122,23 +135,27 @@ public class UserDAO implements RowMapper<User> {
     @Override
     public boolean updateById(String id, User t) throws SQLException, ClassNotFoundException {
         String sql = """
-                     UPDATE [user]
-                     SET
-                         [user_name] = ?,
-                         user_phone = ?,
-                         user_email = ?,
-                         user_password = ?,
-                         role_level = ?,
-                         user_avatar = ?,
-                         user_bank = ?,
-                         user_bank_code = ?,
-                         created_date = ?,
-                         active_code = ?,
-                         is_active = ?,
-                         is_deleted = ?
-                     WHERE
-                         [user_id] = ?;
-                     """;
+                 UPDATE [user]
+                 SET
+                     [user_name] = ?,
+                     user_phone = ?,
+                     user_email = ?,
+                     user_password = ?,
+                     role_level = ?,
+                     user_avatar = ?,
+                     user_bank = ?,
+                     user_bank_code = ?,
+                     user_province = ?,
+                     user_district = ?,
+                     user_commune = ?,
+                     specific_address = ?,
+                     date_of_birth = ?,
+                     active_code = ?,
+                     is_active = ?,
+                     is_deleted = ?
+                 WHERE
+                     [user_id] = ?;
+                 """;
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
             ps.setObject(1, t.getUserName());
@@ -149,16 +166,31 @@ public class UserDAO implements RowMapper<User> {
             ps.setObject(6, t.getUserAvatar());
             ps.setObject(7, t.getUserBank());
             ps.setObject(8, t.getUserBankCode());
-            ps.setObject(9, t.getCreatedDate().getTime() + "");
-            ps.setObject(10, t.getActiveCode());
-            ps.setObject(11, t.isActive());
-            ps.setObject(12, t.isDeleted());
-            ps.setObject(13, CalculatorService.parseLong(id));
+            ps.setObject(9, t.getUserProvince());
+            ps.setObject(10, t.getUserDistrict());
+            ps.setObject(11, t.getUserCommune());
+            ps.setObject(12, t.getSpecificAddress());
+            ps.setObject(13, t.getDateOfBirth());
+            ps.setObject(14, t.getActiveCode());
+            ps.setObject(15, t.isActive());
+            ps.setObject(16, t.isDeleted());
+            ps.setObject(17, CalculatorService.parseLong(id));
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return check > 0;
+    }
+
+    public static void main(String[] args) {
+        try {
+            for (User user : new UserDAO().getAll()) {
+                System.out.println(user);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -179,4 +211,92 @@ public class UserDAO implements RowMapper<User> {
         return check > 0;
     }
 
+    public boolean updateStatusById(String id, String status) throws SQLException, ClassNotFoundException {
+        String sql = " Update [user] set [is_active] = ? where [user_id] = " + id;
+        int check = 0;
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+
+            ps.setObject(1, CalculatorService.parseLong(status));
+            check = ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return check > 0;
+    }
+
+    public User getUserByPhone(String phone) throws SQLException, ClassNotFoundException {
+        String sql = """
+                     SELECT * FROM [user] WHERE user_phone = ?
+                     """;
+        User user = User.builder()
+                .userId(0L)
+                .build();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, phone);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                user = mapRow(rs);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    public User getUserByEmail(String email) throws SQLException, ClassNotFoundException {
+        String sql = """
+                     SELECT * FROM [user] WHERE user_email = ?
+                     """;
+        User user = User.builder()
+                .userId(0L)
+                .build();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                user = mapRow(rs);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    public List<User> getUsers(String search, String isActive, int page, int pageSize) throws SQLException, ClassNotFoundException {
+        StringBuilder sql = new StringBuilder("""
+        SELECT * FROM [user]
+        WHERE (user_name LIKE ? OR user_phone LIKE ? OR user_email LIKE ?)
+        """);
+
+        if (isActive != null) {
+            sql.append(" AND is_active = ?");
+        }
+
+        sql.append(" ORDER BY user_id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;");
+
+        List<User> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql.toString())) {
+            String searchPattern = "%" + search + "%";
+
+            ps.setObject(1, searchPattern);
+            ps.setObject(2, searchPattern);
+            ps.setObject(3, searchPattern);
+
+            int paramIndex = 4;
+            if (isActive != null) {
+                ps.setObject(paramIndex++, isActive);
+            }
+
+            ps.setObject(paramIndex++, (page - 1) * pageSize);  // Offset
+            ps.setObject(paramIndex, pageSize);  // Limit
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }
