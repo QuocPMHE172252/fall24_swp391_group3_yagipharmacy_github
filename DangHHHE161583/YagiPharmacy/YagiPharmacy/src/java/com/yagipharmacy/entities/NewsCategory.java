@@ -24,6 +24,7 @@ import lombok.ToString;
 public class NewsCategory {
     private Long newsCategoryId;
     private Long newsCategoryParentId;
+    private Long newsCategoryLevel;
     private String newsCategoryName;
     private String newsCategoryDetail;
     private boolean isDelete;

@@ -3,12 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Tunkyo/Documents/YagiPharma/Tungvqhe181238/YagiPharmacy/web/WEB-INF/web.xml</file>
-            <file>file:/C:/Users/Tunkyo/Documents/YagiPharma/Tungvqhe181238/YagiPharmacy/src/java/com/yagipharmacy/entities/ProductCategory.java</file>
-            <file>file:/C:/Users/Tunkyo/Documents/YagiPharma/Tungvqhe181238/YagiPharmacy/src/java/com/yagipharmacy/DAO/CategoryDAO.java</file>
-            <file>file:/C:/Users/Tunkyo/Documents/YagiPharma/Tungvqhe181238/YagiPharmacy/src/java/com/yagipharmacy/DAO/PriceDAO.java</file>
-            <file>file:/C:/Users/Tunkyo/Documents/YagiPharma/Tungvqhe181238/YagiPharmacy/web/index.html</file>
-            <file>file:/C:/Users/Tunkyo/Documents/YagiPharma/Tungvqhe181238/YagiPharmacy/src/java/com/yagipharmacy/controllers/common/Login.java</file>
+            <file>file:/E:/FPT/SWP391/ver22_9%20-%20YP/YagiPharmacy/YagiPharmacy/web/Login.jsp</file>
+            <file>file:/E:/FPT/SWP391/ver22_9%20-%20YP/YagiPharmacy/YagiPharmacy/src/java/com/yagipharmacy/controllers/admin/AdminDashboard.java</file>
+            <file>file:/E:/FPT/SWP391/ver22_9%20-%20YP/YagiPharmacy/YagiPharmacy/web/admin/accountAdd.jsp</file>
+            <file>file:/E:/FPT/SWP391/ver22_9%20-%20YP/YagiPharmacy/YagiPharmacy/src/java/com/yagipharmacy/controllers/admin/AccountList.java</file>
+            <file>file:/E:/FPT/SWP391/ver22_9%20-%20YP/YagiPharmacy/YagiPharmacy/src/java/com/yagipharmacy/JDBC/SQLServerConnection.java</file>
+            <file>file:/E:/FPT/SWP391/ver22_9%20-%20YP/YagiPharmacy/YagiPharmacy/src/java/com/yagipharmacy/controllers/common/Login.java</file>
         </group>
     </open-files>
 </project-private>

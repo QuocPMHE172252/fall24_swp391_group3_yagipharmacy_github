@@ -36,6 +36,7 @@ public class User {
     private String userDistrict;
     private String userCommune;
     private String specificAddress;
+    private Date dateOfBirth;
     private Date createdDate;
     private String activeCode;
     private boolean isActive;
