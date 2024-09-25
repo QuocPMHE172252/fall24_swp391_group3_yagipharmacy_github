@@ -243,4 +243,66 @@ public class UserDAO implements RowMapper<User> {
         return user;
     }
 
+    public static void main(String[] args) {
+        try {
+            for (User user : new UserDAO().getAll()) {
+                System.out.println(user);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public boolean updateStatusById(String id, String status) throws SQLException, ClassNotFoundException {
+        String sql = " Update [user] set [is_active] = ? where [user_id] = " + id;
+        int check = 0;
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+
+            ps.setObject(1, CalculatorService.parseLong(status));
+            check = ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return check > 0;
+    }
+
+
+    public List<User> getUsers(String search, String isActive, int page, int pageSize) throws SQLException, ClassNotFoundException {
+        StringBuilder sql = new StringBuilder("""
+        SELECT * FROM [user]
+        WHERE (user_name LIKE ? OR user_phone LIKE ? OR user_email LIKE ?)
+        """);
+
+        if (isActive != null) {
+            sql.append(" AND is_active = ?");
+        }
+
+        sql.append(" ORDER BY user_id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;");
+
+        List<User> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql.toString())) {
+            String searchPattern = "%" + search + "%";
+
+            ps.setObject(1, searchPattern);
+            ps.setObject(2, searchPattern);
+            ps.setObject(3, searchPattern);
+
+            int paramIndex = 4;
+            if (isActive != null) {
+                ps.setObject(paramIndex++, isActive);
+            }
+
+            ps.setObject(paramIndex++, (page - 1) * pageSize);  // Offset
+            ps.setObject(paramIndex, pageSize);  // Limit
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

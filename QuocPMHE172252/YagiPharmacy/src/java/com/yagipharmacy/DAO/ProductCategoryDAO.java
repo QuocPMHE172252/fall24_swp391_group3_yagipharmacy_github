@@ -15,6 +15,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -40,12 +42,21 @@ public class ProductCategoryDAO implements RowMapper<ProductCategory> {
                 .productCategoryDetail(productCategoryDetail)
                 .isDeleted(isDeleted)
                 .build();
+
+    }
+
+    public static void main(String[] args) {
+        try {
+            System.out.println(new ProductCategoryDAO().getById("5"));
+        } catch (Exception ex) {
+            Logger.getLogger(ProductCategoryDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
     public boolean addNew(ProductCategory t) throws SQLException, ClassNotFoundException {
         String sql = """
-                INSERT INTO [category] (
+                INSERT INTO [product_category] (
                     product_category_parent_id,
                     product_category_level,
                     product_category_code,
@@ -98,10 +109,11 @@ public class ProductCategoryDAO implements RowMapper<ProductCategory> {
                 .productCategoryId(0L)
                 .build();
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
-            ps.setObject(1, Long.parseLong(id));
+            ps.setObject(1, CalculatorService.parseLong(id));
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 productCategory = mapRow(rs);
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -155,4 +167,16 @@ public class ProductCategoryDAO implements RowMapper<ProductCategory> {
         return check > 0;
     }
 
+    public boolean updateStatusById(String id,String status) throws SQLException, ClassNotFoundException {
+        String sql = "  update [product_category] set [is_deleted] = ? where [product_category_id] =  ?";
+        int check = 0;
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, CalculatorService.parseLong(status));
+            ps.setObject(2, CalculatorService.parseLong(id));
+            check = ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return check > 0;
+    }
 }
