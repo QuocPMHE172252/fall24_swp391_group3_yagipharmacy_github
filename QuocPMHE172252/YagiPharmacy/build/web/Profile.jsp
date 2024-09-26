@@ -3,7 +3,7 @@
     Created on : Sep 22, 2024, 1:46:43 PM
     Author     : admin
 --%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,8 +31,8 @@
             <div class="panel-body inf-content">
                 <div class="row">
                     <div class="col-md-4">
-                        <img alt style="width:600px;" title class="img-circle img-thumbnail isTooltip"
-                             src="https://bootdey.com/img/Content/avatar/avatar7.png" data-original-title="Usuario">
+                        <img alt style="width:300px; height: 300px" title class="img-circle img-thumbnail isTooltip"
+                             src="${sessionScope.userAuth.userAvatar}" data-original-title="Usuario">
                     </div>
                     <div class="col-md-6">
                         <strong>Thông tin</strong><br>
@@ -96,7 +96,7 @@
                                     </tr>
                                     <tr></tr>
                                 <td>
-                                    <a class="btn btn-info" href="#" target="_blank">Chỉnh sửa</a>
+                                    <a class="btn btn-info" href="ChangeProfile" target="_blank">Chỉnh sửa</a>
                                 </td>
                                 <td>
                                     <a class="btn btn-danger" href="ChangePassword" target="_blank">Thay đổi mật khẩu</a>

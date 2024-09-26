@@ -97,8 +97,7 @@ public class CategoryAdd extends HttpServlet {
         Long parentCategoryId = parentCategoryIdStr == null || parentCategoryIdStr.isEmpty() ? null : Long.parseLong(parentCategoryIdStr);
         Long categoryLevel = Long.parseLong(categoryLevelStr);
         boolean isDeleted = Boolean.parseBoolean(isDeletedStr);
-        
-        
+
         // Create ProductCategory object
         ProductCategory category = ProductCategory.builder()
                 .productCategoryCode(categoryCode)

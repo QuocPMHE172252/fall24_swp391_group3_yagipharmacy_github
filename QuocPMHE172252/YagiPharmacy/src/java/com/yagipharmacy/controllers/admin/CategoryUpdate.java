@@ -87,10 +87,13 @@ public class CategoryUpdate extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String parentCategoryIdStr = request.getParameter("product_category_parent_id");
+        Long parentCategoryId = parentCategoryIdStr == null || parentCategoryIdStr.isEmpty() ? null : Long.parseLong(parentCategoryIdStr);
+        System.out.println(request.getParameter("is_deleted"));
         ProductCategoryDAO categoryDao = new ProductCategoryDAO();
         ProductCategory category = ProductCategory.builder()
                 .productCategoryId(Long.parseLong(request.getParameter("product_category_id")))
-                .productCategoryParentId(Long.parseLong(request.getParameter("product_category_parent_id")))
+                .productCategoryParentId(parentCategoryId)
                 .productCategoryLevel(Long.parseLong(request.getParameter("product_category_level")))
                 .productCategoryCode(request.getParameter("product_category_code"))
                 .productCategoryName(request.getParameter("product_category_name"))

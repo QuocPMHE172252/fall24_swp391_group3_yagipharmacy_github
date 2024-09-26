@@ -135,71 +135,6 @@ public class UserDAO implements RowMapper<User> {
         return user;
     }
 
-    public User getByEmail(String emai) throws SQLException, ClassNotFoundException {
-        String sql = """
-                     SELECT * FROM [user] WHERE [user_email] = ?
-                     """;
-        User user = User.builder()
-                .userId(0L)
-                .build();
-        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
-            ps.setObject(1, emai);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                user = mapRow(rs);
-                System.out.println(user);
-                return user;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public User getByUsername(String username) throws SQLException, ClassNotFoundException {
-        String sql = """
-                     SELECT * FROM [user] WHERE [user_name] = ?
-                     """;
-        User user = User.builder()
-                .userId(0L)
-                .build();
-        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
-            ps.setObject(1, username);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                System.out.println(user);
-
-                user = mapRow(rs);
-                return user;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public User getByPhone(String phone) throws SQLException, ClassNotFoundException {
-        String sql = """
-                     SELECT * FROM [user] WHERE [user_phone] = ?
-                     """;
-        User user = User.builder()
-                .userId(0L)
-                .build();
-        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
-            ps.setObject(1, phone);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                user = mapRow(rs);
-                System.out.println(user);
-
-                return user;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     @Override
     public boolean updateById(String id, User t) throws SQLException, ClassNotFoundException {
         String sql = """
@@ -360,6 +295,87 @@ public class UserDAO implements RowMapper<User> {
             ps.setObject(paramIndex++, (page - 1) * pageSize);  // Offset
             ps.setObject(paramIndex, pageSize);  // Limit
 
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public User getByEmail(String emai) throws SQLException, ClassNotFoundException {
+        String sql = """
+                     SELECT * FROM [user] WHERE [user_email] = ? and  is_deleted = 0
+                     """;
+        User user = User.builder()
+                .userId(0L)
+                .build();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, emai);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                user = mapRow(rs);
+                System.out.println(user);
+                return user;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public User getByUsername(String username) throws SQLException, ClassNotFoundException {
+        String sql = """
+                     SELECT * FROM [user] WHERE [user_name] = ? and  is_deleted = 0
+                     """;
+        User user = User.builder()
+                .userId(0L)
+                .build();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, username);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                System.out.println(user);
+
+                user = mapRow(rs);
+                return user;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public User getByPhone(String phone) throws SQLException, ClassNotFoundException {
+        String sql = """
+                     SELECT * FROM [user] WHERE [user_phone] = ? and  is_deleted = 0
+                     """;
+        User user = User.builder()
+                .userId(0L)
+                .build();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, phone);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                user = mapRow(rs);
+                System.out.println(user);
+
+                return user;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<User> getAllAvailable() throws SQLException, ClassNotFoundException {
+        String sql = """
+                     SELECT * FROM [user] where is_deleted = 0
+                     """;
+        List<User> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 list.add(mapRow(rs));
