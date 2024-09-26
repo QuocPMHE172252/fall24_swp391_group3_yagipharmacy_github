@@ -45,7 +45,7 @@ public class CreateAccount extends HttpServlet {
             String userPhone = request.getParameter("user_phone");
             String userEmail = request.getParameter("user_email");
             String userPassword = request.getParameter("user_password");
-            String userAvatar = request.getParameter("user_avatar"); 
+            String userAvatar = request.getParameter("user_avatar");
             String userBank = request.getParameter("user_bank");
             String userBankCode = request.getParameter("user_bank_code");
             String specificAddress = request.getParameter("specific_address");
@@ -55,44 +55,61 @@ public class CreateAccount extends HttpServlet {
             String is_active = request.getParameter("is_active");
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date dateOfBirth = dateFormat.parse(dateOfBirthString);
-            // Create a new User object
-            User newUser = new User();
-            newUser.setUserName(userName);
-            newUser.setUserPhone(userPhone);
-            newUser.setUserEmail(userEmail);
-            newUser.setUserPassword(userPassword);
-            newUser.setUserAvatar(userAvatar);
-            newUser.setUserBank(userBank);
-            newUser.setUserBankCode(userBankCode);
-            newUser.setSpecificAddress(specificAddress);
-            newUser.setDateOfBirth(dateOfBirth);
-            newUser.setActiveCode("");
-            newUser.setActive(is_active.equals("1"));
-            newUser.setDeleted(is_deleted.equals("1"));
-            newUser.setRoleLevel(Long.valueOf(role_level));
-            newUser.setCreatedDate(new Date());
-            System.out.println(newUser.isDeleted());
-            System.out.println(newUser.isActive());
-            // Call the addUser method from UserDAO
             UserDAO userDAO = new UserDAO();
-            boolean isAdded = false;
-
-            isAdded = userDAO.addNew(newUser);
-            if (isAdded) {
-                response.sendRedirect("./AccountList");
-            } else {
-                request.setAttribute("errorMessage", "Failed to create account.");
+            String messErrorEmail = "";
+            String messErrorUsername = "";
+            String messErrorPhone = "";
+            if (userDAO.getByEmail(userEmail) != null) {
+                messErrorEmail = "This email already exist in system. Try again!";
+            }
+            if (userDAO.getByUsername(userName) != null) {
+                messErrorUsername = "This username already exist in system. Try again!";
+            }
+            if (userDAO.getByPhone(userPhone) != null) {
+                messErrorPhone = "This phone number already exist in system. Try again!";
+            }
+            if (messErrorEmail != "" || messErrorUsername != "" || messErrorPhone != "") {
+                request.setAttribute("messErrorPhone", messErrorPhone);
+                request.setAttribute("messErrorUsername", messErrorUsername);
+                request.setAttribute("messErrorEmail", messErrorEmail);
                 request.getRequestDispatcher("./accountAdd.jsp").forward(request, response);
+            } else {
+                // Create a new User object
+                User newUser = new User();
+                newUser.setUserName(userName);
+                newUser.setUserPhone(userPhone);
+                newUser.setUserEmail(userEmail);
+                newUser.setUserPassword(userPassword);
+                newUser.setUserAvatar(userAvatar);
+                newUser.setUserBank(userBank);
+                newUser.setUserBankCode(userBankCode);
+                newUser.setSpecificAddress(specificAddress);
+                newUser.setDateOfBirth(dateOfBirth);
+                newUser.setActiveCode("");
+                newUser.setActive(is_active.equals("1"));
+                newUser.setDeleted(is_deleted.equals("1"));
+                newUser.setRoleLevel(Long.valueOf(role_level));
+                newUser.setCreatedDate(new Date());
+                System.out.println(newUser.isDeleted());
+                System.out.println(newUser.isActive());
+                // Call the addUser method from UserDAO
+                boolean isAdded = false;
+
+                isAdded = userDAO.addNew(newUser);
+                if (isAdded) {
+                    response.sendRedirect("./AccountList");
+                } else {
+                    request.setAttribute("errorMessage", "Failed to create account.");
+                    request.getRequestDispatcher("./accountAdd.jsp").forward(request, response);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
             // Optionally, set an error message in the request
             request.setAttribute("errorMessage", "Failed to create account.");
             request.getRequestDispatcher("./accountAdd.jsp").forward(request, response);
-            return;
         }
 
-        // Redirect based on whether the user was added successfully
     }
 
     /**

@@ -135,11 +135,11 @@
                                         <div class="form-group mb-3 col-md-6">
                                             <label>Is Active</label><br />
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="is_active" id="isActiveYes" value="1" ${user.isActive() ? 'checked' : ''} />
+                                                <input class="form-check-input" type="radio" name="is_active" id="isActiveYes" value="1" ${user.isActive()==true ? 'checked' : ''} />
                                                 <label class="form-check-label" for="isActiveYes">Yes</label>
                                             </div>
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="is_active" id="isActiveNo" value="0" ${!user.isActive() ? 'checked' : ''} />
+                                                <input class="form-check-input" type="radio" name="is_active" id="isActiveNo" value="0" ${!user.isActive()==false ? 'checked' : ''} />
                                                 <label class="form-check-label" for="isActiveNo">No</label>
                                             </div>
                                         </div>
@@ -147,11 +147,11 @@
                                         <div class="form-group mb-3 col-md-6">
                                             <label>Is Deleted</label><br />
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="is_deleted" id="isDeletedYes" value="0" ${!user.isDeleted() ? 'checked' : ''} />
+                                                <input class="form-check-input" type="radio" name="is_deleted" id="isDeletedYes" value="0" ${!user.isDeleted()==false ? 'checked' : ''} />
                                                 <label class="form-check-label" for="isDeletedYes">No</label>
                                             </div>
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="is_deleted" id="isDeletedNo" value="1" ${user.isDeleted() ? 'checked' : ''} />
+                                                <input class="form-check-input" type="radio" name="is_deleted" id="isDeletedNo" value="1" ${user.isDeleted()==true ? 'checked' : ''} />
                                                 <label class="form-check-label" for="isDeletedNo">Yes</label>
                                             </div>
                                         </div>
