@@ -107,18 +107,16 @@
 
                                         <div class="form-group mb-3 col-md-6">
                                             <label for="product_category_level">Category Level</label>
-                                            <input type="number" class="form-control" name="product_category_level" id="product_category_level"
-                                                   value="${cate.productCategoryLevel}" placeholder="Enter category level" required>
+                                            <input type="number" class="form-control" name="product_category_level" id="product_category_level" readonly=""
+                                                   value="${cate.productCategoryLevel}" placeholder="Enter category level" required> 
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
                                             <label for="product_category_parent_id">Parent Category</label>
-                                            <select class="form-select" name="product_category_parent_id" id="product_category_parent_id">
-                                                <option value="0">None</option>
-                                                <c:forEach var="category" items="${cl}">
-                                                    <option value="${category.productCategoryId}" ${category.productCategoryId == cate.productCategoryParentId?"Selected":""}>
-                                                        ${category.productCategoryName}
-                                                    </option>
+                                            <select class="form-select" name="product_category_parent_id"  id="productCategorySelect" onchange="handleCategoryChange()">
+                                                <option value="" data-category-level="0">None</option>
+                                                <c:forEach var="c" items="${cl}">
+                                                    <option value="${c.productCategoryId}" data-category-level="${c.productCategoryLevel}">${c.productCategoryName}</option>
                                                 </c:forEach>
                                             </select>
                                         </div>
@@ -184,7 +182,17 @@
 
         </div>
 
+        <script>
+            function handleCategoryChange() {
+                const selectElement = document.getElementById("productCategorySelect");
+                const selectedOption = selectElement.options[selectElement.selectedIndex];
+                const categoryLevel = selectedOption.getAttribute('data-category-level');
+                const categoryLevelInt = parseInt(categoryLevel);
+                document.getElementById('product_category_level').value = categoryLevelInt + 1;
 
+            }
+
+        </script>
         <!--   Core JS Files   -->
         <script src="./assets/js/core/jquery-3.7.1.min.js"></script>
         <script src="./assets/js/core/popper.min.js"></script>
