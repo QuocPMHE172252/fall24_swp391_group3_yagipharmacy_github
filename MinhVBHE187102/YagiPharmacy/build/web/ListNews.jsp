@@ -89,7 +89,6 @@
                 <tr>
                     <th scope="col">News image</th>
                     <th scope="col">News title</th>
-                    <th scope="col">News content</th>
                     <th scope="col">Change status</th>
                     <th scope="col">Update</th>
                 </tr>
@@ -98,10 +97,9 @@
                 <c:forEach items="${data}" var="e">
                     <tr>
                         <th><img src="${e.newsImage}" alt="alt" height="100px" width="100px"></th>
-                        <td>${e.newsTitle}</td>
-                        <td>${e.newsContent.substring(0, 30)}...${e.createdDate}</td>
+                        <td><a href="NewsDetail?nid=${e.newsId}">${e.newsTitle}</a></td>
                         <td><button type="button" class='btn ${e.isDeleted()?"btn-success":"btn-danger"}'>${e.isDeleted()?"Active":"Delete"}</button></td>
-                        <td><a class="btn btn-success" href="UpdateNews?newsId=${e.newsId}" target="_blank">Upate</a></td>
+                        <td><a class="btn btn-success" href="UpdateNews?newsId=${e.newsId}" target="_blank">Update</a></td>
                     </tr>
                 </c:forEach>
             </tbody>
