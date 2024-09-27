@@ -20,22 +20,15 @@ public interface AuthorizationService {
     default void loginRedirect(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         User userAuth = (User) request.getSession().getAttribute("userAuth");
-        if (userAuth != null) {
-            Long role = userAuth.getRoleLevel();
-            if (role == SystemVariable.ADMIN) {
-            }
-            if (role == SystemVariable.MANAGER) {
-            }
-            if (role == SystemVariable.MARKETER) {
-            }
-            if (role == SystemVariable.STAFF) {
-            }
-            if (role == SystemVariable.CUSTOMER) {
-                request.getRequestDispatcher("index.html").forward(request, response);
-            }
-        } else {
-            response.sendRedirect("Login");
+        Long role = userAuth.getRoleLevel();
+        if (role == SystemVariable.ADMIN) {
         }
-
+        if (role == SystemVariable.MANAGER) {
+        }
+        if (role == SystemVariable.STAFF) {
+        }
+        if (role == SystemVariable.CUSTOMER) {
+            request.getRequestDispatcher("index.html").forward(request, response);
+        }
     }
 }

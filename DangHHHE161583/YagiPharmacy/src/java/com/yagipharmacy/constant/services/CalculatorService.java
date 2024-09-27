@@ -10,9 +10,6 @@ package com.yagipharmacy.constant.services;
  */
 public class CalculatorService {
     public static Long parseLong(String n) {
-        if(n==null){
-            n = "0";
-        }
         try {
             Long i = Long.parseLong(n.trim());
             return i;

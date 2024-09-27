@@ -83,7 +83,8 @@ public class NewsDAO implements RowMapper<News> {
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                list.add(mapRow(rs)); // Call the mapRow method to convert ResultSet to Post object
+                list.add(mapRow(rs));
+                System.out.println(mapRow(rs));
             }
         } catch (Exception e) {
             e.printStackTrace();

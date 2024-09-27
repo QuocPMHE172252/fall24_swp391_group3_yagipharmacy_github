@@ -4,6 +4,7 @@
  */
 package com.yagipharmacy.entities;
 
+import com.yagipharmacy.constant.variables.UserRole;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,4 +42,8 @@ public class User {
     private String activeCode;
     private boolean isActive;
     private boolean isDeleted;
+    
+    public String getRoleNamee(){
+        return  UserRole.getRoleNameById(roleLevel);
+    }
 }
