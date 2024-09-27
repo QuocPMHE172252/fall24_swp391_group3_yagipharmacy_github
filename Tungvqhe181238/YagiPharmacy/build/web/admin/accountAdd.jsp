@@ -90,20 +90,26 @@
                                     <h3>Create New Account</h3>
                                 </div>
                                 <div class="card-body">
-                                    <form method="post" action="CreateAccount" id="createAccountForm" class="row" >
+                                    <form method="post" action="CreateAccount" id="createAccountForm" class="row"  onsubmit="return validateForm()">
                                         <div class="form-group mb-3 col-md-6">
                                             <label for="user_name">Username</label>
-                                            <input type="text" class="form-control" name="user_name" id="user_name" placeholder="Enter username" required>
+                                            <input type="text" class="form-control" name="user_name" id="user_name" value="${param.user_name}" placeholder="Enter username" required>
+                                            <p style="color: red">${messErrorUsername}</p>
+
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
                                             <label for="user_phone">Phone</label>
-                                            <input type="text" class="form-control" name="user_phone" id="user_phone" placeholder="Enter phone number" required>
+                                            <input type="text" class="form-control" name="user_phone" id="user_phone" value="${param.user_phone}" placeholder="Enter phone number" required>
+                                            <p style="color: red">${messErrorPhone}</p>
+
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
                                             <label for="user_email">Email</label>
-                                            <input type="email" class="form-control" name="user_email" id="user_email" placeholder="Enter email" required>
+                                            <input type="email" class="form-control" name="user_email" id="user_email"  value="${param.user_email}" placeholder="Enter email" required>
+                                            <p style="color: red">${messErrorEmail}</p>
+
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
@@ -111,26 +117,24 @@
                                             <input type="password" class="form-control" name="user_password" id="user_password" placeholder="Enter password" required>
                                         </div>
 
-
-
                                         <div class="form-group mb-3 col-md-6">
                                             <label for="user_bank">Bank</label>
-                                            <input type="text" class="form-control" name="user_bank" id="user_bank" placeholder="Enter bank name" required>
+                                            <input type="text" class="form-control" name="user_bank" id="user_bank" value="${param.user_bank}" placeholder="Enter bank name" required>
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
                                             <label for="user_bank_code">Bank Code</label>
-                                            <input type="text" class="form-control" name="user_bank_code" id="user_bank_code" placeholder="Enter bank code" required>
+                                            <input type="text" class="form-control" name="user_bank_code" id="user_bank_code" value="${param.user_bank_code}" placeholder="Enter bank code" required>
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
                                             <label for="specific_address">Address</label>
-                                            <input type="text" class="form-control" name="specific_address" id="specific_address" placeholder="Enter address" required>
+                                            <input type="text" class="form-control" name="specific_address" value="${param.specific_address}" id="specific_address" placeholder="Enter address" required>
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
                                             <label for="date_of_birth">Date of Birth</label>
-                                            <input type="date" class="form-control" name="date_of_birth" id="date_of_birth" required>
+                                            <input type="date" class="form-control" name="date_of_birth"   value="${param.date_of_birth}" id="date_of_birth" required>
                                         </div>
 
                                         <div class="form-group  mb-3 col-md-6">
@@ -161,20 +165,21 @@
                                                 <option value="1">Admin</option>
                                                 <option value="2">Manager</option>
                                                 <option value="3">Staff</option>
-                                                <option value="4">Customer</option>
+                                                <option value="3">Marketer</option>
+                                                <option value="5">Customer</option>
                                             </select>
                                         </div>
                                         <div class="form-group mb-3 col-md-6">
                                             <label for="user_avatar">Avatar</label>
                                             <input type="file" class="form-control" id="user_avatar" accept="image/*" required>
                                             <input type="text" class="form-control" id="user_avatar_submit" style="display: none" name="user_avatar">
-                                            
+
                                         </div>
                                         <div class="form-group mb-3 col-md-6">
                                             <label for="date_of_birth">Demo Img</label>
                                             <img id="avatarPreview" class="mt-3" src=""  alt="Avatar Preview" style="max-width: 300px; display: none;">
                                         </div>
-                                        <p style="color: red;">${errorMessage}</p>
+                                        <p>${errorMessage}</p>
                                         <div class="form-group mb-3 col-md-12">
                                             <button type="submit" class="btn btn-success" style="width: 100px">Submit</button>
                                         </div>
@@ -216,58 +221,110 @@
 
         </div>
 
+
         <script>
+
+
+            // Validate date of birth to ensure it's not greater than today
+            function validateDateOfBirth(dateOfBirth) {
+                const today = new Date();
+                const inputDate = new Date(dateOfBirth);
+                return inputDate <= today;
+            }
+
+            // Validate the avatar to check if it's an image and smaller than 5MB
+            function validateAvatar(file) {
+                const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                const maxFileSize = 5 * 1024 * 1024; // 5MB
+
+                if (!validImageTypes.includes(file.type)) {
+                    alert("Please upload a valid image (JPG, PNG, GIF).");
+                    return false;
+                }
+
+                if (file.size > maxFileSize) {
+                    alert("Avatar file size must be less than 5MB.");
+                    return false;
+                }
+
+                return true;
+            }
+
+            // Form validation
+            function validateForm() {
+                const phone = document.getElementById('user_phone').value;
+                const dateOfBirth = document.getElementById('date_of_birth').value;
+                const avatarFile = document.getElementById('user_avatar').files[0];
+                if (!isValidPhoneNumber(phone)) {
+                    alert("Phone number not valid try again!");
+                    return false;
+                }
+
+                if (!validateDateOfBirth(dateOfBirth)) {
+                    alert("Date of birth cannot be a future date.");
+                    return false;
+                }
+
+                if (avatarFile && !validateAvatar(avatarFile)) {
+                    return false;
+                }
+
+                return true; // Submit form if all validations pass
+            }
+
+            // Avatar preview and encoding to base64
             document.getElementById('user_avatar').addEventListener('change', function (event) {
                 const file = event.target.files[0];
-                const reader = new FileReader();
 
+                if (!validateAvatar(file)) {
+                    return;
+                }
+
+                const reader = new FileReader();
                 reader.onload = function (e) {
                     const base64Image = e.target.result;
                     document.getElementById('avatarPreview').src = base64Image;
                     document.getElementById('avatarPreview').style.display = 'block';
                     document.getElementById('user_avatar_submit').value = base64Image;
                 };
-
                 reader.readAsDataURL(file);
             });
 
-//            document.getElementById('createAccountForm').addEventListener('submit', function (event) {
-//                event.preventDefault();
-//                const formData = {
-//                    user_name: document.getElementById('user_name').value,
-//                    user_phone: document.getElementById('user_phone').value,
-//                    user_email: document.getElementById('user_email').value,
-//                    user_password: document.getElementById('user_password').value,
-//                    user_avatar: document.getElementById('avatarPreview').src, 
-//                    user_bank: document.getElementById('user_bank').value,
-//                    user_bank_code: document.getElementById('user_bank_code').value,
-//                    specific_address: document.getElementById('specific_address').value,
-//                    date_of_birth: document.getElementById('date_of_birth').value,
-//                    is_active: document.querySelector('input[name="is_active"]:checked').value,
-//                    is_deleted: document.querySelector('input[name="is_deleted"]:checked').value,
-//                    role_level: document.getElementById('user_role').value
-//                };
-//                console.log('Form data:', formData);
-//                fetch('./CreateAccount', {
-//                    method: 'POST',
-//                    headers: {
-//                        'Content-Type': 'application/json',
-//                    },
-//                    body: JSON.stringify(formData),
-//                })
-//                        .then(response => {
-//                            if (response.ok) {
-//                                window.location.href = './AccountList';
-//                            } else {
-//                                throw new Error('Network response was not ok.');
-//                            }
-//                        })
-//                        .catch(error => {
-//                            console.error('There was a problem with the fetch operation:', error);
-//                            // Optionally, show an error message to the user
-//                        });
-//            });
 
+            function isValidPhoneNumber(phoneNumber) {
+                const cleanedNumber = phoneNumber.replace(/\s+/g, '').replace(/-/g, '');
+                const phoneRegex = /^(84|0[35789])+([0-9]{8})\b/;
+                if (!/^(\+|\d)/.test(cleanedNumber)) {
+                    return false;
+                }
+                if (!phoneRegex.test(phoneNumber)) {
+                    return false;
+                }
+                if (cleanedNumber.length < 10 || cleanedNumber.length > 15) {
+                    return false;
+                }
+                return true;
+            }
+            function isValidPassword(password) {
+                if (password.length < 8 || password.length > 16) {
+                    return false;
+                }
+                if (!/[A-Z]/.test(password)) {
+                    return false;
+                }
+                if (!/[a-z]/.test(password)) {
+                    return false;
+                }
+                if (!/\d/.test(password)) {
+                    return false;
+                }
+                return true;
+            }
+            function isValidEmail(email) {
+                const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+                return emailRegex.test(email);
+            }
         </script>
 
         <!--   Core JS Files   -->

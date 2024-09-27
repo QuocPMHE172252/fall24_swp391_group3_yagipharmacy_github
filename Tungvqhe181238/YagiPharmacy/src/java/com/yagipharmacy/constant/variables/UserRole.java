@@ -17,7 +17,8 @@ public enum UserRole {
     ADMIN(1L, "Admin"),
     MANAGER(2L, "Manager"),
     STAFF(3L, "Staff"),
-    CUSTOMER(4L, "Customer");
+    MARKETER(4L,"Marketer"),
+    CUSTOMER(5L, "Customer");
 
     private final Long id;
     private final String roleName;

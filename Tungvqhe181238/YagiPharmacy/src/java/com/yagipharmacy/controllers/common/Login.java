@@ -62,9 +62,15 @@ public class Login extends HttpServlet implements AuthorizationService {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String register = request.getParameter("register");
+        String reset = request.getParameter("reset");
         if (register != null) {
             if (register.equals("success")) {
                 request.setAttribute("notice", "Đăng kí thành công vui lòng kiểm tra email để xác thực");
+            }
+        }
+        if(reset!=null){
+            if (reset.equals("success")) {
+                request.setAttribute("notice", "Thay đổi mật khẩu thành công vui lòng đăng nhập");
             }
         }
         User userAuth = (User) request.getSession().getAttribute("userAuth");

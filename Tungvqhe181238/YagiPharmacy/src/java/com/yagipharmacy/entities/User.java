@@ -37,12 +37,11 @@ public class User {
     private String userDistrict;
     private String userCommune;
     private String specificAddress;
-    private String createdDate;
-    private String dateOfBirth;
+    private Date dateOfBirth;
+    private Date createdDate;
     private String activeCode;
     private boolean isActive;
     private boolean isDeleted;
-    private String roleName;
     
     public String getRoleNamee(){
         return  UserRole.getRoleNameById(roleLevel);

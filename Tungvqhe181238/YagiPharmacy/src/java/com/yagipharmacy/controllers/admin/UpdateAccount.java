@@ -13,6 +13,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
@@ -42,7 +44,11 @@ public class UpdateAccount extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            request.setAttribute("user", new UserDAO().getById(request.getParameter("uid")));
+            User user  = new UserDAO().getById(request.getParameter("uid"));
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String formattedDate = dateFormat.format(user.getDateOfBirth());
+            request.setAttribute("formattedDate", formattedDate);
+            request.setAttribute("user", user);
             request.getRequestDispatcher("./accountUpdate.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,42 +76,42 @@ public class UpdateAccount extends HttpServlet {
             String userBank = request.getParameter("user_bank");
             String userBankCode = request.getParameter("user_bank_code");
             String specificAddress = request.getParameter("specific_address");
-            String dateOfBirth = request.getParameter("date_of_birth");
+            String dateOfBirthString = request.getParameter("date_of_birth");
             boolean isActive = "1".equals(request.getParameter("is_active"));
             boolean isDeleted = "1".equals(request.getParameter("is_deleted"));
             Long roleLevel = Long.parseLong(request.getParameter("user_role"));
 
             // Handle avatar upload (Base64 encoded or save the file to the server)
             String userAvatar = request.getParameter("user_avatar");
-
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date dateOfBirth = dateFormat.parse(dateOfBirthString);
+            UserDAO userDAO = new UserDAO();
             // Create User object
-            User user = User.builder()
-                    .userId(userId)
-                    .userName(userName)
-                    .userPhone(userPhone)
-                    .userEmail(userEmail)
-                    .userPassword(userPassword)
-                    .userBank(userBank)
-                    .userBankCode(userBankCode)
-                    .specificAddress(specificAddress)
-                    .dateOfBirth(dateOfBirth)
-                    .isActive(isActive)
-                    .isDeleted(isDeleted)
-                    .roleLevel(roleLevel)
-                    .userAvatar(userAvatar)
-                    .activeCode("")
-                    .build();
+            User findingUser = userDAO.getById(userId+"");
+            findingUser.setUserName(userName);
+            findingUser.setUserPhone(userPhone);
+            findingUser.setUserEmail(userEmail);
+            findingUser.setUserPassword(userPassword);
+            findingUser.setUserBank(userBank);
+            findingUser.setUserBankCode(userBankCode);
+            findingUser.setSpecificAddress(specificAddress);
+            findingUser.setDateOfBirth(dateOfBirth);
+            findingUser.setActive(isActive);
+            findingUser.setDeleted(isDeleted);
+            findingUser.setRoleLevel(roleLevel);
+            findingUser.setUserAvatar(userAvatar);
+
 
             // Call the UserDAO to update the user in the database
-            UserDAO userDAO = new UserDAO();
-            boolean success = userDAO.updateById(request.getParameter("user_id"),user);
+            
+            boolean success = userDAO.updateById(request.getParameter("user_id"),findingUser);
 
             if (success) {
                 response.sendRedirect("./AccountList");
             } else {
                 // Handle the error (e.g., show an error message)
-                request.setAttribute("errorMessage", "Failed to update the account.");
-                request.setAttribute("user", user);
+                request.setAttribute("errorMessage", "Email hoặc số điện thoại đã được sử dụng");
+                request.setAttribute("user", findingUser);
                 request.getRequestDispatcher("./accountUpdate.jsp").forward(request, response);
             }
         } catch (Exception e) {

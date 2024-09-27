@@ -4,8 +4,11 @@
  */
 package com.yagipharmacy.controllers.common;
 
+import com.yagipharmacy.DAO.NewsCategoryDAO;
 import com.yagipharmacy.DAO.NewsDAO;
 import com.yagipharmacy.controllers.admin.CategoryAdd;
+import com.yagipharmacy.entities.News;
+import com.yagipharmacy.entities.NewsCategory;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -63,8 +66,13 @@ public class NewsDetail extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            request.setAttribute("neww", new NewsDAO().getById(request.getParameter("nid")));
-            request.getRequestDispatcher("./newDetail.jsp").forward(request, response);
+            NewsDAO newsDAO = new NewsDAO();
+            News neww = newsDAO.getById(request.getParameter("nid"));
+            NewsCategoryDAO newsCategoryDAO = new NewsCategoryDAO();
+            NewsCategory newsCate = newsCategoryDAO.getById(neww.getNewsCategoryId()+"");
+            request.setAttribute("newsCate", newsCate);
+            request.setAttribute("neww", neww);
+            request.getRequestDispatcher("./newsDetail.jsp").forward(request, response);
         } catch (Exception ex) {
             Logger.getLogger(CategoryAdd.class.getName()).log(Level.SEVERE, null, ex);
         }

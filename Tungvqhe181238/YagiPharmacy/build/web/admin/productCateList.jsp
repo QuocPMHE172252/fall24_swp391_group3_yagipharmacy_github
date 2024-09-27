@@ -85,7 +85,7 @@
                 <div class="container">
                     <div class="page-inner">
                         <div class="page-header">
-                            <h3 class="fw-bold mb-3">Account List</h3>
+                            <h3 class="fw-bold mb-3">Category List</h3>
                             <ul class="breadcrumbs mb-3">
                                 <li class="nav-home">
                                     <a href="#">
@@ -142,7 +142,7 @@
                                                             <c:if test="${u.isDeleted()==true}">
                                                                 <td><a href="./CategoryDelete?cid=${u.productCategoryId}&status=0" class="btn btn-success">Restore</a></td>
                                                             </c:if>
-                                                                <td><a href="./CategoryUpdate?cid=${u.productCategoryId}" class="btn btn-warning">Update</a></td>
+                                                            <td><a href="./CategoryUpdate?cid=${u.productCategoryId}" class="btn btn-warning">Update</a></td>
                                                         </tr>
                                                     </c:forEach>
                                                 </tbody>

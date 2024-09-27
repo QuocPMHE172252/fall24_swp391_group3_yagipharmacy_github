@@ -43,6 +43,12 @@
 
         <!-- CSS Just for demo purpose, don't include it in your project -->
         <link rel="stylesheet" href="./assets/css/demo.css" />
+        <style>
+            .error{
+                color: red;
+                font-size: 12px;
+            }
+        </style>
     </head>
     <body>
         <div class="wrapper">
@@ -86,95 +92,100 @@
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h3>Update Account</h3>
+                                    <h3>Cập nhật tài khoản</h3>
                                 </div>
                                 <div class="card-body">
                                     <form method="post" action="UpdateAccount" id="updateAccountForm" class="row">
                                         <input type="hidden" name="user_id" value="${user.userId}">
 
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="user_name">Username</label>
+                                            <label for="user_name">Tên</label>
                                             <input type="text" class="form-control" name="user_name" id="user_name" placeholder="Enter username" value="${user.userName}" required>
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="user_phone">Phone</label>
+                                            <label for="user_phone">Số điện thoại</label>
                                             <input type="text" class="form-control" name="user_phone" id="user_phone" placeholder="Enter phone number" value="${user.userPhone}" required>
+                                            <span id="user_phone_error" class="error">${user_phone_error}</span>
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
                                             <label for="user_email">Email</label>
                                             <input type="email" class="form-control" name="user_email" id="user_email" placeholder="Enter email" value="${user.userEmail}" required>
+                                            <span id="user_email_error" class="error">${user_email_error}</span>
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="user_password">Password</label>
+                                            <label for="user_password">Mật khẩu</label>
                                             <input type="password" class="form-control" name="user_password" id="user_password" placeholder="Enter password" value="${user.userPassword}" required>
+                                            <span id="user_password_error" class="error">${user_password_error}</span>
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="user_bank">Bank</label>
+                                            <label for="user_bank">Ngân hàng</label>
                                             <input type="text" class="form-control" name="user_bank" id="user_bank" placeholder="Enter bank name" value="${user.userBank}" required>
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="user_bank_code">Bank Code</label>
+                                            <label for="user_bank_code">Số tài khoản ngân hàng</label>
                                             <input type="text" class="form-control" name="user_bank_code" id="user_bank_code" placeholder="Enter bank code" value="${user.userBankCode}" required>
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="specific_address">Address</label>
+                                            <label for="specific_address">Địa chỉ</label>
                                             <input type="text" class="form-control" name="specific_address" id="specific_address" placeholder="Enter address" value="${user.specificAddress}" required>
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="date_of_birth">Date of Birth</label>
-                                            <input type="date" class="form-control" name="date_of_birth" id="date_of_birth" value="${user.dateOfBirth}" required>
+                                            <label for="date_of_birth">Ngày sinh</label>
+                                            <input type="date" class="form-control" name="date_of_birth" id="date_of_birth" value="${formattedDate}" required>
+                                            <span id="date_of_birth_error" class="error"></span>
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
-                                            <label>Is Active</label><br />
+                                            <label>Hoạt động</label><br />
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="radio" name="is_active" id="isActiveYes" value="1" ${user.isActive() ? 'checked' : ''} />
-                                                <label class="form-check-label" for="isActiveYes">Yes</label>
+                                                <label class="form-check-label" for="isActiveYes">Hoạt động</label>
                                             </div>
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="radio" name="is_active" id="isActiveNo" value="0" ${!user.isActive() ? 'checked' : ''} />
-                                                <label class="form-check-label" for="isActiveNo">No</label>
+                                                <label class="form-check-label" for="isActiveNo">Tạm dừng</label>
                                             </div>
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
-                                            <label>Is Deleted</label><br />
+                                            <label>Khóa</label><br />
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="radio" name="is_deleted" id="isDeletedYes" value="0" ${!user.isDeleted() ? 'checked' : ''} />
-                                                <label class="form-check-label" for="isDeletedYes">No</label>
+                                                <label class="form-check-label" for="isDeletedYes">Không khóa</label>
                                             </div>
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="radio" name="is_deleted" id="isDeletedNo" value="1" ${user.isDeleted() ? 'checked' : ''} />
-                                                <label class="form-check-label" for="isDeletedNo">Yes</label>
+                                                <label class="form-check-label" for="isDeletedNo">Khóa vĩnh viễn</label>
                                             </div>
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="user_role">Role</label>
+                                            <label for="user_role">Quyền hạn</label>
                                             <select class="form-select" name="user_role" id="user_role" required>
                                                 <option value="1" ${user.roleLevel == 1 ? 'selected' : ''}>Admin</option>
                                                 <option value="2" ${user.roleLevel == 2 ? 'selected' : ''}>Manager</option>
-                                                <option value="3" ${user.roleLevel == 3 ? 'selected' : ''}>Staff</option>
-                                                <option value="4" ${user.roleLevel == 4 ? 'selected' : ''}>Customer</option>
+                                                <option value="2" ${user.roleLevel == 3 ? 'selected' : ''}>Marketer</option>
+                                                <option value="3" ${user.roleLevel == 4 ? 'selected' : ''}>Staff</option>
+                                                <option value="4" ${user.roleLevel == 5 ? 'selected' : ''}>Customer</option>
                                             </select>
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="user_avatar">Avatar</label>
+                                            <label for="user_avatar">Ảnh đại diện</label>
                                             <input type="file" class="form-control" id="user_avatar" accept="image/*">
-                                            <input type="text" class="form-control" id="user_avatar_submit" style="display: none" name="user_avatar">
+                                            <input type="text" class="form-control" id="user_avatar_submit" style="display: none" name="user_avatar" value="${user.userAvatar}">
                                             <img id="avatarPreview" class="mt-3" src="${user.userAvatar}" alt="Avatar Preview" style="max-width: 300px;">
                                         </div>
 
                                         <div class="form-group mb-3 col-md-12">
-                                            <button type="submit" class="btn btn-success" style="width: 100px">Update</button>
+                                            <button type="button" class="btn btn-success" style="width: 100px" onclick="formValidate()">Update</button>
                                         </div>
                                     </form>
                                 </div>
@@ -228,6 +239,78 @@
 
                 reader.readAsDataURL(file);
             });
+            function formValidate() {
+                document.getElementById("user_phone_error").innerHTML = "";
+                document.getElementById("user_email_error").innerHTML = "";
+                document.getElementById("user_password_error").innerHTML = "";
+                
+                var phoneNum = document.getElementById("user_phone").value;
+                var password = document.getElementById("user_password").value;
+                var email = document.getElementById("user_email").value;
+                var dob = document.getElementById("date_of_birth").value;
+                var check = true;
+                if (!isValidPhoneNumber(phoneNum)) {
+                    check = false;
+                    document.getElementById("user_phone_error").innerHTML = "Số điện thoại không hợp lệ";
+                }
+                if (!isValidEmail(email)) {
+                    check = false;
+                    document.getElementById("user_email_error").innerHTML = "Email nhập vào không hợp lệ";
+                }
+                if (!isValidPassword(password)) {
+                    check = false;
+                    document.getElementById("user_password_error").innerHTML = "Mật khẩu phải chứa từ 8-16 kí tự gồm chữ in hoa chữ thường và số!";
+                }
+                if(!isValidDOB(dob)){
+                    check = false;
+                    document.getElementById("date_of_birth_error").innerHTML = "Ngày sinh không vượt qua ngày hiện tại";
+                }
+                if (check) {
+                    document.getElementById("updateAccountForm").submit();
+                }
+            }
+
+            function isValidPhoneNumber(phoneNumber) {
+                const cleanedNumber = phoneNumber.replace(/\s+/g, '').replace(/-/g, '');
+                const phoneRegex = /^(84|0[35789])+([0-9]{8})\b/;
+                if (!/^(\+|\d)/.test(cleanedNumber)) {
+                    return false;
+                }
+                if (!phoneRegex.test(phoneNumber)) {
+                    return false;
+                }
+                if (cleanedNumber.length < 10 || cleanedNumber.length > 15) {
+                    return false;
+                }
+                return true;
+            }
+            function isValidPassword(password) {
+                if (password.length < 8 || password.length > 16) {
+                    return false;
+                }
+                if (!/[A-Z]/.test(password)) {
+                    return false;
+                }
+                if (!/[a-z]/.test(password)) {
+                    return false;
+                }
+                if (!/\d/.test(password)) {
+                    return false;
+                }
+                return true;
+            }
+            function isValidEmail(email) {
+                const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+                return emailRegex.test(email);
+            }
+            function isValidDOB(dob){
+                const currentDate = new Date().toISOString().split('T')[0];
+                if(dob > currentDate){
+                    return false;
+                }
+                return true;
+            }
 
 //            document.getElementById('createAccountForm').addEventListener('submit', function (event) {
 //                event.preventDefault();

@@ -113,16 +113,17 @@
                                         <!-- Parent Category ID -->
                                         <div class="mb-3">
                                             <label for="productCategoryParentId" class="form-label">Parent Category ID</label>
-                                            <select class="form-select" name="productCategoryParentId">
+                                            <select class="form-select" name="productCategoryParentId"  id="productCategorySelect" onchange="handleCategoryChange()" >
+                                                <option value="" data-category-level="0">None</option>
                                                 <c:forEach var="c" items="${cl}">
-                                                    <option value="${c.productCategoryId}">${c.productCategoryName}</option>
+                                                    <option value="${c.productCategoryId}" data-category-level="${c.productCategoryLevel}">${c.productCategoryName}</option>
                                                 </c:forEach>
                                             </select>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="productCategoryLevel" class="form-label">Category Level</label>
-                                            <input type="number" class="form-control" id="productCategoryLevel" name="productCategoryLevel" placeholder="Enter category level" required>
+                                            <input type="number" class="form-control" id="productCategoryLevel" value="1" name="productCategoryLevel" readonly="" placeholder="Enter category level" required>
                                         </div>
 
                                         <div class="mb-3">
@@ -179,7 +180,18 @@
 
 
         </div>
+        <script>
+            
+            function handleCategoryChange() {
+                const selectElement = document.getElementById("productCategorySelect");
+                const selectedOption = selectElement.options[selectElement.selectedIndex];
+                const categoryLevel = selectedOption.getAttribute('data-category-level');
+                const categoryLevelInt = parseInt(categoryLevel);
+                document.getElementById('productCategoryLevel').value = categoryLevelInt + 1;
 
+            }
+
+        </script>
 
         <!--   Core JS Files   -->
         <script src="./assets/js/core/jquery-3.7.1.min.js"></script>
@@ -217,7 +229,12 @@
         <!-- Kaiadmin DEMO methods, don't include it in your project! -->
         <script src="./assets/js/setting-demo.js"></script>
         <script src="./assets/js/demo.js"></script>
+
         <script>
+
+            <c:if test="${errorMessage!= null}">
+                window.alert("${errorMessage}");
+            </c:if>
             $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
                 type: "line",
                 height: "70",
@@ -250,6 +267,7 @@
                 $('#tables').DataTable();
             });
         </script>
+
 
     </body>
 </html>

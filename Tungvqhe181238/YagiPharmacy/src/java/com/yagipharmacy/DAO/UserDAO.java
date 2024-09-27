@@ -24,6 +24,8 @@ public class UserDAO implements RowMapper<User> {
 
     @Override
     public User mapRow(ResultSet rs) throws SQLException {
+        Long dateTime = CalculatorService.parseLong(rs.getString("created_date"));
+        Long dateOfBirthTime = CalculatorService.parseLong(rs.getString("date_of_birth"));
         return User.builder()
                 .userId(rs.getLong("user_id"))
                 .userName(rs.getString("user_name"))
@@ -38,8 +40,8 @@ public class UserDAO implements RowMapper<User> {
                 .userDistrict(rs.getString("user_district"))
                 .userCommune(rs.getString("user_commune"))
                 .specificAddress(rs.getString("specific_address"))
-                .dateOfBirth(rs.getString("date_of_birth"))
-                .createdDate(rs.getString("created_date"))
+                .dateOfBirth(new Date(dateOfBirthTime))
+                .createdDate(new Date(dateTime)) // Assumes it's stored as a DATE or TIMESTAMP in DB
                 .activeCode(rs.getString("active_code"))
                 .isActive(rs.getBoolean("is_active"))
                 .isDeleted(rs.getBoolean("is_deleted"))
@@ -49,27 +51,27 @@ public class UserDAO implements RowMapper<User> {
     @Override
     public boolean addNew(User t) throws SQLException, ClassNotFoundException {
         String sql = """
-                 INSERT INTO [user] (
-                     [user_name],
-                     user_phone,
-                     user_email,
-                     user_password,
-                     role_level,
-                     user_avatar,
-                     user_bank,
-                     user_bank_code,
-                     user_province,
-                     user_district,
-                     user_commune,
-                     specific_address,
-                     date_of_birth,
-                     created_date,
-                     active_code,
-                     is_active,
-                     is_deleted
-                 )
-                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?, getDate(), ?, ?, ?)
-                 """;
+                     INSERT INTO [user] (
+                         [user_name],
+                         user_phone,
+                         user_email,
+                         user_password,
+                         role_level,
+                         user_avatar,
+                         user_bank,
+                         user_bank_code,
+                         user_province,
+                         user_district,
+                         user_commune,
+                         specific_address,
+                         date_of_birth,
+                         created_date,
+                         active_code,
+                         is_active,
+                         is_deleted
+                     )
+                     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                     """;
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
             ps.setObject(1, t.getUserName());
@@ -84,10 +86,11 @@ public class UserDAO implements RowMapper<User> {
             ps.setObject(10, t.getUserDistrict());
             ps.setObject(11, t.getUserCommune());
             ps.setObject(12, t.getSpecificAddress());
-            ps.setObject(13, t.getDateOfBirth());
-            ps.setObject(14, t.getActiveCode());
-            ps.setObject(15, t.isActive());
-            ps.setObject(16, t.isDeleted());
+            ps.setObject(13, t.getDateOfBirth() != null ? t.getDateOfBirth().getTime() + "" : null);
+            ps.setObject(14, t.getCreatedDate().getTime() + "");
+            ps.setObject(15, t.getActiveCode());
+            ps.setObject(16, t.isActive());
+            ps.setObject(17, t.isDeleted());
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -135,27 +138,28 @@ public class UserDAO implements RowMapper<User> {
     @Override
     public boolean updateById(String id, User t) throws SQLException, ClassNotFoundException {
         String sql = """
-                 UPDATE [user]
-                 SET
-                     [user_name] = ?,
-                     user_phone = ?,
-                     user_email = ?,
-                     user_password = ?,
-                     role_level = ?,
-                     user_avatar = ?,
-                     user_bank = ?,
-                     user_bank_code = ?,
-                     user_province = ?,
-                     user_district = ?,
-                     user_commune = ?,
-                     specific_address = ?,
-                     date_of_birth = ?,
-                     active_code = ?,
-                     is_active = ?,
-                     is_deleted = ?
-                 WHERE
-                     [user_id] = ?;
-                 """;
+                     UPDATE [user]
+                     SET
+                         [user_name] = ?,
+                         user_phone = ?,
+                         user_email = ?,
+                         user_password = ?,
+                         role_level = ?,
+                         user_avatar = ?,
+                         user_bank = ?,
+                         user_bank_code = ?,
+                         user_province = ?,
+                         user_district = ?,
+                         user_commune = ?,
+                         specific_address = ?,
+                         date_of_birth = ?,
+                         created_date = ?,
+                         active_code = ?,
+                         is_active = ?,
+                         is_deleted = ?
+                     WHERE
+                         [user_id] = ?;
+                     """;
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
             ps.setObject(1, t.getUserName());
@@ -170,27 +174,17 @@ public class UserDAO implements RowMapper<User> {
             ps.setObject(10, t.getUserDistrict());
             ps.setObject(11, t.getUserCommune());
             ps.setObject(12, t.getSpecificAddress());
-            ps.setObject(13, t.getDateOfBirth());
-            ps.setObject(14, t.getActiveCode());
-            ps.setObject(15, t.isActive());
-            ps.setObject(16, t.isDeleted());
-            ps.setObject(17, CalculatorService.parseLong(id));
+            ps.setObject(13, t.getDateOfBirth().getTime() + "");
+            ps.setObject(14, t.getCreatedDate().getTime() + "");
+            ps.setObject(15, t.getActiveCode());
+            ps.setObject(16, t.isActive());
+            ps.setObject(17, t.isDeleted());
+            ps.setObject(18, CalculatorService.parseLong(id));
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return check > 0;
-    }
-
-    public static void main(String[] args) {
-        try {
-            for (User user : new UserDAO().getAll()) {
-                System.out.println(user);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
     @Override
@@ -204,19 +198,6 @@ public class UserDAO implements RowMapper<User> {
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
 
             ps.setObject(1, CalculatorService.parseLong(id));
-            check = ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return check > 0;
-    }
-
-    public boolean updateStatusById(String id, String status) throws SQLException, ClassNotFoundException {
-        String sql = " Update [user] set [is_active] = ? where [user_id] = " + id;
-        int check = 0;
-        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
-
-            ps.setObject(1, CalculatorService.parseLong(status));
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -262,6 +243,20 @@ public class UserDAO implements RowMapper<User> {
         return user;
     }
 
+
+    public boolean updateStatusById(String id, String status) throws SQLException, ClassNotFoundException {
+        String sql = " Update [user] set [is_active] = ? where [user_id] = " + id;
+        int check = 0;
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+
+            ps.setObject(1, CalculatorService.parseLong(status));
+            check = ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return check > 0;
+    }
+
     public List<User> getUsers(String search, String isActive, int page, int pageSize) throws SQLException, ClassNotFoundException {
         StringBuilder sql = new StringBuilder("""
         SELECT * FROM [user]
@@ -290,6 +285,87 @@ public class UserDAO implements RowMapper<User> {
             ps.setObject(paramIndex++, (page - 1) * pageSize);  // Offset
             ps.setObject(paramIndex, pageSize);  // Limit
 
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public User getByEmail(String emai) throws SQLException, ClassNotFoundException {
+        String sql = """
+                     SELECT * FROM [user] WHERE [user_email] = ? and  is_deleted = 0
+                     """;
+        User user = User.builder()
+                .userId(0L)
+                .build();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, emai);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                user = mapRow(rs);
+                System.out.println(user);
+                return user;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public User getByUsername(String username) throws SQLException, ClassNotFoundException {
+        String sql = """
+                     SELECT * FROM [user] WHERE [user_name] = ? and  is_deleted = 0
+                     """;
+        User user = User.builder()
+                .userId(0L)
+                .build();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, username);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                System.out.println(user);
+
+                user = mapRow(rs);
+                return user;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public User getByPhone(String phone) throws SQLException, ClassNotFoundException {
+        String sql = """
+                     SELECT * FROM [user] WHERE [user_phone] = ? and  is_deleted = 0
+                     """;
+        User user = User.builder()
+                .userId(0L)
+                .build();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, phone);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                user = mapRow(rs);
+                System.out.println(user);
+
+                return user;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<User> getAllAvailable() throws SQLException, ClassNotFoundException {
+        String sql = """
+                     SELECT * FROM [user] where is_deleted = 0
+                     """;
+        List<User> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 list.add(mapRow(rs));
