@@ -239,11 +239,14 @@
 
                 reader.readAsDataURL(file);
             });
+            <c:if test="${errorMessage!=null}">
+                window.alert("${errorMessage}");
+            </c:if>
             function formValidate() {
                 document.getElementById("user_phone_error").innerHTML = "";
                 document.getElementById("user_email_error").innerHTML = "";
                 document.getElementById("user_password_error").innerHTML = "";
-                
+
                 var phoneNum = document.getElementById("user_phone").value;
                 var password = document.getElementById("user_password").value;
                 var email = document.getElementById("user_email").value;
@@ -261,7 +264,7 @@
                     check = false;
                     document.getElementById("user_password_error").innerHTML = "Mật khẩu phải chứa từ 8-16 kí tự gồm chữ in hoa chữ thường và số!";
                 }
-                if(!isValidDOB(dob)){
+                if (!isValidDOB(dob)) {
                     check = false;
                     document.getElementById("date_of_birth_error").innerHTML = "Ngày sinh không vượt qua ngày hiện tại";
                 }
@@ -304,9 +307,9 @@
 
                 return emailRegex.test(email);
             }
-            function isValidDOB(dob){
+            function isValidDOB(dob) {
                 const currentDate = new Date().toISOString().split('T')[0];
-                if(dob > currentDate){
+                if (dob > currentDate) {
                     return false;
                 }
                 return true;
