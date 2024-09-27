@@ -55,14 +55,6 @@ public class ProductCategoryDAO implements RowMapper<ProductCategory> {
         }
     }
 
-    public static void main(String[] args) {
-        try {
-            System.out.println(new ProductCategoryDAO().getById("5"));
-        } catch (Exception ex) {
-            Logger.getLogger(ProductCategoryDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     @Override
     public boolean addNew(ProductCategory t) throws SQLException, ClassNotFoundException {
         String sql = """
