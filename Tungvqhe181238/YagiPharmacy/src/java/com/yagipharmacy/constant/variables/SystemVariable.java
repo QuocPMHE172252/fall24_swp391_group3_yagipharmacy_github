@@ -19,6 +19,7 @@ public interface SystemVariable {
     final String FILE_EXCEL_SOURCE_FORM = "C:\\FU-Learning\\Su24\\SWP291\\Project_SWP391_Team3\\StuQuiz\\exsource\\fileForm.xlsx";
     final Long ADMIN = 1L;
     final Long MANAGER = 2L;
-    final Long STAFF = 3L;
-    final Long CUSTOMER = 4L;
+    final Long MARKETER = 3L;
+    final Long STAFF = 4L;
+    final Long CUSTOMER = 5L;
 }

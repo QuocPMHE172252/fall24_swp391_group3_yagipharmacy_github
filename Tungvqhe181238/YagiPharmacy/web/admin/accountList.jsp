@@ -43,6 +43,7 @@
 
         <!-- CSS Just for demo purpose, don't include it in your project -->
         <link rel="stylesheet" href="./assets/css/demo.css" />
+
     </head>
     <body>
         <div class="wrapper">
@@ -118,14 +119,14 @@
                                                 <thead>
                                                     <tr>
                                                         <th>Id</th>
-                                                        <th>Username</th>
-                                                        <th>Phone</th>
+                                                        <th>Tên</th>
+                                                        <th>Điện thoại</th>
                                                         <th>Email</th>
-                                                        <th>Dob</th>
-                                                        <th>Role</th>
-                                                        <th>Status</th>
-                                                        <th>Change status</th>
-                                                        <th>Update</th>
+                                                        <th>Ngày sinh</th>
+                                                        <th>Quyền</th>
+                                                        <th>Khóa vĩnh viễn</th>
+                                                        <th>Thay đổi trạng thái</th>
+                                                        <th>Cập nhật</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -135,16 +136,16 @@
                                                             <td>${u.userName}</td>
                                                             <td>${u.userPhone}</td>
                                                             <td>${u.userEmail}</td>
-                                                            <td>${u.dateOfBirth}</td>
+                                                            <td>${u.dateOfBirth.getDate()<10?"0":""}${u.dateOfBirth.getDate()}-${u.dateOfBirth.getMonth()<9?"0":""}${u.dateOfBirth.getMonth()+1}-${u.dateOfBirth.getYear()+1900}</td>
                                                             <td>${u.getRoleNamee()}</td>
-                                                            <td>${u.isActive()}</td>
+                                                            <td style="color: ${u.isDeleted()?"red":"green"}">${u.isDeleted()?"Đang khóa":"Không khóa"}</td>
                                                             <c:if test="${u.isActive()==true}">
-                                                                <td><a href="./ChangeAccountStatus?uid=${u.userId}&status=0" class="btn btn-danger">De-Active</a></td>
+                                                                <td><a href="./ChangeAccountStatus?uid=${u.userId}&status=0" class="btn btn-danger">Tạm dừng</a></td>
                                                             </c:if>
                                                             <c:if test="${u.isActive()==false}">
-                                                                <td><a href="./ChangeAccountStatus?uid=${u.userId}&status=1" class="btn btn-success">Active</a></td>
+                                                                <td><a href="./ChangeAccountStatus?uid=${u.userId}&status=1" class="btn btn-success">Hoạt động</a></td>
                                                             </c:if>
-                                                                <td><a href="./UpdateAccount?uid=${u.userId}" class="btn btn-warning">Update</a></td>
+                                                            <td><a href="./UpdateAccount?uid=${u.userId}" class="btn btn-warning">Cập nhật</a></td>
                                                         </tr>
                                                     </c:forEach>
                                                 </tbody>

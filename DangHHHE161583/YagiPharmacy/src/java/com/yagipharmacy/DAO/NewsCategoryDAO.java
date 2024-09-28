@@ -85,6 +85,7 @@ public class NewsCategoryDAO implements RowMapper<NewsCategory> {
         NewsCategory newsCategory = NewsCategory.builder().newsCategoryId(0L).build();
 
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, CalculatorService.parseLong(id));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 newsCategory = mapRow(rs);

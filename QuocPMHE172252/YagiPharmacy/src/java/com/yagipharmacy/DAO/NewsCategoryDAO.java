@@ -31,6 +31,7 @@ public class NewsCategoryDAO implements RowMapper<NewsCategory> {
                 .newsCategoryDetail(rs.getString("news_category_detail"))
                 .isDelete(rs.getBoolean("is_delete"))
                 .build();
+        
     }
 
     @Override

@@ -26,30 +26,32 @@ public class ProductCategoryDAO implements RowMapper<ProductCategory> {
 
     @Override
     public ProductCategory mapRow(ResultSet rs) throws SQLException {
-        Long productCategoryId = rs.getLong("product_category_id");
-        Long productCategoryParentId = rs.getLong("product_category_parent_id");
-        Long productCategoryLevel = rs.getLong("product_category_level");
-        String productCategoryCode = rs.getString("product_category_code");
-        String productCategoryName = rs.getString("product_category_name");
-        String productCategoryDetail = rs.getString("product_category_detail");
-        boolean isDeleted = rs.getBoolean("is_deleted");
-        return ProductCategory.builder()
-                .productCategoryId(productCategoryId)
-                .productCategoryParentId(productCategoryParentId)
-                .productCategoryLevel(productCategoryLevel)
-                .productCategoryCode(productCategoryCode)
-                .productCategoryName(productCategoryName)
-                .productCategoryDetail(productCategoryDetail)
-                .isDeleted(isDeleted)
-                .build();
-
-    }
-
-    public static void main(String[] args) {
         try {
-            System.out.println(new ProductCategoryDAO().getById("5"));
-        } catch (Exception ex) {
-            Logger.getLogger(ProductCategoryDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+            Long productCategoryId = rs.getLong("product_category_id");
+            Long productCategoryParentId = rs.getLong("product_category_parent_id");
+            Long productCategoryLevel = rs.getLong("product_category_level");
+            String productCategoryCode = rs.getString("product_category_code");
+            String productCategoryName = rs.getString("product_category_name");
+            String productCategoryDetail = rs.getString("product_category_detail");
+            boolean isDeleted = rs.getBoolean("is_deleted");
+            ProductCategory parent = new ProductCategory();
+            if (productCategoryParentId != null) {
+                parent = new ProductCategoryDAO().getById(productCategoryParentId.toString());
+            }
+            return ProductCategory.builder()
+                    .productCategoryId(productCategoryId)
+                    .productCategoryParentId(productCategoryParentId)
+                    .productCategoryLevel(productCategoryLevel)
+                    .productCategoryCode(productCategoryCode)
+                    .productCategoryName(productCategoryName)
+                    .productCategoryDetail(productCategoryDetail)
+                    .isDeleted(isDeleted)
+                    .parentCategory(parent)
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -167,7 +169,7 @@ public class ProductCategoryDAO implements RowMapper<ProductCategory> {
         return check > 0;
     }
 
-    public boolean updateStatusById(String id,String status) throws SQLException, ClassNotFoundException {
+    public boolean updateStatusById(String id, String status) throws SQLException, ClassNotFoundException {
         String sql = "  update [product_category] set [is_deleted] = ? where [product_category_id] =  ?";
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {

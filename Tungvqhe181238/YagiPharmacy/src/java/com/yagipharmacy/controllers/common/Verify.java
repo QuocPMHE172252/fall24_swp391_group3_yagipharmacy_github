@@ -103,8 +103,7 @@ public class Verify extends HttpServlet {
                 if (check) {
                     response.sendRedirect("Login");
                 } else {
-                    String error = "Có gì đó sai!";
-                    response.sendRedirect("ErrorPage?error=" + error);
+                    response.sendRedirect("ErrorPage");
                 }
             } else {
                 request.setAttribute("error", "Bạn đã nhập sai mã kích hoạt hoặc đường dẫn hết hạn!");

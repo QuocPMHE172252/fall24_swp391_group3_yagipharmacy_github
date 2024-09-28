@@ -31,6 +31,7 @@ public class NewsCategoryDAO implements RowMapper<NewsCategory> {
                 .newsCategoryDetail(rs.getString("news_category_detail"))
                 .isDelete(rs.getBoolean("is_delete"))
                 .build();
+        
     }
 
     @Override
@@ -79,10 +80,13 @@ public class NewsCategoryDAO implements RowMapper<NewsCategory> {
 
     @Override
     public NewsCategory getById(String id) throws SQLException, ClassNotFoundException {
-        String sql = " select * from news_category where news_category_id = "+ id;
+        String sql = """
+                     select * from news_category where news_category_id = ?
+                     """;
         NewsCategory newsCategory = NewsCategory.builder().newsCategoryId(0L).build();
 
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, CalculatorService.parseLong(id));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 newsCategory = mapRow(rs);
@@ -134,6 +138,40 @@ public class NewsCategoryDAO implements RowMapper<NewsCategory> {
             e.printStackTrace();
         }
         return check > 0;
+    }
+    
+    public List<NewsCategory> getAllParent() throws SQLException, ClassNotFoundException {
+        String sql = """
+                     select * from news_category where news_category_parent_id is NULL
+                     """;
+        List<NewsCategory> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            list = new ArrayList<>();
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public List<NewsCategory> getAllChild() throws SQLException, ClassNotFoundException {
+        String sql = """
+                     select * from news_category where news_category_parent_id is not NULL
+                     """;
+        List<NewsCategory> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            list = new ArrayList<>();
+            e.printStackTrace();
+        }
+        return list;
     }
 
 }

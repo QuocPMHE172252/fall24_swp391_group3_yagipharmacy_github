@@ -63,6 +63,8 @@ public class CategoryUpdate extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ProductCategoryDAO uDao = new ProductCategoryDAO();
+        String errorMessage = request.getParameter("errorMessage");
+        request.setAttribute("errorMessage", errorMessage);
         try {
             //            request.setAttribute("ul", uDao.getUsers(search, status, index, 10));
             request.setAttribute("cl", uDao.getAll());
@@ -87,10 +89,13 @@ public class CategoryUpdate extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String parentCategoryIdStr = request.getParameter("product_category_parent_id");
+        Long parentCategoryId = parentCategoryIdStr == null || parentCategoryIdStr.isEmpty() ? null : Long.parseLong(parentCategoryIdStr);
+        System.out.println(request.getParameter("is_deleted"));
         ProductCategoryDAO categoryDao = new ProductCategoryDAO();
         ProductCategory category = ProductCategory.builder()
                 .productCategoryId(Long.parseLong(request.getParameter("product_category_id")))
-                .productCategoryParentId(Long.parseLong(request.getParameter("product_category_parent_id")))
+                .productCategoryParentId(parentCategoryId)
                 .productCategoryLevel(Long.parseLong(request.getParameter("product_category_level")))
                 .productCategoryCode(request.getParameter("product_category_code"))
                 .productCategoryName(request.getParameter("product_category_name"))
@@ -99,11 +104,16 @@ public class CategoryUpdate extends HttpServlet {
                 .build();
 
         try {
-            categoryDao.updateById(String.valueOf(category.getProductCategoryId()), category);
-            response.sendRedirect("CategoryList"); // Redirect to category list page after update
-        } catch (SQLException | ClassNotFoundException e) {
+            boolean check = categoryDao.updateById(String.valueOf(category.getProductCategoryId()), category);
+            if (check) {
+                response.sendRedirect("CategoryList"); // Redirect to category list page after update
+            } else {
+                response.sendRedirect("CategoryUpdate?errorMessage=dbId&cid=" + category.getProductCategoryId());
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("errorPage.jsp"); // Redirect to error page in case of failure
+            response.sendRedirect("CategoryUpdate?errorMessage=svErr&cid=" + category.getProductCategoryId());
         }
     }
 
