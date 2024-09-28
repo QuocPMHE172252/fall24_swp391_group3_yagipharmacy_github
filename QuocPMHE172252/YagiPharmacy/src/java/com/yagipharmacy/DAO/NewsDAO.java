@@ -84,7 +84,6 @@ public class NewsDAO implements RowMapper<News> {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 list.add(mapRow(rs));
-                System.out.println(mapRow(rs));
             }
         } catch (Exception e) {
             e.printStackTrace();

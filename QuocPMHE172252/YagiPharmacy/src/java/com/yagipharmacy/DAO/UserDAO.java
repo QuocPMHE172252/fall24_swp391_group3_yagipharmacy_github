@@ -243,16 +243,6 @@ public class UserDAO implements RowMapper<User> {
         return user;
     }
 
-    public static void main(String[] args) {
-        try {
-            for (User user : new UserDAO().getAll()) {
-                System.out.println(user);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
 
     public boolean updateStatusById(String id, String status) throws SQLException, ClassNotFoundException {
         String sql = " Update [user] set [is_active] = ? where [user_id] = " + id;

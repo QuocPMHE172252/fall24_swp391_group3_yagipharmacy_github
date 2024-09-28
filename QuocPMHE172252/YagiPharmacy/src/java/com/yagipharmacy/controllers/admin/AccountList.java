@@ -40,7 +40,7 @@ public class AccountList extends HttpServlet {
 
             UserDAO uDao = new UserDAO();
 //            request.setAttribute("ul", uDao.getUsers(search, status, index, 10));
-            request.setAttribute("ul", uDao.getAllAvailable());
+            request.setAttribute("ul", uDao.getAll());
            
             request.setAttribute("index", index);
             request.getRequestDispatcher("./accountList.jsp").forward(request, response);

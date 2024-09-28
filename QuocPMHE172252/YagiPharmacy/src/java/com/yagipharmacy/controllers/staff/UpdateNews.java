@@ -2,10 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package com.yagipharmacy.controllers.common;
+package com.yagipharmacy.controllers.staff;
 
-import com.yagipharmacy.DAO.UserDAO;
-import com.yagipharmacy.entities.User;
+import com.yagipharmacy.DAO.NewsDAO;
+import com.yagipharmacy.constant.services.CalculatorService;
+import com.yagipharmacy.entities.News;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -18,8 +19,8 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author admin
  */
-@WebServlet(name = "Verify", urlPatterns = {"/Verify"})
-public class Verify extends HttpServlet {
+@WebServlet(name = "UpdateNews", urlPatterns = {"/staff/UpdateNews"})
+public class UpdateNews extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,10 +39,10 @@ public class Verify extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet Verify</title>");
+            out.println("<title>Servlet UpdateNews</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet Verify at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet UpdateNews at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,25 +60,28 @@ public class Verify extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String email = request.getParameter("email");
-        if (email == null) {
-            email = "";
-        }
-        UserDAO userDAO = new UserDAO();
-        try {
-            User findingUser = User.builder()
-                    .userId(0L)
-                    .build();
-            findingUser = userDAO.getUserByEmail(email);
-            if (findingUser.getUserId() == 0 || findingUser.isActive() == true || findingUser.isDeleted() == true) {
-                response.sendRedirect("ErrorPage");
+        String newsId = request.getParameter("newsId");
+        if (newsId == null) {
+            response.sendRedirect("ListNews");
+        } else {
+            if (newsId.trim().equals("")) {
+                response.sendRedirect("ListNews");
             } else {
-                request.setAttribute("email", email);
-                request.getRequestDispatcher("Verify.jsp").forward(request, response);
+                Long newsIdLong = CalculatorService.parseLong(newsId);
+                NewsDAO newsDAO = new NewsDAO();
+                try {
+                    News findingNews = newsDAO.getById(newsIdLong + "");
+                    if (findingNews.getNewsId() != 0) {
+                        request.setAttribute("findingNews", findingNews);
+                        request.getRequestDispatcher("UpdateNews.jsp").forward(request, response);
+                    } else {
+                        response.sendRedirect("ListNews");
+                    }
+                } catch (Exception e) {
+                    response.sendRedirect("ListNews");
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("ErrorPage");
+
         }
     }
 
@@ -92,28 +96,28 @@ public class Verify extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String email = request.getParameter("email");
-        String activeCode = request.getParameter("activecode");
+        String base64_img = request.getParameter("base64_img");
+        String news_content = request.getParameter("news_content");
+        String newsId = request.getParameter("newsId");
+        String is_deleted = request.getParameter("is_deleted");
+        NewsDAO newsDAO = new NewsDAO();
         try {
-            UserDAO userDAO = new UserDAO();
-            User findingUser = userDAO.getUserByEmail(email);
-            if (findingUser.getUserId() != 0 && findingUser.isActive() == false && findingUser.isDeleted() == false && findingUser.getActiveCode().equals(activeCode)) {
-                findingUser.setActive(true);
-                boolean check = userDAO.updateById(findingUser.getUserId() + "", findingUser);
-                if (check) {
-                    response.sendRedirect("Login");
+            News findingNews = newsDAO.getById(newsId);
+            if(findingNews.getNewsId()!=0){
+                findingNews.setDeleted(is_deleted.equals("true"));
+                findingNews.setNewsContent(news_content);
+                findingNews.setNewsImage(base64_img);
+                findingNews.setUpdatedId(null);
+                boolean check = newsDAO.updateById(newsId, findingNews);
+                if(check){
+                    request.setAttribute("change", true);
+                    doGet(request, response);
                 } else {
-                    response.sendRedirect("ErrorPage");
+                    request.setAttribute("change", false);
+                    doGet(request, response);
                 }
-            } else {
-                request.setAttribute("error", "Bạn đã nhập sai mã kích hoạt hoặc đường dẫn hết hạn!");
-                request.setAttribute("activecode", activeCode);
-                request.setAttribute("email", email);
-                doGet(request, response);
             }
         } catch (Exception e) {
-            String error = "Có gì đó sai!";
-            response.sendRedirect("ErrorPage?error=" + error);
         }
     }
 

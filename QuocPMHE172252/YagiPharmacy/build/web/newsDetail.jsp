@@ -126,14 +126,14 @@
                             <span class="news-hashtag">Hashtags:</span>
                             <span class="news-hashtag">
                                 <c:forEach var="hashtag" items="${fn:split(neww.newsHashtag, '#')}">
-                                    <a href="ListNews?hashtag=${hashtag.trim()}">#${hashtag.trim()}</a>
+                                    <a href="staff/ListNews?hashtag=${hashtag.trim()}">#${hashtag.trim()}</a>
                                 </c:forEach>
                             </span>
                         </div>
 
                         <!-- Back Button -->
                         <div class="mt-5">
-                            <a href="ListNews" class="btn btn-primary">Back to News List</a>
+                            <a href="staff/ListNews" class="btn btn-primary">Back to News List</a>
                         </div>
                     </div>
                 </div>

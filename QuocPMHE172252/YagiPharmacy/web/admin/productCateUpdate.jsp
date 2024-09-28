@@ -183,6 +183,13 @@
         </div>
 
         <script>
+            <c:if test="${errorMessage!=null}">
+                if(${errorMessage.equals("dbId")}){
+                    window.alert("Mã danh mục sản phẩm trùng lặp")
+                }else {
+                    window.alert("Có lỗi gì đó đang xảy ra vui lòng thử lại")
+                }
+            </c:if>
             function handleCategoryChange() {
                 const selectElement = document.getElementById("productCategorySelect");
                 const selectedOption = selectElement.options[selectElement.selectedIndex];

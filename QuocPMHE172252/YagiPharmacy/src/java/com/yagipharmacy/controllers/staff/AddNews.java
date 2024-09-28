@@ -2,9 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package com.yagipharmacy.controllers.common;
+package com.yagipharmacy.controllers.staff;
 
-import com.yagipharmacy.DAO.UserDAO;
+import com.google.gson.Gson;
+import com.yagipharmacy.DAO.NewsCategoryDAO;
+import com.yagipharmacy.DAO.NewsDAO;
+import com.yagipharmacy.constant.services.CalculatorService;
+import com.yagipharmacy.entities.News;
+import com.yagipharmacy.entities.NewsCategory;
 import com.yagipharmacy.entities.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,13 +18,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  *
  * @author admin
  */
-@WebServlet(name = "Verify", urlPatterns = {"/Verify"})
-public class Verify extends HttpServlet {
+@WebServlet(name = "AddNews", urlPatterns = {"/staff/AddNews"})
+public class AddNews extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,10 +46,10 @@ public class Verify extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet Verify</title>");
+            out.println("<title>Servlet AddNews</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet Verify at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet AddNews at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,25 +67,19 @@ public class Verify extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String email = request.getParameter("email");
-        if (email == null) {
-            email = "";
-        }
-        UserDAO userDAO = new UserDAO();
+        List<NewsCategory> listParentCates = new ArrayList<>();
+        List<NewsCategory> listChildCates = new ArrayList<>();
+        NewsCategoryDAO newsCategoryDAO = new NewsCategoryDAO();
         try {
-            User findingUser = User.builder()
-                    .userId(0L)
-                    .build();
-            findingUser = userDAO.getUserByEmail(email);
-            if (findingUser.getUserId() == 0 || findingUser.isActive() == true || findingUser.isDeleted() == true) {
-                response.sendRedirect("ErrorPage");
-            } else {
-                request.setAttribute("email", email);
-                request.getRequestDispatcher("Verify.jsp").forward(request, response);
-            }
+            Gson gson = new Gson();
+            listParentCates = newsCategoryDAO.getAllParent();
+            listChildCates = newsCategoryDAO.getAllChild();
+            String listChildJson = gson.toJson(listChildCates);
+            request.setAttribute("listParentCates", listParentCates);
+            request.setAttribute("listChildJson", listChildJson);
+            request.getRequestDispatcher("AddNews.jsp").forward(request, response);
         } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("ErrorPage");
+            response.sendRedirect(request.getContextPath()+"/ErrorPage");
         }
     }
 
@@ -92,28 +94,36 @@ public class Verify extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String email = request.getParameter("email");
-        String activeCode = request.getParameter("activecode");
+        String base64_img = request.getParameter("base64_img");
+        String news_content = request.getParameter("news_content");
+        String is_deleted = request.getParameter("is_deleted");
+        String parent_cate = request.getParameter("parent_cate");
+        String cateId = request.getParameter("cateId");
+        String title = request.getParameter("title");
+        String hashtag = request.getParameter("hashtag");        
+        User userAuth = (User)request.getSession().getAttribute("userAuth");
+        NewsDAO newsDAO = new NewsDAO();
         try {
-            UserDAO userDAO = new UserDAO();
-            User findingUser = userDAO.getUserByEmail(email);
-            if (findingUser.getUserId() != 0 && findingUser.isActive() == false && findingUser.isDeleted() == false && findingUser.getActiveCode().equals(activeCode)) {
-                findingUser.setActive(true);
-                boolean check = userDAO.updateById(findingUser.getUserId() + "", findingUser);
-                if (check) {
-                    response.sendRedirect("Login");
-                } else {
-                    response.sendRedirect("ErrorPage");
-                }
-            } else {
-                request.setAttribute("error", "Bạn đã nhập sai mã kích hoạt hoặc đường dẫn hết hạn!");
-                request.setAttribute("activecode", activeCode);
-                request.setAttribute("email", email);
+            News newsCreating = News.builder()
+                    .createdDate(new Date())
+                    .newsContent(news_content)
+                    .newsImage(base64_img)
+                    .newsCategoryId(CalculatorService.parseLong(cateId))
+                    .creatorId(userAuth!=null?userAuth.getUserId():1L)
+                    .isDeleted(is_deleted.equals("true"))
+                    .newsTitle(title)
+                    .newsHashtag(hashtag)
+                    .updatedId(userAuth!=null?userAuth.getUserId():1L)
+                    .build();
+            
+            boolean check = newsDAO.addNew(newsCreating);
+            if(check){
+                request.setAttribute("error", true);
                 doGet(request, response);
             }
         } catch (Exception e) {
-            String error = "Có gì đó sai!";
-            response.sendRedirect("ErrorPage?error=" + error);
+            request.setAttribute("error", false);
+            doGet(request, response);
         }
     }
 

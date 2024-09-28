@@ -63,6 +63,8 @@ public class CategoryUpdate extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ProductCategoryDAO uDao = new ProductCategoryDAO();
+        String errorMessage = request.getParameter("errorMessage");
+        request.setAttribute("errorMessage", errorMessage);
         try {
             //            request.setAttribute("ul", uDao.getUsers(search, status, index, 10));
             request.setAttribute("cl", uDao.getAll());
@@ -102,11 +104,16 @@ public class CategoryUpdate extends HttpServlet {
                 .build();
 
         try {
-            categoryDao.updateById(String.valueOf(category.getProductCategoryId()), category);
-            response.sendRedirect("CategoryList"); // Redirect to category list page after update
-        } catch (SQLException | ClassNotFoundException e) {
+            boolean check = categoryDao.updateById(String.valueOf(category.getProductCategoryId()), category);
+            if (check) {
+                response.sendRedirect("CategoryList"); // Redirect to category list page after update
+            } else {
+                response.sendRedirect("CategoryUpdate?errorMessage=dbId&cid=" + category.getProductCategoryId());
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("errorPage.jsp"); // Redirect to error page in case of failure
+            response.sendRedirect("CategoryUpdate?errorMessage=svErr&cid=" + category.getProductCategoryId());
         }
     }
 

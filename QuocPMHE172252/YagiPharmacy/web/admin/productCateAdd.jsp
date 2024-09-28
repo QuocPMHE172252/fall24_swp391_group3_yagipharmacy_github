@@ -181,6 +181,7 @@
 
         </div>
         <script>
+            
             function handleCategoryChange() {
                 const selectElement = document.getElementById("productCategorySelect");
                 const selectedOption = selectElement.options[selectElement.selectedIndex];
@@ -228,7 +229,12 @@
         <!-- Kaiadmin DEMO methods, don't include it in your project! -->
         <script src="./assets/js/setting-demo.js"></script>
         <script src="./assets/js/demo.js"></script>
+
         <script>
+
+            <c:if test="${errorMessage!= null}">
+                window.alert("${errorMessage}");
+            </c:if>
             $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
                 type: "line",
                 height: "70",
@@ -261,6 +267,7 @@
                 $('#tables').DataTable();
             });
         </script>
+
 
     </body>
 </html>
