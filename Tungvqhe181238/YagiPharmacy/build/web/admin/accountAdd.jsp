@@ -117,7 +117,7 @@
                                             <input type="password" class="form-control" name="user_password" id="user_password" placeholder="Enter password" required>
                                         </div>
 
-                                        <div class="form-group mb-3 col-md-6">
+<!--                                        <div class="form-group mb-3 col-md-6">
                                             <label for="user_bank">Bank</label>
                                             <input type="text" class="form-control" name="user_bank" id="user_bank" value="${param.user_bank}" placeholder="Enter bank name" required>
                                         </div>
@@ -125,7 +125,7 @@
                                         <div class="form-group mb-3 col-md-6">
                                             <label for="user_bank_code">Bank Code</label>
                                             <input type="text" class="form-control" name="user_bank_code" id="user_bank_code" value="${param.user_bank_code}" placeholder="Enter bank code" required>
-                                        </div>
+                                        </div>-->
 
                                         <div class="form-group mb-3 col-md-6">
                                             <label for="specific_address">Address</label>

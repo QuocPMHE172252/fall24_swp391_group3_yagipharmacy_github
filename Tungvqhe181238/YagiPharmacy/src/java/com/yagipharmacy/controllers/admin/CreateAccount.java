@@ -46,8 +46,8 @@ public class CreateAccount extends HttpServlet {
             String userEmail = request.getParameter("user_email");
             String userPassword = request.getParameter("user_password");
             String userAvatar = request.getParameter("user_avatar");
-            String userBank = request.getParameter("user_bank");
-            String userBankCode = request.getParameter("user_bank_code");
+//            String userBank = request.getParameter("user_bank");
+//            String userBankCode = request.getParameter("user_bank_code");
             String specificAddress = request.getParameter("specific_address");
             String dateOfBirthString = request.getParameter("date_of_birth");
             String role_level = request.getParameter("user_role");
@@ -81,8 +81,8 @@ public class CreateAccount extends HttpServlet {
                 newUser.setUserEmail(userEmail);
                 newUser.setUserPassword(userPassword);
                 newUser.setUserAvatar(userAvatar);
-                newUser.setUserBank(userBank);
-                newUser.setUserBankCode(userBankCode);
+//                newUser.setUserBank(userBank);
+//                newUser.setUserBankCode(userBankCode);
                 newUser.setSpecificAddress(specificAddress);
                 newUser.setDateOfBirth(dateOfBirth);
                 newUser.setActiveCode("");

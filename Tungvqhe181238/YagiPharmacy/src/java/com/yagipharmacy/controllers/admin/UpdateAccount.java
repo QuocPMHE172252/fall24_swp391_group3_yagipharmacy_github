@@ -97,8 +97,8 @@ public class UpdateAccount extends HttpServlet {
             findingUser.setUserPhone(userPhone);
             findingUser.setUserEmail(userEmail);
             findingUser.setUserPassword(userPassword);
-            findingUser.setUserBank(userBank);
-            findingUser.setUserBankCode(userBankCode);
+//            findingUser.setUserBank(userBank);
+//            findingUser.setUserBankCode(userBankCode);
             findingUser.setSpecificAddress(specificAddress);
             findingUser.setDateOfBirth(dateOfBirth);
             findingUser.setActive(isActive);
