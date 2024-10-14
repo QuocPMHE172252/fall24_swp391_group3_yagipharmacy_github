@@ -26,6 +26,8 @@ public class Supplier {
     private String supplierCode;
     private String supplierName;
     private String supplierCountryCode;
+    private String supplierPhone;
+    private String supplierEmail;
     private boolean isDeleted;
     
 }
