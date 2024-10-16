@@ -80,7 +80,7 @@
                                             </strong>
                                         </td>
                                         <td class="text-primary">
-                                            Tỉnh/thành phố ${sessionScope.userAuth.userProvince}, quận/huyện ${sessionScope.userAuth.userDistrict}, xã/phường ${sessionScope.userAuth.userCommune}
+                                            Tỉnh/thành phố: ${sessionScope.userAuth.userProvince}, quận/huyện: ${sessionScope.userAuth.userDistrict}, xã/phường: ${sessionScope.userAuth.userCommune}
                                         </td>
                                     </tr>
                                     <tr>
@@ -91,7 +91,12 @@
                                             </strong>
                                         </td>
                                         <td class="text-primary">
-                                            ${sessionScope.userAuth.dateOfBirth!=null?sessionScope.userAuth.dateOfBirth.toString():"Chưa cập nhật"}
+                                            <c:if test="${sessionScope.userAuth.dateOfBirth!=null}">
+                                                ${sessionScope.userAuth.dateOfBirth.getDate()<10?"0":""}${sessionScope.userAuth.dateOfBirth.getDate()}-${sessionScope.userAuth.dateOfBirth.getMonth()<9?"0":""}${sessionScope.userAuth.dateOfBirth.getMonth()+1}-${sessionScope.userAuth.dateOfBirth.getYear()+1900}
+                                            </c:if>
+                                            <c:if test="${sessionScope.userAuth.dateOfBirth==null}">
+                                                Chưa cập nhật
+                                            </c:if>
                                         </td>
                                     </tr>
                                     <tr></tr>

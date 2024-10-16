@@ -22,6 +22,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class ProductCategory {
+
     private Long productCategoryId;
     private Long productCategoryParentId;
     private Long productCategoryLevel;
@@ -29,6 +30,6 @@ public class ProductCategory {
     private String productCategoryName;
     private String productCategoryDetail;
     private boolean isDeleted;
+    private ProductCategory parentProductCategory;
 
-    
 }
