@@ -29,5 +29,14 @@ public class Supplier {
     private String supplierPhone;
     private String supplierEmail;
     private boolean isDeleted;
+
+    public Supplier(String supplierCode, String supplierName, String supplierCountryCode, String supplierPhone, String supplierEmail, boolean isDeleted) {
+        this.supplierCode = supplierCode;
+        this.supplierName = supplierName;
+        this.supplierCountryCode = supplierCountryCode;
+        this.supplierPhone = supplierPhone;
+        this.supplierEmail = supplierEmail;
+        this.isDeleted = isDeleted;
+    }
     
 }
