@@ -3,8 +3,17 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Code_Work_Space/YagiPharmacy/src/java/com/yagipharmacy/controllers/common/Verify.java</file>
-            <file>file:/C:/Code_Work_Space/YagiPharmacy/src/java/com/yagipharmacy/controllers/common/Reset.java</file>
+            <file>file:/D:/Swp/YagiPharmacy%20(1)/web/admin/productList.jsp</file>
+            <file>file:/D:/Swp/YagiPharmacy%20(1)/src/java/com/yagipharmacy/controllers/manager/ImportOrderList.java</file>
+            <file>file:/D:/Swp/YagiPharmacy%20(1)/src/java/com/yagipharmacy/JDBC/SQLServerConnection.java</file>
+            <file>file:/D:/Swp/YagiPharmacy%20(1)/src/java/com/yagipharmacy/controllers/admin/UpdateAccount.java</file>
+            <file>file:/D:/Swp/YagiPharmacy%20(1)/src/java/com/yagipharmacy/controllers/admin/UpdateSupllier.java</file>
+            <file>file:/D:/Swp/YagiPharmacy%20(1)/src/java/com/yagipharmacy/controllers/admin/CreateSupplier.java</file>
+            <file>file:/D:/Swp/YagiPharmacy%20(1)/src/java/com/yagipharmacy/controllers/common/ProductDetail.java</file>
+            <file>file:/D:/Swp/YagiPharmacy%20(1)/src/java/com/yagipharmacy/controllers/common/CreateSaleOrder.java</file>
+            <file>file:/D:/Swp/YagiPharmacy%20(1)/src/java/com/yagipharmacy/controllers/manager/AddProduct.java</file>
+            <file>file:/D:/Swp/YagiPharmacy%20(1)/src/java/com/yagipharmacy/controllers/common/ViewCart.java</file>
+            <file>file:/D:/Swp/YagiPharmacy%20(1)/src/java/com/yagipharmacy/controllers/admin/ProductsList.java</file>
         </group>
     </open-files>
 </project-private>

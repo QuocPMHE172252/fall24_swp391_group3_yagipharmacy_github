@@ -118,16 +118,6 @@
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="user_bank">Bank</label>
-                                            <input type="text" class="form-control" name="user_bank" id="user_bank" value="${param.user_bank}" placeholder="Enter bank name" required>
-                                        </div>
-
-                                        <div class="form-group mb-3 col-md-6">
-                                            <label for="user_bank_code">Bank Code</label>
-                                            <input type="text" class="form-control" name="user_bank_code" id="user_bank_code" value="${param.user_bank_code}" placeholder="Enter bank code" required>
-                                        </div>
-
-                                        <div class="form-group mb-3 col-md-6">
                                             <label for="specific_address">Address</label>
                                             <input type="text" class="form-control" name="specific_address" value="${param.specific_address}" id="specific_address" placeholder="Enter address" required>
                                         </div>
@@ -223,8 +213,22 @@
 
 
         <script>
-
-
+            
+             fetch('https://api.vietqr.io/v2/banks')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                data.data.forEach((bank, bank_index) => {
+                    let optionBank = '<option value="' + bank.code + '">' + bank.name + '</option>';
+                    if(bank.code == '${user.userBank}'){
+                        optionBank = '<option selected value="' + bank.code + '">' + bank.name + '</option>';
+                    }
+                    document.getElementById("user_bank").innerHTML += optionBank;
+                });
+            })
+            .catch(error => {
+                console.error('Lỗi khi gọi API:', error);
+            });
             // Validate date of birth to ensure it's not greater than today
             function validateDateOfBirth(dateOfBirth) {
                 const today = new Date();

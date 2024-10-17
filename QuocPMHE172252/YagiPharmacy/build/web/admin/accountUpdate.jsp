@@ -122,16 +122,6 @@
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="user_bank">Ngân hàng</label>
-                                            <input type="text" class="form-control" name="user_bank" id="user_bank" placeholder="Enter bank name" value="${user.userBank}" required>
-                                        </div>
-
-                                        <div class="form-group mb-3 col-md-6">
-                                            <label for="user_bank_code">Số tài khoản ngân hàng</label>
-                                            <input type="text" class="form-control" name="user_bank_code" id="user_bank_code" placeholder="Enter bank code" value="${user.userBankCode}" required>
-                                        </div>
-
-                                        <div class="form-group mb-3 col-md-6">
                                             <label for="specific_address">Địa chỉ</label>
                                             <input type="text" class="form-control" name="specific_address" id="specific_address" placeholder="Enter address" value="${user.specificAddress}" required>
                                         </div>
@@ -226,6 +216,23 @@
         </div>
 
         <script>
+            
+            fetch('https://api.vietqr.io/v2/banks')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                data.data.forEach((bank, bank_index) => {
+                    let optionBank = '<option value="' + bank.code + '">' + bank.name + '</option>';
+                    if(bank.code == '${user.userBank}'){
+                        optionBank = '<option selected value="' + bank.code + '">' + bank.name + '</option>';
+                    }
+                    document.getElementById("user_bank").innerHTML += optionBank;
+                });
+            })
+            .catch(error => {
+                console.error('Lỗi khi gọi API:', error);
+            });
+            
             document.getElementById('user_avatar').addEventListener('change', function (event) {
                 const file = event.target.files[0];
                 const reader = new FileReader();

@@ -23,10 +23,11 @@ public class ProductImageDAO implements RowMapper<ProductImage> {
 
     @Override
     public ProductImage mapRow(ResultSet rs) throws SQLException {
+        System.out.println(rs.getLong("product_image_id"));
         return ProductImage.builder()
                 .productImageId(rs.getLong("product_image_id"))
                 .productId(rs.getLong("product_id"))
-                .imageBase64(rs.getString("product_image"))
+                .imageBase64(rs.getString("image_base64"))
                 .isMain(rs.getBoolean("is_main"))
                 .isDeleted(rs.getBoolean("is_deleted"))
                 .build();
@@ -134,6 +135,37 @@ public class ProductImageDAO implements RowMapper<ProductImage> {
             e.printStackTrace();
         }
         return check > 0;
+    }
+    
+    public List<ProductImage> getListByProductId(String productId) throws SQLException, ClassNotFoundException {
+        String sql = """
+        SELECT *
+        FROM product_image WHERE product_id = ?
+    """;
+        List<ProductImage> images = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, CalculatorService.parseLong(productId));
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                images.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return images;
+    }
+    public static void main(String[] args) {
+        ProductImageDAO productImageDAO = new ProductImageDAO();
+        try {
+            ProductImage findingImg1 = productImageDAO.getById("6");
+            ProductImage img2 = productImageDAO.getById("9");
+            System.out.println(img2.getProductId());
+            img2.setImageBase64(findingImg1.getImageBase64());
+            boolean check = productImageDAO.updateById(img2.getProductImageId()+"", img2);
+            System.out.println(check);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

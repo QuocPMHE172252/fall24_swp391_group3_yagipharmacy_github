@@ -96,6 +96,7 @@
                     <th scope="col">News title</th>
                     <th scope="col">Change status</th>
                     <th scope="col">Update</th>
+                    <th scope="col">Publish New</th>
                 </tr>
             </thead>
             <tbody>
@@ -105,6 +106,7 @@
                         <td><a target="_blank" href="../NewsDetail?nid=${e.newsId}">${e.newsTitle}</a></td>
                         <td><button type="button" class='btn ${e.isDeleted()?"btn-success":"btn-danger"}'>${e.isDeleted()?"Active":"Delete"}</button></td>
                         <td><a class="btn btn-success" href="UpdateNews?newsId=${e.newsId}" target="_blank">Update</a></td>
+                        <td><a class="btn btn-success" href="PublishNew?newsId=${e.newsId}" target="_blank">Publish New</a></td>
                     </tr>
                 </c:forEach>
             </tbody>
