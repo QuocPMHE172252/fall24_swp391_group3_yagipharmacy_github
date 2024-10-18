@@ -43,7 +43,7 @@
                     </div>
                 </div>
             </div>
-            <form action="ChangeProfile" method="post">
+            <form action="ChangeProfile" method="post" id="formChange">
                 <div class="col">
                     <div class="row">
                         <div class="col mb-3">
@@ -61,7 +61,7 @@
                                                     <p class="mb-0">${sessionScope.userAuth.userEmail}</p>
                                                     <div class="text-muted"><small>${sessionScope.userAuth.userPhone}</small></div>
                                                     <div class="mt-2">
-                                                        <input class="btn btn-primary" type="file" onchange="convertImageToBase64(this)">
+                                                        <input class="btn btn-primary" type="file" onchange="convertImageToBase64(this)" accept="image/*">
                                                         <input type="hidden" name="base64_img" id="base64_img" value="${sessionScope.userAuth.userAvatar}">
                                                     </div>
                                                 </div>
@@ -83,16 +83,13 @@
                                                                 <div class="col">
                                                                     <div class="form-group">
                                                                         <label>Họ và Tên</label>
-                                                                        <input class="form-control" type="text"
-                                                                            name="fullname"
-                                                                            placeholder="Enter your fullname"
-                                                                            value="${sessionScope.userAuth.userName}">
+                                                                        <input class="form-control" type="text" id="fullname" name="fullname" placeholder="Enter your fullname" value="${sessionScope.userAuth.userName}">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col">
                                                                     <div class="form-group">
                                                                         <label>Ngày sinh</label>
-                                                                        <input class="form-control" type="date"
+                                                                        <input class="form-control" type="date" id="dob"
                                                                             name="dob" placeholder="" value="${formattedDate}">
                                                                     </div>
                                                                 </div>
@@ -142,7 +139,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col d-flex justify-content-end">
-                                                    <button class="btn btn-primary" type="submit">Save
+                                                    <button class="btn btn-primary" type="button" onclick="submitValid()">Save
                                                         Changes</button>
                                                 </div>
                                             </div>
@@ -221,6 +218,34 @@
                 console.log(base64String);
             };
             reader.readAsDataURL(file);
+        }
+        function submitValid(){
+            var dob = document.getElementById("dob").value;
+            var name = document.getElementById("fullname").value;
+            console.log(name);
+            var check = true;
+            if(!validateDateOfBirth(dob)){
+                check = false;
+                window.alert("Ngày tháng năm sinh không vượt qua hiện tại, không dưới 16 tuổi và quá 80 tuổi");
+            }
+            if(!validName(name)){
+                check = false;
+                window.alert("Tên không được để trống");
+            }
+            if(check){
+                document.getElementById("formChange").submit();
+            }
+        }
+        function validateDateOfBirth(dateOfBirth) {
+                const today = new Date();
+                const inputDate = new Date(dateOfBirth);
+                return inputDate <= today&&(today.getFullYear()-inputDate.getFullYear()<=80)&&(today.getFullYear()-inputDate.getFullYear()>=16);
+        }
+        function validName(name){
+            if(name==null||name.trim()==""){
+                return false;
+            }
+            return true;
         }
         fetch('https://provinces.open-api.vn/api/?depth=3')
             .then(response => response.json())

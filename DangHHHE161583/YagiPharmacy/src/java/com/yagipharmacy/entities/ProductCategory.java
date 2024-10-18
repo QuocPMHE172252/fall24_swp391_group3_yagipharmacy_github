@@ -30,6 +30,6 @@ public class ProductCategory {
     private String productCategoryName;
     private String productCategoryDetail;
     private boolean isDeleted;
-    private ProductCategory parentCategory;
+    private ProductCategory parentProductCategory;
 
 }
