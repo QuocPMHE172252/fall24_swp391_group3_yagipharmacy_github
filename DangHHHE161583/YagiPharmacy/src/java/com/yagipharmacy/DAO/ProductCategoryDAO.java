@@ -15,8 +15,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -25,7 +23,8 @@ import java.util.logging.Logger;
 public class ProductCategoryDAO implements RowMapper<ProductCategory> {
 
     @Override
-    public ProductCategory mapRow(ResultSet rs) throws SQLException {
+    public ProductCategory mapRow(ResultSet rs) throws SQLException, ClassNotFoundException {
+
         Long productCategoryId = rs.getLong("product_category_id");
         Long productCategoryParentId = rs.getLong("product_category_parent_id");
         Long productCategoryLevel = rs.getLong("product_category_level");
@@ -33,6 +32,10 @@ public class ProductCategoryDAO implements RowMapper<ProductCategory> {
         String productCategoryName = rs.getString("product_category_name");
         String productCategoryDetail = rs.getString("product_category_detail");
         boolean isDeleted = rs.getBoolean("is_deleted");
+        ProductCategory parent = new ProductCategory();
+        if (productCategoryParentId != null && productCategoryParentId != 0) {
+            parent = new ProductCategoryDAO().getById(productCategoryParentId.toString());
+        }
         return ProductCategory.builder()
                 .productCategoryId(productCategoryId)
                 .productCategoryParentId(productCategoryParentId)
@@ -41,16 +44,9 @@ public class ProductCategoryDAO implements RowMapper<ProductCategory> {
                 .productCategoryName(productCategoryName)
                 .productCategoryDetail(productCategoryDetail)
                 .isDeleted(isDeleted)
+                .parentProductCategory(parent)
                 .build();
 
-    }
-
-    public static void main(String[] args) {
-        try {
-            System.out.println(new ProductCategoryDAO().getById("5"));
-        } catch (Exception ex) {
-            Logger.getLogger(ProductCategoryDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     @Override
@@ -159,7 +155,7 @@ public class ProductCategoryDAO implements RowMapper<ProductCategory> {
                 """;
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
-            ps.setObject(1, Long.parseLong(id));
+            ps.setObject(1, CalculatorService.parseLong(id));
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -167,7 +163,7 @@ public class ProductCategoryDAO implements RowMapper<ProductCategory> {
         return check > 0;
     }
 
-    public boolean updateStatusById(String id,String status) throws SQLException, ClassNotFoundException {
+    public boolean updateStatusById(String id, String status) throws SQLException, ClassNotFoundException {
         String sql = "  update [product_category] set [is_deleted] = ? where [product_category_id] =  ?";
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
@@ -178,5 +174,27 @@ public class ProductCategoryDAO implements RowMapper<ProductCategory> {
             e.printStackTrace();
         }
         return check > 0;
+    }
+    public List<ProductCategory> getListLastChildren() throws SQLException, ClassNotFoundException {
+        String sql = """
+                SELECT * 
+                FROM product_category 
+                WHERE product_category_id NOT IN (
+                    SELECT DISTINCT product_category_parent_id 
+                    FROM product_category
+                    WHERE product_category_parent_id IS NOT NULL
+                )
+                AND is_deleted = 0;
+                """;
+        List<ProductCategory> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }

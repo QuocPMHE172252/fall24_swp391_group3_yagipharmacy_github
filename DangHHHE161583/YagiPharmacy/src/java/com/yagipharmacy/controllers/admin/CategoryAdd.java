@@ -97,8 +97,7 @@ public class CategoryAdd extends HttpServlet {
         Long parentCategoryId = parentCategoryIdStr == null || parentCategoryIdStr.isEmpty() ? null : Long.parseLong(parentCategoryIdStr);
         Long categoryLevel = Long.parseLong(categoryLevelStr);
         boolean isDeleted = Boolean.parseBoolean(isDeletedStr);
-        
-        
+
         // Create ProductCategory object
         ProductCategory category = ProductCategory.builder()
                 .productCategoryCode(categoryCode)
@@ -115,13 +114,13 @@ public class CategoryAdd extends HttpServlet {
             if (categoryDAO.addNew(category)) {
                 response.sendRedirect("./CategoryList"); // Redirect to a success page or category listing page
             } else {
-                request.setAttribute("errorMessage", "Error adding category. Please try again.");
-                request.getRequestDispatcher("./productCateAdd.jsp").forward(request, response);
+                request.setAttribute("errorMessage", "Thêm thất bại do trùng mã code vui lòng thử lại.");
+                doGet(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "Error: " + e.getMessage());
-            request.getRequestDispatcher("./productCateAdd.jsp").forward(request, response);
+            doGet(request, response);
         }
     }
 

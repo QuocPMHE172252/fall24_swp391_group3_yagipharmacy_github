@@ -22,6 +22,7 @@ public interface AuthorizationService {
         User userAuth = (User) request.getSession().getAttribute("userAuth");
         Long role = userAuth.getRoleLevel();
         if (role == SystemVariable.ADMIN) {
+            response.sendRedirect(request.getContextPath()+"/admin/AdminDashboard");
         }
         if (role == SystemVariable.MANAGER) {
         }
