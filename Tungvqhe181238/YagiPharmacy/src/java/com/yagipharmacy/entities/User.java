@@ -31,8 +31,6 @@ public class User {
     private String userPassword;
     private Long roleLevel;
     private String userAvatar;
-//    private String userBank;
-//    private String userBankCode;
     private String userProvince;
     private String userDistrict;
     private String userCommune;

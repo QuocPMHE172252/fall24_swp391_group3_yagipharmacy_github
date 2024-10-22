@@ -83,10 +83,7 @@
                                                                 <div class="col">
                                                                     <div class="form-group">
                                                                         <label>Họ và Tên</label>
-                                                                        <input class="form-control" type="text"
-                                                                            name="fullname"
-                                                                            placeholder="Enter your fullname"
-                                                                            value="${sessionScope.userAuth.userName}">
+                                                                        <input class="form-control" type="text" id="fullname" name="fullname" placeholder="Enter your fullname" value="${sessionScope.userAuth.userName}">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col">
@@ -224,10 +221,16 @@
         }
         function submitValid(){
             var dob = document.getElementById("dob").value;
+            var name = document.getElementById("fullname").value;
+            console.log(name);
             var check = true;
             if(!validateDateOfBirth(dob)){
                 check = false;
                 window.alert("Ngày tháng năm sinh không vượt qua hiện tại, không dưới 16 tuổi và quá 80 tuổi");
+            }
+            if(!validName(name)){
+                check = false;
+                window.alert("Tên không được để trống");
             }
             if(check){
                 document.getElementById("formChange").submit();
@@ -237,6 +240,12 @@
                 const today = new Date();
                 const inputDate = new Date(dateOfBirth);
                 return inputDate <= today&&(today.getFullYear()-inputDate.getFullYear()<=80)&&(today.getFullYear()-inputDate.getFullYear()>=16);
+        }
+        function validName(name){
+            if(name==null||name.trim()==""){
+                return false;
+            }
+            return true;
         }
         fetch('https://provinces.open-api.vn/api/?depth=3')
             .then(response => response.json())

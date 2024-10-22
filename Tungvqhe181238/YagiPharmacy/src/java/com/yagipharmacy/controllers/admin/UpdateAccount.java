@@ -75,8 +75,6 @@ public class UpdateAccount extends HttpServlet {
         String userPhone = request.getParameter("user_phone");
         String userEmail = request.getParameter("user_email");
         String userPassword = request.getParameter("user_password");
-        String userBank = request.getParameter("user_bank");
-        String userBankCode = request.getParameter("user_bank_code");
         String specificAddress = request.getParameter("specific_address");
         String dateOfBirthString = request.getParameter("date_of_birth");
         try {
@@ -97,8 +95,6 @@ public class UpdateAccount extends HttpServlet {
             findingUser.setUserPhone(userPhone);
             findingUser.setUserEmail(userEmail);
             findingUser.setUserPassword(userPassword);
-//            findingUser.setUserBank(userBank);
-//            findingUser.setUserBankCode(userBankCode);
             findingUser.setSpecificAddress(specificAddress);
             findingUser.setDateOfBirth(dateOfBirth);
             findingUser.setActive(isActive);

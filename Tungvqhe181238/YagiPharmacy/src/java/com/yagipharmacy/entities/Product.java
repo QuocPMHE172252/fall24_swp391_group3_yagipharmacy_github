@@ -4,7 +4,11 @@
  */
 package com.yagipharmacy.entities;
 
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,15 +27,27 @@ import lombok.Setter;
 public class Product {
     private Long productId;
     private String productCode;
-    private int productCategoryId;
+    private Long productCategoryId;
     private String productCountryCode;
     private Long supplierId;
     private String productTarget;
     private String productName;
     private String dosageForm;
     private String productSpecification;
-    private String productExcipient;
     private String productDescription;
     private Date createdDate;
+    private boolean isPrescription;
     private boolean isDeleted;
+    private ProductCategory productCategory;
+    private Supplier supplier;
+    private List<ProductExcipient> productExcipients;
+    private List<ProductUnit> productUnits;
+    private List<ProductImage> productImages;
+
+    public boolean getIsPrescription() {
+
+        return isPrescription;
+
+    }
+
 }

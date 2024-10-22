@@ -34,8 +34,6 @@ public class UserDAO implements RowMapper<User> {
                 .userPassword(rs.getString("user_password"))
                 .roleLevel(rs.getLong("role_level"))
                 .userAvatar(rs.getString("user_avatar"))
-//                .userBank(rs.getString("user_bank"))
-//                .userBankCode(rs.getString("user_bank_code"))
                 .userProvince(rs.getString("user_province"))
                 .userDistrict(rs.getString("user_district"))
                 .userCommune(rs.getString("user_commune"))
@@ -78,8 +76,6 @@ public class UserDAO implements RowMapper<User> {
             ps.setObject(4, t.getUserPassword());
             ps.setObject(5, t.getRoleLevel());
             ps.setObject(6, t.getUserAvatar());
-//            ps.setObject(7, t.getUserBank());
-//            ps.setObject(8, t.getUserBankCode());
             ps.setObject(7, t.getUserProvince());
             ps.setObject(8, t.getUserDistrict());
             ps.setObject(9, t.getUserCommune());
@@ -144,8 +140,6 @@ public class UserDAO implements RowMapper<User> {
                          user_password = ?,
                          role_level = ?,
                          user_avatar = ?,
-                         user_bank = ?,
-                         user_bank_code = ?,
                          user_province = ?,
                          user_district = ?,
                          user_commune = ?,
@@ -166,18 +160,16 @@ public class UserDAO implements RowMapper<User> {
             ps.setObject(4, t.getUserPassword());
             ps.setObject(5, t.getRoleLevel());
             ps.setObject(6, t.getUserAvatar());
-//            ps.setObject(7, t.getUserBank());
-//            ps.setObject(8, t.getUserBankCode());
-            ps.setObject(9, t.getUserProvince());
-            ps.setObject(10, t.getUserDistrict());
-            ps.setObject(11, t.getUserCommune());
-            ps.setObject(12, t.getSpecificAddress());
-            ps.setObject(13, t.getDateOfBirth().getTime() + "");
-            ps.setObject(14, t.getCreatedDate().getTime() + "");
-            ps.setObject(15, t.getActiveCode());
-            ps.setObject(16, t.isActive());
-            ps.setObject(17, t.isDeleted());
-            ps.setObject(18, CalculatorService.parseLong(id));
+            ps.setObject(7, t.getUserProvince());
+            ps.setObject(8, t.getUserDistrict());
+            ps.setObject(9, t.getUserCommune());
+            ps.setObject(10, t.getSpecificAddress());
+            ps.setObject(11, t.getDateOfBirth().getTime() + "");
+            ps.setObject(12, t.getCreatedDate().getTime() + "");
+            ps.setObject(13, t.getActiveCode());
+            ps.setObject(14, t.isActive());
+            ps.setObject(15, t.isDeleted());
+            ps.setObject(16, CalculatorService.parseLong(id));
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
