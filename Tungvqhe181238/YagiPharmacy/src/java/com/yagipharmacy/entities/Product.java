@@ -25,6 +25,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {
+
     private Long productId;
     private String productCode;
     private Long productCategoryId;
@@ -47,7 +48,6 @@ public class Product {
     public boolean getIsPrescription() {
 
         return isPrescription;
-
     }
 
 }

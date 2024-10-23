@@ -30,6 +30,8 @@
                 });
             </script>
 
+
+
             <!-- CSS Files -->
             <link rel="stylesheet" href="./assets/css/bootstrap.min.css" />
             <link rel="stylesheet" href="./assets/css/plugins.min.css" />
@@ -288,20 +290,22 @@
                                                 <input type="text" class="form-control" name="units_string"
                                                     value="${units_string}" id="units_string" required readonly>
                                             </div>
+
                                             <div class="form-group mb-3 col-md-6">
                                                 <label for="product_image">Avatar</label>
                                                 <input type="file" class="form-control" id="product_image"
                                                     accept="image/*" required>
-                                                <input type="text" class="form-control" id="product_image_submit"
-                                                    style="" name="product_image_submit"
+                                                <input type="hidden" class="form-control" id="product_image_submit"
+                                                    name="product_image_submit"
                                                     value="${product.productImages[0].imageBase64}">
                                             </div>
                                             <div class="form-group mb-3 col-md-6">
                                                 <label for="date_of_birth">Preview</label>
                                                 <img id="avatarPreview" class="mt-3"
-                                                    src="${product.productImages[0].imageBase64}" alt="Avatar Preview"
-                                                    style="max-width: 300px;">
+                                                    src="data:image/jpeg;base64,${product.productImages[0].imageBase64}"
+                                                    alt="Avatar Preview" style="max-width: 300px;">
                                             </div>
+
                                             <p>${errorMessage}</p>
                                             <div class="form-group mb-3 col-md-12">
                                                 <button type="submit" class="btn btn-success" style="width: 100px"
@@ -600,6 +604,108 @@
                     document.getElementById("editProductForm").submit();
                 }
 
+                function validateAvatar(file) {
+                    const validFileTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                    const maxSizeInBytes = 5 * 1024 * 1024; // 5 MB
+
+                    if (!validFileTypes.includes(file.type)) {
+                        alert('Invalid file type. Please select an image file (jpeg, png, gif).');
+                        return false;
+                    }
+
+                    if (file.size > maxSizeInBytes) {
+                        alert('File size exceeds the maximum limit of 5 MB.');
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                document.getElementById('product_image').addEventListener('change', function (event) {
+                    const file = event.target.files[0];
+                    if (!validateAvatar(file)) {
+                        event.target.value = ''; // Clear the input
+                        return;
+                    } else {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const base64Image = e.target.result;
+                            document.getElementById('avatarPreview').src = base64Image;
+                            document.getElementById('avatarPreview').style.display = 'block';
+                            document.getElementById('product_image_submit').value = base64Image;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            </script>
+
+            <!--   Core JS Files   -->
+            <script src="./assets/js/core/jquery-3.7.1.min.js"></script>
+            <script src="./assets/js/core/popper.min.js"></script>
+            <script src="./assets/js/core/bootstrap.min.js"></script>
+
+            <!-- jQuery Scrollbar -->
+            <script src="./assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+            <!-- Chart JS -->
+            <script src="./assets/js/plugin/chart.js/chart.min.js"></script>
+
+            <!-- jQuery Sparkline -->
+            <script src="./assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+
+            <!-- Chart Circle -->
+            <script src="./assets/js/plugin/chart-circle/circles.min.js"></script>
+
+            <!-- Datatables -->
+            <script src="./assets/js/plugin/datatables/datatables.min.js"></script>
+
+            <!-- Bootstrap Notify -->
+            <!--<script src="./assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>-->
+
+            <!-- jQuery Vector Maps -->
+            <script src="./assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
+            <script src="./assets/js/plugin/jsvectormap/world.js"></script>
+
+            <!-- Sweet Alert -->
+            <script src="./assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+            <!-- Kaiadmin JS -->
+            <script src="./assets/js/kaiadmin.min.js"></script>
+
+            <!-- Kaiadmin DEMO methods, don't include it in your project! -->
+            <script src="./assets/js/setting-demo.js"></script>
+            <script src="./assets/js/demo.js"></script>
+            <script>
+                $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
+                    type: "line",
+                    height: "70",
+                    width: "100%",
+                    lineWidth: "2",
+                    lineColor: "#177dff",
+                    fillColor: "rgba(23, 125, 255, 0.14)",
+                });
+                $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
+                    type: "line",
+                    height: "70",
+                    width: "100%",
+                    lineWidth: "2",
+                    lineColor: "#f3545d",
+                    fillColor: "rgba(243, 84, 93, .14)",
+                });
+                $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
+                    type: "line",
+                    height: "70",
+                    width: "100%",
+                    lineWidth: "2",
+                    lineColor: "#ffa534",
+                    fillColor: "rgba(255, 165, 52, .14)",
+                });
+            </script>
+            <script>
+                $(document).ready(function () {
+                    $('#tables').DataTable();
+                }
+                );
             </script>
         </body>
 
