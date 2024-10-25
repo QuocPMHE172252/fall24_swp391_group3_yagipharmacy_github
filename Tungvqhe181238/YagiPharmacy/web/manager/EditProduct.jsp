@@ -293,17 +293,12 @@
 
                                             <div class="form-group mb-3 col-md-6">
                                                 <label for="product_image">Avatar</label>
-                                                <input type="file" class="form-control" id="product_image"
-                                                    accept="image/*" required>
-                                                <input type="hidden" class="form-control" id="product_image_submit"
-                                                    name="product_image_submit"
-                                                    value="${product.productImages[0].imageBase64}">
+                                                <input type="file" class="form-control" id="product_image" accept="image/*" required>
+                                                <input type="hidden" class="form-control" id="product_image_submit" name="product_image_submit" value="${product_images[0].imageBase64}">
                                             </div>
                                             <div class="form-group mb-3 col-md-6">
-                                                <label for="date_of_birth">Preview</label>
-                                                <img id="avatarPreview" class="mt-3"
-                                                    src="data:image/jpeg;base64,${product.productImages[0].imageBase64}"
-                                                    alt="Avatar Preview" style="max-width: 300px;">
+                                                <div><label for="date_of_birth">Preview</label></div>
+                                                <img id="avatarPreview" class="mt-3" src="${product_images[0].imageBase64}" alt="Avatar Preview" style="max-width: 300px;">
                                             </div>
 
                                             <p>${errorMessage}</p>
@@ -604,23 +599,6 @@
                     document.getElementById("editProductForm").submit();
                 }
 
-                function validateAvatar(file) {
-                    const validFileTypes = ['image/jpeg', 'image/png', 'image/gif'];
-                    const maxSizeInBytes = 5 * 1024 * 1024; // 5 MB
-
-                    if (!validFileTypes.includes(file.type)) {
-                        alert('Invalid file type. Please select an image file (jpeg, png, gif).');
-                        return false;
-                    }
-
-                    if (file.size > maxSizeInBytes) {
-                        alert('File size exceeds the maximum limit of 5 MB.');
-                        return false;
-                    }
-
-                    return true;
-                }
-
                 document.getElementById('product_image').addEventListener('change', function (event) {
                     const file = event.target.files[0];
                     if (!validateAvatar(file)) {
@@ -637,6 +615,23 @@
                         reader.readAsDataURL(file);
                     }
                 });
+
+                function validateAvatar(file) {
+                    const validFileTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                    const maxSizeInBytes = 5 * 1024 * 1024; // 5 MB
+
+                    if (!validFileTypes.includes(file.type)) {
+                        alert('Invalid file type. Please select an image file (jpeg, png, gif).');
+                        return false;
+                    }
+
+                    if (file.size > maxSizeInBytes) {
+                        alert('File size exceeds the maximum limit of 5 MB.');
+                        return false;
+                    }
+
+                    return true;
+                }
             </script>
 
             <!--   Core JS Files   -->
