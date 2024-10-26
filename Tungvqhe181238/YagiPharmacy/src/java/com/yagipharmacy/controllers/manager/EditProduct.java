@@ -259,14 +259,9 @@ public class EditProduct extends HttpServlet {
                     request.setAttribute("success", true);
                     doGet(request, response);
                 } else {
-                    request.setAttribute("error", "Cập nhật sản phẩm thất bại.");
-                    request.setAttribute("success", false);
-                    doGet(request, response);
-                    response.sendRedirect("ListProduct");
+                    request.setAttribute("error", "Mã sản phẩm đã tồn tại");
+                    doGet(request,response );
                 }
-            } else {
-                request.setAttribute("error", "Sản phẩm không tồn tại.");
-                doGet(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();

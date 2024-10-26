@@ -293,12 +293,17 @@
 
                                             <div class="form-group mb-3 col-md-6">
                                                 <label for="product_image">Avatar</label>
-                                                <input type="file" class="form-control" id="product_image" accept="image/*" required>
-                                                <input type="hidden" class="form-control" id="product_image_submit" name="product_image_submit" value="${product_images[0].imageBase64}">
+                                                <input type="file" class="form-control" id="product_image"
+                                                    accept="image/*" required>
+                                                <input type="hidden" class="form-control" id="product_image_submit"
+                                                    name="product_image_submit"
+                                                    value="${product_images[0].imageBase64}">
                                             </div>
                                             <div class="form-group mb-3 col-md-6">
                                                 <div><label for="date_of_birth">Preview</label></div>
-                                                <img id="avatarPreview" class="mt-3" src="${product_images[0].imageBase64}" alt="Avatar Preview" style="max-width: 300px;">
+                                                <img id="avatarPreview" class="mt-3"
+                                                    src="${product_images[0].imageBase64}" alt="Avatar Preview"
+                                                    style="max-width: 300px;">
                                             </div>
 
                                             <p>${errorMessage}</p>
@@ -346,6 +351,14 @@
 
 
             <script>
+                  <c:if test="${error!=null}">
+            window.alert('${error}');
+            </c:if>
+            <c:if test="${success!=null}">
+            window.alert('${success==true?"Cập nhật thành công":"Cập nhật thất bại"}');
+            </c:if>
+
+
                 // Fetch country list and populate the dropdown
                 fetch('https://restcountries.com/v3.1/all')
                     .then(response => response.json())
