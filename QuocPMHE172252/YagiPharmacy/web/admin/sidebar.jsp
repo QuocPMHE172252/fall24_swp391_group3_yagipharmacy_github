@@ -74,20 +74,32 @@
                         <div class="collapse" id="sidebarLayouts">
                             <ul class="nav nav-collapse">
                                 <li>
-                                    <a href="sidebar-style-2.html">
+                                    <a href="/YagiPharmacy/admin/ProductsList">
                                         <span class="sub-item">Products</span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="./CategoryList">
-                                        <span class="sub-item">Product Category</span>
+                                        <span class="sub-item">Product Categories</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="icon-menu.html">
+                                    <a href="/YagiPharmacy/manager/ImportOrderList">
+                                        <span class="sub-item">Import Order List</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/YagiPharmacy/admin/SupplierList">
                                         <span class="sub-item">Suppliers List</span>
                                     </a>
                                 </li>
+                                <ul class="nav nav-collapse">
+                                <li>
+                                    <a href="/YagiPharmacy/admin/OrderList">
+                                        <span class="sub-item">Order List</span>
+                                    </a>
+                                </li>
+                            </ul>
                             </ul>
                         </div>
                     </li>
@@ -100,7 +112,7 @@
                         <div class="collapse" id="forms">
                             <ul class="nav nav-collapse">
                                 <li>
-                                    <a href="forms/forms.html">
+                                    <a href="/YagiPharmacy/staff/ListNews">
                                         <span class="sub-item">News</span>
                                     </a>
                                 </li>
