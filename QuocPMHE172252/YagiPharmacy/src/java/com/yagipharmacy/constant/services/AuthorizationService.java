@@ -10,6 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 /**
  *
@@ -22,7 +23,8 @@ public interface AuthorizationService {
         User userAuth = (User) request.getSession().getAttribute("userAuth");
         Long role = userAuth.getRoleLevel();
         if (role == SystemVariable.ADMIN) {
-            response.sendRedirect(request.getContextPath()+"/admin/AdminDashboard");
+            response.sendRedirect(request.getContextPath() + "/admin/AdminDashboard");
+            return;
         }
         if (role == SystemVariable.MANAGER) {
         }
@@ -31,5 +33,9 @@ public interface AuthorizationService {
         if (role == SystemVariable.CUSTOMER) {
             request.getRequestDispatcher("index.html").forward(request, response);
         }
+    }
+
+    default void acceptAuth(HttpServletRequest request, HttpServletResponse response, List<Long> roleListAccept) throws ServletException, IOException {
+        
     }
 }

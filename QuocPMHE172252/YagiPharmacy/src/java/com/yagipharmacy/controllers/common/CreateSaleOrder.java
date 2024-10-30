@@ -6,9 +6,12 @@ package com.yagipharmacy.controllers.common;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.yagipharmacy.DAO.ProductDAO;
 import com.yagipharmacy.DAO.SaleOrderDAO;
 import com.yagipharmacy.DAO.SaleOrderDetailDAO;
 import com.yagipharmacy.constant.services.CalculatorService;
+import com.yagipharmacy.entities.CartDetail;
+import com.yagipharmacy.entities.Product;
 import com.yagipharmacy.entities.SaleOrder;
 import com.yagipharmacy.entities.SaleOrderDetail;
 import java.io.IOException;
@@ -21,6 +24,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.lang.reflect.Type;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -69,7 +73,32 @@ public class CreateSaleOrder extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String decodedString = URLDecoder.decode(getCookieValue(request, "cart"), "UTF-8");
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<String>>() {
+        }.getType();
+        List<String> stringList = gson.fromJson(decodedString, listType);
+        String[] stringArray = stringList.toArray(new String[0]);
+        int le = stringArray.length;
+        ProductDAO productDAO = new ProductDAO();
+        List<CartDetail> cartDetails = new ArrayList<>();
+        try {
+            for (int i = 0; i < le; i++) {
+                String[] cartDetailArr = stringArray[i].split("_");
+                Product findingProduct = productDAO.getById(cartDetailArr[0]);
+                CartDetail newCartDetail = CartDetail.builder()
+                        .product(findingProduct)
+                        .selectedUnit(CalculatorService.parseLong(cartDetailArr[1]))
+                        .quantity(CalculatorService.parseLong(cartDetailArr[2]))
+                        .build();
+                cartDetails.add(newCartDetail);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String cartDetailsJson = gson.toJson(cartDetails);
+        request.setAttribute("cartDetailsJson", cartDetailsJson);
+        request.getRequestDispatcher("CreateSaleOrder.jsp").forward(request, response);
     }
 
     /**
@@ -120,6 +149,7 @@ public class CreateSaleOrder extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        response.sendRedirect("ViewCart?buy_success=1");
     }
 
     public String getCookieValue(HttpServletRequest request, String name) {

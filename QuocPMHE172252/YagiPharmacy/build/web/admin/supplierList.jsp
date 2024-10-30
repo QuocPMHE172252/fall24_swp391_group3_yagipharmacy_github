@@ -106,27 +106,32 @@
                                 </li>
                             </ul>
                         </div>
+
                         <div class="row">
                             <div class="col-md-12">
+
                                 <div class="card">
+
+
                                     <div class="card-header">
                                         <a href="./CreateSupplier" class="btn btn-primary">Add Supplier</a>
-                                        <form method="get" action="./SupplierList" style="display: flex; display: flex; justify-content: center;">
-                                            <div style="width: 90%; display: flex; justify-content: center;position: absolute; top: 85px">
-                                                <div>
-                                                    <label>Status: </label>
-                                                    <select onchange="this.form.submit()" name="status" class="form-select" style="display: inline-block;width: 150px; margin: 0px 5px;">
-                                                        <option value="">All</option>
-                                                        <option value="1" ${param.status=="1"?"selected":""}>Active</option>
-                                                        <option value="0" ${param.status=="0"?"selected":""}>Inactive</option>
-                                                    </select>
-                                                </div>
-                                            </div>
 
-                                        </form>
                                     </div>
                                     <div class="card-body">
+
                                         <div class="table-responsive">
+                                            <form method="get" action="./SupplierList" style="display: flex; display: flex; justify-content: center;">
+                                                    <div style="">
+                                                        <div>
+                                                            <label>Status: </label>
+                                                            <select onchange="this.form.submit()" name="status" class="form-select" style="display: inline-block;width: 150px; margin: 0px 5px;">
+                                                                <option value="">All</option>
+                                                                <option value="0" ${param.status=="0"?"selected":""}>Active</option>
+                                                                <option value="1" ${param.status=="1"?"selected":""}>Inactive</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                            </form>
                                             <table id="tables" class="table">
                                                 <thead>
                                                     <tr>
@@ -142,24 +147,24 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                <c:forEach var="u" items="${pl}">
-                                                    <tr>
-                                                        <td>${u.supplierId}</td>
-                                                        <td>${u.supplierCode}</td>
-                                                        <td>${u.supplierName}</td>
-                                                        <td>${u.supplierCountryCode}</td>
-                                                        <td>${u.supplierPhone}</td>
-                                                        <td>${u.supplierEmail}</td>
-                                                        <td>${u.isDeleted()==false?"Active":"Inactive"}</td>
-                                                    <c:if test="${u.isDeleted()==false}">
-                                                        <td><a href="./ChangeSupplierStatus?id=${u.supplierId}&status=1" class="btn btn-danger">Delete</a></td>
-                                                    </c:if>
-                                                    <c:if test="${u.isDeleted()==true}">
-                                                        <td><a href="./ChangeSupplierStatus?id=${u.supplierId}&status=0" class="btn btn-success">Restore</a></td>
-                                                    </c:if>
-                                                    <td><a href="./UpdateSupllier?id=${u.supplierId}" class="btn btn-warning">Update</a></td>
-                                                    </tr>
-                                                </c:forEach>
+                                                    <c:forEach var="u" items="${pl}">
+                                                        <tr>
+                                                            <td>${u.supplierId}</td>
+                                                            <td>${u.supplierCode}</td>
+                                                            <td>${u.supplierName}</td>
+                                                            <td>${u.supplierCountryCode}</td>
+                                                            <td>${u.supplierPhone}</td>
+                                                            <td>${u.supplierEmail}</td>
+                                                            <td>${u.isDeleted()==false?"Active":"Inactive"}</td>
+                                                            <c:if test="${u.isDeleted()==false}">
+                                                                <td><a href="./ChangeSupplierStatus?id=${u.supplierId}&status=1" class="btn btn-danger">Delete</a></td>
+                                                            </c:if>
+                                                            <c:if test="${u.isDeleted()==true}">
+                                                                <td><a href="./ChangeSupplierStatus?id=${u.supplierId}&status=0" class="btn btn-success">Restore</a></td>
+                                                            </c:if>
+                                                            <td><a href="./UpdateSupllier?id=${u.supplierId}" class="btn btn-warning">Update</a></td>
+                                                        </tr>
+                                                    </c:forEach>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -237,32 +242,32 @@
         <script src="./assets/js/setting-demo.js"></script>
         <script src="./assets/js/demo.js"></script>
         <script>
-                                                        $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
-                                                            type: "line",
-                                                            height: "70",
-                                                            width: "100%",
-                                                            lineWidth: "2",
-                                                            lineColor: "#177dff",
-                                                            fillColor: "rgba(23, 125, 255, 0.14)",
-                                                        });
+                                                                $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
+                                                                    type: "line",
+                                                                    height: "70",
+                                                                    width: "100%",
+                                                                    lineWidth: "2",
+                                                                    lineColor: "#177dff",
+                                                                    fillColor: "rgba(23, 125, 255, 0.14)",
+                                                                });
 
-                                                        $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
-                                                            type: "line",
-                                                            height: "70",
-                                                            width: "100%",
-                                                            lineWidth: "2",
-                                                            lineColor: "#f3545d",
-                                                            fillColor: "rgba(243, 84, 93, .14)",
-                                                        });
+                                                                $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
+                                                                    type: "line",
+                                                                    height: "70",
+                                                                    width: "100%",
+                                                                    lineWidth: "2",
+                                                                    lineColor: "#f3545d",
+                                                                    fillColor: "rgba(243, 84, 93, .14)",
+                                                                });
 
-                                                        $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
-                                                            type: "line",
-                                                            height: "70",
-                                                            width: "100%",
-                                                            lineWidth: "2",
-                                                            lineColor: "#ffa534",
-                                                            fillColor: "rgba(255, 165, 52, .14)",
-                                                        });
+                                                                $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
+                                                                    type: "line",
+                                                                    height: "70",
+                                                                    width: "100%",
+                                                                    lineWidth: "2",
+                                                                    lineColor: "#ffa534",
+                                                                    fillColor: "rgba(255, 165, 52, .14)",
+                                                                });
         </script>
         <script>
             $(document).ready(function () {

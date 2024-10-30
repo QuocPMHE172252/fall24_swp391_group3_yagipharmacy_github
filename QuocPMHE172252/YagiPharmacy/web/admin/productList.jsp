@@ -110,7 +110,7 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <a href="./ProductAdd" class="btn btn-primary">Add Product</a>
+                                        <a href="/YagiPharmacy/manager/AddProduct" class="btn btn-primary">Add Product</a>
                                         <form method="get" action="./ProductsList" style="display: flex; display: flex; justify-content: center;">
                                             <div style="width: 50%; display: flex; justify-content: space-between;position: absolute; top: 85px">
                                                 <div>
@@ -127,8 +127,8 @@
                                                     <label>Status: </label>
                                                     <select onchange="this.form.submit()" name="status" class="form-select" style="display: inline-block;width: 150px; margin: 0px 5px;">
                                                         <option value="">All</option>
-                                                        <option value="0" ${param.status=="1"?"selected":""}>Active</option>
-                                                        <option value="1" ${param.status=="0"?"selected":""}>Inactive</option>
+                                                        <option value="0" ${param.status=="0"?"selected":""}>Active</option>
+                                                        <option value="1" ${param.status=="1"?"selected":""}>Inactive</option>
 
                                                     </select>
                                                 </div>
@@ -168,7 +168,7 @@
                                                             <c:if test="${u.isDeleted()==true}">
                                                                 <td><a href="./ChangeProductStatus?pid=${u.productId}&status=0" class="btn btn-success">Restore</a></td>
                                                             </c:if>
-                                                            <td><a href="./ProductUpdate?pid=${u.productId}" class="btn btn-warning">Update</a></td>
+                                                            <td><a href="../manager/EditProduct?product_id=${u.productId}" class="btn btn-warning">Update</a></td>
                                                         </tr>
                                                     </c:forEach>
                                                 </tbody>

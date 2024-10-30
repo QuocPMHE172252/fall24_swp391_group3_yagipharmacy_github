@@ -177,7 +177,6 @@
                             <div class="col">
                                 <h4><b>Shopping Cart</b></h4>
                             </div>
-                            <button onclick="updateCart()" type="button" class="btn-info">Update Cart</button>
                             <div class="col align-self-center text-right text-muted"></div>
                         </div>
                     </div>
@@ -191,35 +190,40 @@
                     <hr>
                     <div class="row">
                     </div>
-                    <form id="check_out_form" action="CreateSaleOrder" method="post">
-                        <p>Số điện thoại:*</p>
-                        <input name="phone" id="phone" placeholder="" required="">
-                        <p>Email:*</p>
-                        <input name="phone" id="email" placeholder="" required="">
-                        <p>Tên người nhận:*</p>
-                        <input name="name" id="name" placeholder="" required>
-                        <p>Địa chỉ:*</p>
-                        <input name="location" id="location" placeholder="" required>
-                        <input type="text" id="total_submit" name="total_submit" hidden="">
+                    <form id="check_out_form" action="CreateSaleOrder" method="get" hidden="">
                     </form>
                     <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
                         <div class="col">TOTAL PRICE</div>
-                        <div class="col text-right" id="totalPriceCart"> 137.00 VND</div>
+                        <div class="col text-right" id="totalPriceCart"> 00.00 VND</div>
                     </div>
-                    <button type="button" class="btn" onclick="submitCheckOut()">CHECKOUT</button>
+                    <button type="button" class="btn" onclick="submitCheckOut()">Mua hàng</button>
                 </div>
             </div>
 
         </div>
         <form action="ViewCart" hidden="" id="formReload"></form>
+        <form action="ViewCart" hidden="" id="formReload2">
+            <input type="text" name="clear_success" value="1">
+        </form>
 
     </body>
     <script>
-        const cartDetailsJson = JSON.parse('${cartDetailsJson}');
+        <c:if test="${cartDetailsJson!=null}">
+            const cartDetailsJson = JSON.parse('${cartDetailsJson}');
+        </c:if>
         var cart = JSON.parse(getCookie("cart"));
+        console.log(getCookie('cart'));
+         <c:if test="${buy_success!=null}">
+            cart.length = 0;
+            setCookie('cart', JSON.stringify(cart), 3);
+            console.log(getCookie('cart'));
+            document.getElementById("formReload2").submit();
+        </c:if>
+            <c:if test="${clear_success!=null}">
+            window.alert("Đã mua thành công");
+        </c:if>
         console.log(cartDetailsJson);
         document.getElementById("totalPriceCart").innerHTML = getTotalPrice() + " VND";
-        document.getElementById("total_submit").value = getTotalPrice()+"";
         cartDetailsJson.forEach(cartDetail => {
             var totalPrice = 0;
             var newRow = document.createElement('div');
@@ -240,7 +244,14 @@
             document.getElementById("listCartDetail").appendChild(newRow);
         });
         function submitCheckOut(){
-            document.getElementById("check_out_form").submit();
+            var check = true;
+            if(cart.length==0){
+                check = false;
+                window.alert("Không có sản phẩm nào trong giỏ hàng");
+            }
+            if(check){
+                document.getElementById("check_out_form").submit();
+            }
         }
         function updateCart() {
             setCookie('cart', JSON.stringify(cart), 3);
@@ -289,6 +300,7 @@
                 }
             }
             console.log(cart);
+            updateCart()
         }
         function plus(product_id) {
             var quanStr = document.getElementById("quantity_" + product_id).innerHTML;
@@ -304,6 +316,7 @@
                 }
             }
             console.log(cart);
+            updateCart()
         }
         function deleteRow(product_id) {
             document.getElementById('product_row_' + product_id).remove();
@@ -316,6 +329,7 @@
                 }
             }
             console.log(cart);
+            updateCart()
         }
         function setCookie(name, value, days) {
             let now = new Date();

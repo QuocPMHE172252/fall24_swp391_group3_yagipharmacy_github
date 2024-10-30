@@ -31,12 +31,12 @@ public class ImportOrder {
     private Long approvedBy;
     private Date approvedDate;
     private Date importExpectedDate;
-    private boolean isAccepted;
+    private Boolean isAccepted;
     private String rejectedReason;
     private boolean isDeleted;
     private List<ImportOrderDetail> importOrderDetails;
     public String formatDate(Date date) {
-        SimpleDateFormat formatter = new SimpleDateFormat("MM-yyyy-dd");
+        SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
         return formatter.format(date);
     }
 }

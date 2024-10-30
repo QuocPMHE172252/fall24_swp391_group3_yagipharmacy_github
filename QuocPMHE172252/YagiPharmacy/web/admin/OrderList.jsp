@@ -160,7 +160,7 @@
                                                             <td>${u.receiverEmail}</td>
                                                             <td>${u.totalPrice}</td>
                                                             <td>${u.createdDate}</td>
-                                                            <td>${u.isPaid()==false?"Paid":"Not paid yet"}</td>
+                                                            <td>${u.isPaid()==true?"Paid":"Not paid yet"}</td>
                                                             <td>${u.isDeleted()==false?"Active":"Inactive"}</td>
                                                             <c:if test="${u.isDeleted()==false}">
                                                                 <td><a href="./ChangeOrderStatus?pid=${u.saleOrderId}&status=1" class="btn btn-danger">Delete</a></td>

@@ -26,7 +26,7 @@ public class ImportOrderDetail {
     private Long importOrderId;
     private Long productId;
     private Long unitId;
-    private Integer quantity;
+    private Long quantity;
     private Double importPrice;
     private Date importDate;
     private boolean isDeleted;

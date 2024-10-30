@@ -62,19 +62,21 @@ public class DeleteImportOrder extends HttpServlet {
         String id = request.getParameter("id");
         System.out.println(id);
         ImportOrderDAO importOrderDAO = new ImportOrderDAO();
-        ImportOrder findingImportOrder = ImportOrder.builder()
+        try {
+            ImportOrder findingImportOrder = ImportOrder.builder()
                 .importOrderId(0L)
                 .build();
-        try {
             findingImportOrder = importOrderDAO.getById(id);
+            if (findingImportOrder.getImportOrderId() != 0L) {
+            boolean isDelete = findingImportOrder.isDeleted();
+            findingImportOrder.setDeleted(!isDelete);
+            importOrderDAO.updateById(id, findingImportOrder);
+        }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (findingImportOrder.getImportOrderId() != 0L) {
-            boolean isDelete = findingImportOrder.isDeleted();
-            findingImportOrder.setDeleted(!isDelete);
-        }
+        
         response.sendRedirect("ImportOrderList");
     }
 

@@ -133,7 +133,7 @@
                                                             <td>${u.productCategoryId}</td>
                                                             <td>${u.productCategoryCode}</td>
                                                             <td>${u.productCategoryName}</td>
-                                                            <td>${u.parentCategory.productCategoryName}</td>
+                                                            <td>${u.parentProductCategory!=null?u.parentProductCategory.productCategoryName:"Null"}</td>
                                                             <td>${u.productCategoryDetail}</td>
                                                             <td>${u.isDeleted()==false?"Active":"Inactive"}</td>
                                                             <c:if test="${u.isDeleted()==false}">

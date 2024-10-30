@@ -57,7 +57,7 @@
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
         <div class="container">
             <div class="row flex-lg-nowrap">
-                <form action="PublishNew" method="post">
+                <form action="PublishNew" method="post" id="formNewPublish">
                     <div class="col">
                         <div class="row">
                             <div class="col mb-3">
@@ -102,11 +102,11 @@
                                                 <br>
                                                 <div class="row">
                                                     <label>
-                                                        Reject reason:
+                                                        Lý do từ chối:
                                                     </label>
-                                                    <input type="text" value="${findingNews.rejectedReason}" name="rejectReason" class="form-control" >
+                                                    <input id="rejectReason" type="text" value="${findingNews.rejectedReason}" name="rejectReason" class="form-control" >
                                                     <label style="margin-top: 5px;">
-                                                        Is reject: ${findingNews.isRejected()==true?"Rejected":"Approved"}
+                                                        Trạng thái kiểm duyệt: ${findingNews.isRejected()==true?"Từ chối":"Chấp thuận"}
                                                     </label>
                                                 </div>
                                                 <div class="row">
@@ -114,8 +114,9 @@
                                                         <a href="ListNews" class="btn btn-primary">Back to News List</a>
                                                     </div>
                                                     <div class="col d-flex justify-content-end">
-                                                        <button class="btn btn-danger" style="margin-right: 10px" name="reject" value="true" type="submit"> Reject   </button>
-                                                        <button class="btn btn-success" name="reject" value="false" type="submit"> Approve   </button>
+                                                        <input type="text" name="reject" value="false" id="is_rejecting" hidden="">
+                                                        <button onclick="submitApprove(true)" class="btn btn-danger" style="margin-right: 10px" type="button"> Reject</button>
+                                                        <button onclick="submitApprove(false)" class="btn btn-success" type="button">Approve</button>
                                                     </div>
 
                                                 </div>
@@ -135,14 +136,22 @@
 
     </body>
     <script>
-        tinymce.init({
-            selector: '#news_content'
-        });
+                                                            tinymce.init({
+                                                                selector: '#news_content'
+                                                            });
         <c:if test="${change!=null&&change==false}">
-            window.alert("Cập nhật thất bại");
+                                                            window.alert("Cập nhật thất bại");
         </c:if>
-          <c:if test="${change!=null&&change==true}">
-            window.alert("Cập nhật thành công");
+        <c:if test="${change!=null&&change==true}">
+                                                            window.alert("Cập nhật thành công");
         </c:if>
-        
+            function submitApprove(is_reject){
+                document.getElementById("is_rejecting").value = is_reject;
+                if(!is_reject){
+                    document.getElementById("rejectReason").value ='';
+                }
+                
+                document.getElementById("formNewPublish").submit();
+            }
+    </script>
 </html>

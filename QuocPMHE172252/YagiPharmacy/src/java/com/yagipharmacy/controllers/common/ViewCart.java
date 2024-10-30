@@ -69,6 +69,18 @@ public class ViewCart extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String buy_success = request.getParameter("buy_success");
+        String clear_success = request.getParameter("clear_success");
+        if(buy_success!=null){
+            request.setAttribute("buy_success", buy_success);
+            request.getRequestDispatcher("ViewCart.jsp").forward(request, response);
+            return;
+        }
+        if(clear_success!=null){
+            request.setAttribute("clear_success", clear_success);
+            request.getRequestDispatcher("ViewCart.jsp").forward(request, response);
+            return;
+        }
         String decodedString = URLDecoder.decode(getCookieValue(request, "cart"), "UTF-8");
         Gson gson = new Gson();
         Type listType = new TypeToken<List<String>>() {
@@ -117,6 +129,9 @@ public class ViewCart extends HttpServlet {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(name)) {
+                    if(cookie.getValue()==null){
+                        return "[]";
+                    }
                     return cookie.getValue();
                 }
             }

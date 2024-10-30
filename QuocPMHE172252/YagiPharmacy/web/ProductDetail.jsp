@@ -103,7 +103,6 @@
                                                     <img src='${p_img.imageBase64}'>
                                                 </a>
                                             </li>
-
                                         </c:forEach>
                                     </ul>
                                 </div>
@@ -122,7 +121,10 @@
                                     <h4 class="price" id="price_area">Giá/: <span id="price_location">10,990,000.00 vnđ</span></h4>
                                     <h5 class="">Chọn đơn vị tính:
                                         <c:forEach items="${product.productUnits}" var="p_unit">
-                                            <button type="button" class="btn-info btn btn-lg" value="" onclick="changeUnit(${p_unit.productUnitId})">${p_unit.unit.unitName}</button>
+                                            <c:if test="${p_unit.canBeSold}">
+                                                <button type="button" class="btn-info btn btn-lg" value="" onclick="changeUnit(${p_unit.productUnitId})">${p_unit.unit.unitName}</button>
+                                            </c:if>
+                                            
                                         </c:forEach>
                                     </h5>
                                     <h5 class="">Danh mục:  ${product.productCategory.productCategoryName}</h5></br>
@@ -144,18 +146,17 @@
 
                                     <div class="form-group">
                                         <label for="soluong">Số lượng đặt mua:</label>
-                                        <input onchange="checkQuan()" type="number" value="1" min="1" class="form-control-sm" id="soluong" name="soluong">
+                                        <input onchange="checkQuan()" type="number" value="1" min="1" max="999" onkeyup="checkValueOfQuan()" class="form-control-sm" id="soluong" name="soluong">
                                     </div>
                                     <div class="action">
                                         <button type="button" onclick="addToCart()" class="add-to-cart btn btn-default" id="btnThemVaoGioHang">Thêm vào giỏ hàng</button>
-                                        <a class="like btn btn-default" href="#"><span class="fa fa-heart"></span></a>
                                     </div>
                                 </div>
 
                             </div>
                         </form>
                         <form id="cartViewForm" action="ViewCart" method="get">
-                            <input type="text" id="cart_string_submit" name="cart_string_submit" value="">
+                            <input type="text" id="cart_string_submit" name="cart_string_submit" value="" hidden="">
                         </form>
                     </div>
                 </div>
@@ -230,7 +231,14 @@
                         quantity_submit = quanInt;
                         document.getElementById("soluong").value = quanInt + '';
                     }
+                    function checkValueOfQuan(){
+                        var quan = parseInt(document.getElementById("soluong").value);
+                        if(quan>999){
+                            document.getElementById("soluong").value = 999;
+                        }
+                    }
                     function addToCart() {
+                        var checkNew = true;
                         var cart = JSON.parse(getCookie("cart"));
                         if (cart == null) {
                             var arrCart = [];
@@ -256,11 +264,15 @@
                             } else {
                                 let jsonArr = JSON.stringify(cart);
                                 setCookie('cart', jsonArr);
+                                checkNew = false;
                                 window.alert("Đã thay đổi thông tin mua của sản phẩm");
                             }
 
                         }
                         console.log(getCookie('cart'));
+                        if(checkNew){
+                            window.alert("Thêm thành công vào giỏ hàng");
+                        }
                     }
                     function setCookie(name, value, days) {
                         let now = new Date();

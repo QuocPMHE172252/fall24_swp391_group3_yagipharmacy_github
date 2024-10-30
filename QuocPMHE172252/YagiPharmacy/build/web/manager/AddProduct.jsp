@@ -87,19 +87,19 @@
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h3>Create New Account</h3>
+                                    <h3>Create New Product</h3>
                                 </div>
                                 <div class="card-body">
                                     <form method="post" action="AddProduct" id="createProductForm" class="row">
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="product_code">Mã đăng kí sản phẩm</label>
+                                            <label for="product_code">Mã đăng kí sản phẩm*</label>
                                             <input type="text" class="form-control" name="product_code" id="product_code" value="" placeholder="Nhập mã đăng kí sản phẩm" required>
                                             <p style="color: red"></p>
 
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="product_name">Tên sản phẩm</label>
+                                            <label for="product_name">Tên sản phẩm*</label>
                                             <input type="text" class="form-control" name="product_name" id="product_name" value="" placeholder="Nhập tên sản phẩm" required>
                                             <p style="color: red"></p>
 
@@ -119,17 +119,17 @@
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="dosage_form">Dạng bào chế</label>
+                                            <label for="dosage_form">Dạng bào chế*</label>
                                             <input type="text" class="form-control" name="dosage_form" id="dosage_form" placeholder="Nhập dạng bào chế ở đây" required>
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="product_specification">Đặc điểm kĩ thuật nhận dạng</label>
+                                            <label for="product_specification">Quy cách*</label>
                                             <input type="text" class="form-control" name="product_specification" value="" id="product_specification" placeholder="Nhập đặc điểm kĩ thuật" required>
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="product_target">Đối tượng sử dụng</label>
+                                            <label for="product_target">Đối tượng sử dụng*</label>
                                             <input type="text" class="form-control" name="product_target" value="" id="product_target" placeholder="Chỉ định và chống chỉ định" required>
                                         </div>
                                         <div class="form-group mb-3 col-md-6">
@@ -138,7 +138,7 @@
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="excipients">Thành phần</label> 
+                                            <label for="excipients">Thành phần*</label> 
                                             <select class="form-control-sm" type="text" id="excipients" name="excipients" required>
                                             </select> <button class="btn-dropdown btn-success" type="button" onclick="addNewExcipient()">+</button><br>
                                             <table class="form-group table">
@@ -156,7 +156,7 @@
                                         </div>
 
                                         <div class="form-group  mb-3 col-md-6">
-                                            <label>Nhà cung cấp</label><br/>
+                                            <label>Nhà cung cấp*</label><br/>
                                             <select class="form-control-sm" id="suplier_id" name="suplier_id" required>
                                                 <c:forEach items="${suppliers}" var="supplier">
                                                     <option value="${supplier.supplierId}">${supplier.supplierName}</option>
@@ -164,12 +164,12 @@
                                             </select>
                                         </div>
                                         <div class="form-group  mb-3 col-md-6">
-                                            <label>Quốc gia</label><br/>
+                                            <label>Quốc gia*</label><br/>
                                             <select class="form-control-sm" id="product_country_code" name="product_country_code" required>
                                             </select>
                                         </div>
                                         <div class="form-group  mb-3 col-md-6">
-                                            <label>Thuốc kê theo đơn bác sĩ</label><br />
+                                            <label>Thuốc kê theo đơn bác sĩ*</label><br />
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="radio" name="is_prescription" id="is_prescription_yes" value="0" checked />
                                                 <label class="form-check-label" for="is_prescription_yes">Yes</label>
@@ -180,7 +180,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="units">Đơn vị lưu trữ</label> 
+                                            <label for="units">Đơn vị lưu trữ*</label> 
                                             <select class="form-control-sm" type="text" id="units" name="units" required>
                                             </select> <button class="btn-dropdown btn-success" type="button" onclick="addNewUnit()">+</button><br>
                                             <table class="form-group table">
@@ -522,7 +522,7 @@
                 const maxFileSize = 5 * 1024 * 1024; // 5MB
                 var check = true;
                 if (!validImageTypes.includes(file.type)) {
-                    windows.alert("Please upload a valid image (JPG, PNG, GIF).");
+                    windows.alert("Please upload a valid image (JPG, GIF).");
                     check = false;
                 }
 
