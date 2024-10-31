@@ -3,13 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/ttrrang/Documents/GitHub/swp391_g3_rent_code/YagiPharmacy/src/java/com/yagipharmacy/DAO/ProductImageDAO.java</file>
-            <file>file:/C:/Users/ttrrang/Documents/GitHub/swp391_g3_rent_code/YagiPharmacy/src/java/com/yagipharmacy/controllers/common/CreateSaleOrder.java</file>
-            <file>file:/C:/Users/ttrrang/Documents/GitHub/swp391_g3_rent_code/YagiPharmacy/src/java/com/yagipharmacy/controllers/common/ProductDetail.java</file>
-            <file>file:/C:/Users/ttrrang/Documents/GitHub/swp391_g3_rent_code/YagiPharmacy/src/java/com/yagipharmacy/controllers/staff/AddNews.java</file>
-            <file>file:/C:/Users/ttrrang/Documents/GitHub/swp391_g3_rent_code/YagiPharmacy/src/java/com/yagipharmacy/DAO/NewsDAO.java</file>
-            <file>file:/C:/Users/ttrrang/Documents/GitHub/swp391_g3_rent_code/YagiPharmacy/src/java/com/yagipharmacy/JDBC/SQLServerConnection.java</file>
-            <file>file:/C:/Users/ttrrang/Documents/GitHub/swp391_g3_rent_code/YagiPharmacy/src/java/com/yagipharmacy/controllers/common/NewsDetail.java</file>
+            <file>file:/C:/Code_Work_Space/Java_Space/YagiPharmacy/src/java/com/yagipharmacy/entities/ImportOrderDetail.java</file>
+            <file>file:/C:/Code_Work_Space/Java_Space/YagiPharmacy/src/java/com/yagipharmacy/JDBC/RowMapper.java</file>
+            <file>file:/C:/Code_Work_Space/Java_Space/YagiPharmacy/web/manager/CreateImportOrder.jsp</file>
+            <file>file:/C:/Code_Work_Space/Java_Space/YagiPharmacy/src/java/com/yagipharmacy/controllers/manager/CreateImportOrder.java</file>
+            <file>file:/C:/Code_Work_Space/Java_Space/YagiPharmacy/src/java/com/yagipharmacy/DAO/ImportOrderDetailDAO.java</file>
+            <file>file:/C:/Code_Work_Space/Java_Space/YagiPharmacy/src/java/com/yagipharmacy/constant/services/MailService.java</file>
         </group>
     </open-files>
 </project-private>

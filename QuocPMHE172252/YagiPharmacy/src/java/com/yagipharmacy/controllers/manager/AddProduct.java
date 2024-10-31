@@ -95,7 +95,6 @@ public class AddProduct extends HttpServlet {
             String excipientsJson = gson.toJson(excipients);
             productCategorys = productCategoryDAO.getListLastChildren();
             request.setAttribute("unitsJson", unitsJson);
-            request.setAttribute("suppliers", suppliers);
             request.setAttribute("excipientsJson", excipientsJson);
             request.setAttribute("productCategorys", productCategorys);
             request.getRequestDispatcher("AddProduct.jsp").forward(request, response);
@@ -121,7 +120,7 @@ public class AddProduct extends HttpServlet {
         String dosage_form = request.getParameter("dosage_form");
         String product_specification = request.getParameter("product_specification");
         String excipients_string = request.getParameter("excipients_string");
-        String suplier_id = request.getParameter("suplier_id");
+        String brand = request.getParameter("brand");
         String product_country_code = request.getParameter("product_country_code");
         String is_prescription = request.getParameter("is_prescription");
         String units_string = request.getParameter("units_string");
@@ -141,7 +140,7 @@ public class AddProduct extends HttpServlet {
                         .productCode(product_code)
                         .productCategoryId(CalculatorService.parseLong(product_category))
                         .productCountryCode(product_country_code)
-                        .supplierId(CalculatorService.parseLong(suplier_id))
+                        .brand(brand)
                         .productTarget(product_target)
                         .productName(product_name)
                         .dosageForm(dosage_form)

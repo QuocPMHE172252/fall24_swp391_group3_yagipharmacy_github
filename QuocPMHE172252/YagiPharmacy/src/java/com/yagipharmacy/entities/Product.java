@@ -29,7 +29,7 @@ public class Product {
     private String productCode;
     private Long productCategoryId;
     private String productCountryCode;
-    private Long supplierId;
+    private String brand;
     private String productTarget;
     private String productName;
     private String dosageForm;
