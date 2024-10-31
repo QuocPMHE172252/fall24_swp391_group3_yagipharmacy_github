@@ -57,7 +57,7 @@
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
         <div class="container">
             <div class="row flex-lg-nowrap">
-                <form action="UpdateNews" method="post">
+                <form action="PublishNew" method="post" id="formNewPublish">
                     <div class="col">
                         <div class="row">
                             <div class="col mb-3">
@@ -65,24 +65,16 @@
                                     <div class="card-body">
                                         <div class="e-profile">
                                             <div class="row">
-                                                <div class="col-12 col-sm-auto mb-3">
-                                                    <img src="${findingNews.newsImage}" alt="" height="450px" width="600px" id="news_image">
+                                                <div class="col-12 col-sm-auto mb-3" style="display: flex; align-content: center; align-items: center; flex-direction: column; width: 100%">
+                                                    <h2>${findingNews.newsTitle}</h2>
+                                                    <img src="${findingNews.newsImage}"  alt="" height="450px" id="news_image">
+                                                    <div style="font-size: 18px;padding-top: 15px">Category: ${findingNews.newsCategory.newsCategoryName}</div>
                                                 </div>
 
                                             </div>
-                                            <div
-                                                class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
-                                                <div class="text-center text-sm-left mb-2 mb-sm-0">
-                                                    <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap"></h4>
-                                                    <p class="mb-0"></p>
-                                                    <div class="mt-2">
-                                                        <input type="file" accept="image/*" onchange="convertImageToBase64(this)">
-                                                        <input type="hidden" name="base64_img" id="base64_img" value="${findingNews.newsImage}">
-                                                    </div>
-                                                </div>
-                                            </div>
+
                                             <ul class="nav nav-tabs">
-                                                <li class="nav-item"><a href class="active nav-link">Update</a></li>
+                                                <li class="nav-item"><a href class="active nav-link">Reivew Post</a></li>
                                             </ul>
                                             <div class="tab-content pt-3">
                                                 <div class="tab-pane active">
@@ -92,21 +84,15 @@
                                                                 <div class="col">
                                                                     <div class="form-group">
                                                                         <label>Bài viết</label>
-                                                                        <input type="hidden" name="newsId" value="${findingNews.newsId}">
-                                                                        <textarea class="" name="news_content" id="news_content" value="" rows="30">${findingNews.newsContent}</textarea>
+                                                                        <input type="hidden" readonly="" name="newsId" value="${findingNews.newsId}">
+                                                                        <div style="border: 1px solid black; padding: 10px; min-height: 200px">
+                                                                            ${findingNews.newsContent}
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div class="row">
-                                                                <div class="col" style="max-width: 120px">
-                                                                    <div class="form-group">
-                                                                        <label>Status</label>
-                                                                        <select class="form-control small" name="is_deleted" id="is_deleted">
-                                                                            <option value="false" ${!findingNews.isDeleted()?"selected":""}>Active</option>
-                                                                            <option value="true" ${findingNews.isDeleted()?"selected":""}>Inactive</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
+
                                                             </div>
                                                         </div>
                                                     </div>
@@ -118,7 +104,7 @@
                                                     <label>
                                                         Lý do từ chối:
                                                     </label>
-                                                    <input id="rejectReason" readonly="" type="text" value="${findingNews.rejectedReason}" name="rejectReason" class="form-control" >
+                                                    <input id="rejectReason" type="text" value="${findingNews.rejectedReason}" name="rejectReason" class="form-control" >
                                                     <input id="atuhorId" type="hidden" value="${findingNews.creatorId}" name="atuhorId" class="form-control" >
                                                     <label style="margin-top: 5px;">
                                                         Trạng thái kiểm duyệt: ${findingNews.getRejectName()}
@@ -129,8 +115,9 @@
                                                         <a href="ListNews" class="btn btn-primary">Back to News List</a>
                                                     </div>
                                                     <div class="col d-flex justify-content-end">
-                                                        <button class="btn btn-primary" type="submit">Save
-                                                            Changes</button>
+                                                        <input type="text" name="reject" value="false" id="is_rejecting" hidden="">
+                                                        <button onclick="submitApprove(3)" class="btn btn-danger" style="margin-right: 10px" type="button"> Reject</button>
+                                                        <button onclick="submitApprove(2)" class="btn btn-success" type="button">Approve</button>
                                                     </div>
 
                                                 </div>
@@ -157,18 +144,15 @@
                                                             window.alert("Cập nhật thất bại");
         </c:if>
         <c:if test="${change!=null&&change==true}">
-                                                            window.alert("Cập nhật thành công")
+                                                            window.alert("Cập nhật thành công");
         </c:if>
-                                                            function convertImageToBase64(input) {
-                                                                const file = input.files[0];
-                                                                const reader = new FileReader();
-                                                                reader.onloadend = () => {
-                                                                    const base64String = reader.result;
-                                                                    document.getElementById("news_image").src = base64String;
-                                                                    document.getElementById("base64_img").value = base64String;
-                                                                    console.log(base64String);
-                                                                };
-                                                                reader.readAsDataURL(file);
-                                                            }
+            function submitApprove(is_reject){
+                document.getElementById("is_rejecting").value = is_reject;
+                if(!is_reject){
+                    document.getElementById("rejectReason").value ='';
+                }
+                
+                document.getElementById("formNewPublish").submit();
+            }
     </script>
 </html>

@@ -3,9 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Swp/YagiPharmacy/src/java/com/yagipharmacy/controllers/admin/AdminDashboard.java</file>
-            <file>file:/D:/Swp/YagiPharmacy/src/java/com/yagipharmacy/controllers/manager/GetImage.java</file>
-            <file>file:/D:/Swp/YagiPharmacy/src/java/com/yagipharmacy/controllers/manager/AddProduct.java</file>
+            <file>file:/C:/Users/ttrrang/Documents/GitHub/swp391_g3_rent_code/YagiPharmacy/src/java/com/yagipharmacy/DAO/ProductImageDAO.java</file>
+            <file>file:/C:/Users/ttrrang/Documents/GitHub/swp391_g3_rent_code/YagiPharmacy/src/java/com/yagipharmacy/controllers/common/CreateSaleOrder.java</file>
+            <file>file:/C:/Users/ttrrang/Documents/GitHub/swp391_g3_rent_code/YagiPharmacy/src/java/com/yagipharmacy/controllers/common/ProductDetail.java</file>
+            <file>file:/C:/Users/ttrrang/Documents/GitHub/swp391_g3_rent_code/YagiPharmacy/src/java/com/yagipharmacy/controllers/staff/AddNews.java</file>
+            <file>file:/C:/Users/ttrrang/Documents/GitHub/swp391_g3_rent_code/YagiPharmacy/src/java/com/yagipharmacy/DAO/NewsDAO.java</file>
+            <file>file:/C:/Users/ttrrang/Documents/GitHub/swp391_g3_rent_code/YagiPharmacy/src/java/com/yagipharmacy/JDBC/SQLServerConnection.java</file>
+            <file>file:/C:/Users/ttrrang/Documents/GitHub/swp391_g3_rent_code/YagiPharmacy/src/java/com/yagipharmacy/controllers/common/NewsDetail.java</file>
         </group>
     </open-files>
 </project-private>

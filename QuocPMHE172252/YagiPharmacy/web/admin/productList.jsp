@@ -119,7 +119,6 @@
                                                         <option value="">All</option>
                                                         <c:forEach var="c" items="${cl}">
                                                             <option value="${c.productCategoryId}" ${param.cateId==c.productCategoryId?"selected":""}>${c.productCategoryName}</option>
-
                                                         </c:forEach>
                                                     </select>
                                                 </div>

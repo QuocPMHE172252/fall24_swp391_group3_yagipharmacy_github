@@ -109,7 +109,7 @@ public class CreateImportOrder extends HttpServlet {
                     .approvedBy(null)
                     .approvedDate(new Date(0))
                     .importExpectedDate(importExpectedDate)
-                    .isAccepted(false)
+                    .isAccepted(null)
                     .rejectedReason("")
                     .isDeleted(false)
                     .build();
