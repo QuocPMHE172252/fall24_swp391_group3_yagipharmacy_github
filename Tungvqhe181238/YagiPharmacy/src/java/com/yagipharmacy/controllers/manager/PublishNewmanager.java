@@ -2,11 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package com.yagipharmacy.controllers.staff;
+package com.yagipharmacy.controllers.manager;
 
+import com.yagipharmacy.controllers.staff.*;
 import com.yagipharmacy.DAO.NewsDAO;
+import com.yagipharmacy.DAO.UserDAO;
 import com.yagipharmacy.constant.services.CalculatorService;
+import com.yagipharmacy.constant.services.MailService;
 import com.yagipharmacy.entities.News;
+import com.yagipharmacy.entities.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -19,8 +23,8 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author author
  */
-@WebServlet(name = "PublishNew", urlPatterns = {"/staff/PublishNew"})
-public class PublishNew extends HttpServlet {
+@WebServlet(name = "PublishNewmanager", urlPatterns = {"/manager/PublishNew"})
+public class PublishNewmanager extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -97,17 +101,29 @@ public class PublishNew extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String rejectReason = request.getParameter("rejectReason");
-        String reject = request.getParameter("reject")==null?"1": request.getParameter("reject");
+        String reject = request.getParameter("reject") == null ? "1" : request.getParameter("reject");
         String newsId = request.getParameter("newsId");
+        String atuhorId = request.getParameter("atuhorId");
         NewsDAO newsDAO = new NewsDAO();
         System.out.println(rejectReason);
         System.out.println(reject);
-        System.out.println(newsId);
+        System.out.println("===============");
+        System.out.println(atuhorId);
+        User curentUser = (User) request.getSession().getAttribute("userAuth");
         try {
             News findingNews = new News();
             findingNews.setIsRejected(Integer.valueOf(reject));
             findingNews.setRejectedReason(rejectReason);
             findingNews.setUpdatedId(null);
+            UserDAO udao = new UserDAO();
+            User authorNew = udao.getById(atuhorId);
+            String host = request.getServerName(); 
+            int port = request.getServerPort();
+            String subject = curentUser.getUserName() + " have been reject your news ";
+            String url = "http://" + host + ":" + port + request.getContextPath() 
+                     + "/staff/UpdateNews?newsId=" + newsId; 
+            String body = "If you want to see detain click here <a href='"+url+"'>News Detail</a>";
+            new MailService().sentEmail(authorNew.getUserEmail(), subject, body);
             boolean check = newsDAO.updateRejectById(newsId, findingNews);
             News newsss = newsDAO.getById(newsId);
             request.setAttribute("findingNews", newsss);

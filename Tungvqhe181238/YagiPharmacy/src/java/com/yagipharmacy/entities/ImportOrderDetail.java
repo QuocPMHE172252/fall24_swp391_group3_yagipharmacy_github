@@ -29,5 +29,8 @@ public class ImportOrderDetail {
     private Long quantity;
     private Double importPrice;
     private Date importDate;
+    private Long supplierId;
+    private Long processing;
     private boolean isDeleted;
+    private Supplier supplier;
 }

@@ -37,17 +37,17 @@ import java.util.List;
  *
  * @author admin
  */
-@WebServlet(name = "EditProduct", urlPatterns = { "/manager/EditProduct" })
+@WebServlet(name = "EditProduct", urlPatterns = {"/manager/EditProduct"})
 public class EditProduct extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -66,15 +66,14 @@ public class EditProduct extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
-    // + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -110,8 +109,7 @@ public class EditProduct extends HttpServlet {
                 excipients_string += pe.getExcipientId() + "_" + pe.getQuantity() + "_" + pe.getUnitMeasurement() + ",";
             }
             for (ProductUnit pu : productUnits) {
-                units_string += pu.getUnitId() + "_" + pu.getQuantityPerUnit() + "_" + pu.isCanBeSold() + "_"
-                        + pu.getSellPrice() + ",";
+                units_string += pu.getUnitId() + "_" + pu.getQuantityPerUnit() + "_" + pu.isCanBeSold() + "_" + pu.getSellPrice() + ",";
             }
             excipients_string = excipients_string.substring(0, excipients_string.length() - 1);
             units_string = units_string.substring(0, units_string.length() - 1);
@@ -120,8 +118,8 @@ public class EditProduct extends HttpServlet {
             request.setAttribute("excipientsJson", excipientsJson);
             request.setAttribute("productCategorys", productCategorys);
             //
-            // Product product = productDAO.getById(productId);
-            boolean isPrescription = product.getIsPrescription();
+            //Product product = productDAO.getById(productId);
+            //boolean isPrescription = product.getIsPrescription();
             String productCountryCode = product.getProductCountryCode();
             request.setAttribute("productCountryCode", productCountryCode);
             request.setAttribute("product", product);
@@ -131,7 +129,7 @@ public class EditProduct extends HttpServlet {
             request.setAttribute("excipients_string", excipients_string);
             request.setAttribute("units_string", units_string);
             request.getRequestDispatcher("EditProduct.jsp").forward(request, response);
-
+            
             request.setAttribute("success", false);
             request.getRequestDispatcher("EditProduct.jsp").forward(request, response);
         } catch (Exception e) {
@@ -142,10 +140,10 @@ public class EditProduct extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -157,7 +155,7 @@ public class EditProduct extends HttpServlet {
         String dosage_form = request.getParameter("dosage_form");
         String product_specification = request.getParameter("product_specification");
         String excipients_string = request.getParameter("excipients_string");
-        String suplier_id = request.getParameter("suplier_id");
+        String brand = request.getParameter("brand");
         String product_country_code = request.getParameter("product_country_code");
         String is_prescription = request.getParameter("is_prescription");
         String units_string = request.getParameter("units_string");
@@ -172,14 +170,13 @@ public class EditProduct extends HttpServlet {
         try {
             Product existingProduct = productDAO.getById(product_id + "");
             if (existingProduct.getProductId() != 0) {
-                boolean isPrescription = request.getParameter("is_prescription") != null
-                        && request.getParameter("is_prescription").equals("1");
+             boolean isPrescription = request.getParameter("is_prescription") != null && request.getParameter("is_prescription").equals("1");
                 Product updatedProduct = Product.builder()
                         .productId(product_id)
                         .productCode(product_code)
                         .productCategoryId(CalculatorService.parseLong(product_category))
                         .productCountryCode(product_country_code)
-                        .supplierId(CalculatorService.parseLong(suplier_id))
+                        .brand(brand)
                         .productTarget(product_target)
                         .productName(product_name)
                         .dosageForm(dosage_form)
@@ -198,8 +195,7 @@ public class EditProduct extends HttpServlet {
                     int uLength = arrUnits.length;
 
                     // Delete existing product excipients
-                    List<ProductExcipient> existingProductExcipients = productExcipientDAO
-                            .getListByProductId(product_id + "");
+                    List<ProductExcipient> existingProductExcipients = productExcipientDAO.getListByProductId(product_id + "");
                     for (ProductExcipient pe : existingProductExcipients) {
                         productExcipientDAO.deleteById(pe.getProductExcipientId() + "");
                     }
@@ -240,28 +236,22 @@ public class EditProduct extends HttpServlet {
                     }
 
                     // Update product image
-                    if (product_image_submit != null && !product_image_submit.isEmpty()) {
-                        List<ProductImage> existingProductImages = productImageDAO.getListByProductId(product_id + "");
-                        if (!existingProductImages.isEmpty()) {
-                            ProductImage existingProductImage = existingProductImages.get(0);
-                            existingProductImage.setImageBase64(product_image_submit);
-                            productImageDAO.updateById(existingProductImage.getProductImageId() + "",
-                                    existingProductImage);
-                        } else {
-                            ProductImage newProductImage = ProductImage.builder()
-                                    .productId(product_id)
-                                    .imageBase64(product_image_submit)
-                                    .build();
-                            productImageDAO.addNew(newProductImage);
-                        }
-                    }
-
+                    ProductImage existingProductImage = productImageDAO.getListByProductId(product_id + "").get(0);
+                    existingProductImage.setImageBase64(product_image_submit);
+                    productImageDAO.updateById(existingProductImage.getProductImageId() + "", existingProductImage);
+                    
+                   
                     request.setAttribute("success", true);
                     doGet(request, response);
                 } else {
-                    request.setAttribute("error", "Mã sản phẩm đã tồn tại");
-                    doGet(request,response );
+                    request.setAttribute("error", "Cập nhật sản phẩm thất bại.");
+                    request.setAttribute("success", false);
+                    doGet(request, response);
+                    response.sendRedirect("ListProduct");
                 }
+            } else {
+                request.setAttribute("error", "Sản phẩm không tồn tại.");
+                doGet(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();

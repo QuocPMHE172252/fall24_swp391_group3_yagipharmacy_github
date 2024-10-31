@@ -9,11 +9,11 @@ import com.yagipharmacy.entities.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.List;
 
 /**
- *
  * @author admin
  */
 public interface AuthorizationService {
@@ -36,6 +36,6 @@ public interface AuthorizationService {
     }
 
     default void acceptAuth(HttpServletRequest request, HttpServletResponse response, List<Long> roleListAccept) throws ServletException, IOException {
-        
+
     }
 }

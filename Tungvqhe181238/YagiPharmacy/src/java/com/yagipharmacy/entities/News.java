@@ -4,6 +4,8 @@
  */
 package com.yagipharmacy.entities;
 
+import com.yagipharmacy.constant.variables.RejectStatus;
+import com.yagipharmacy.constant.variables.UserRole;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,8 +36,13 @@ public class News {
     private String newsHashtag;
     private Long updatedId;
     private Date createdDate;
-    private boolean isRejected;
+    private int isRejected;
     private String rejectedReason;
     private boolean isDeleted;
     private NewsCategory newsCategory;
+    
+    public String getRejectName(){
+        return  RejectStatus.getNameById(isRejected);
+    }
+    
 }

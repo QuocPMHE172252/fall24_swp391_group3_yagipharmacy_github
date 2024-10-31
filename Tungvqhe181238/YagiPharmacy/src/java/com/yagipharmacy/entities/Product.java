@@ -25,12 +25,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {
-
     private Long productId;
     private String productCode;
     private Long productCategoryId;
     private String productCountryCode;
-    private Long supplierId;
+    private String brand;
     private String productTarget;
     private String productName;
     private String dosageForm;
@@ -42,12 +41,7 @@ public class Product {
     private ProductCategory productCategory;
     private Supplier supplier;
     private List<ProductExcipient> productExcipients;
-    private List<ProductUnit> productUnits;
+    private  List<ProductUnit> productUnits;
     private List<ProductImage> productImages;
-
-    public boolean getIsPrescription() {
-
-        return isPrescription;
-    }
 
 }

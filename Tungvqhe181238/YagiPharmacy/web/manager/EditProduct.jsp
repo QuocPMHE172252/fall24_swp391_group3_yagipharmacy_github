@@ -30,8 +30,6 @@
                 });
             </script>
 
-
-
             <!-- CSS Files -->
             <link rel="stylesheet" href="./assets/css/bootstrap.min.css" />
             <link rel="stylesheet" href="./assets/css/plugins.min.css" />
@@ -297,13 +295,13 @@
                                                     accept="image/*" required>
                                                 <input type="hidden" class="form-control" id="product_image_submit"
                                                     name="product_image_submit"
-                                                    value="${product_images[0].imageBase64}">
+                                                    value="${product.productImages[0].imageBase64}">
                                             </div>
                                             <div class="form-group mb-3 col-md-6">
-                                                <div><label for="date_of_birth">Preview</label></div>
+                                                <label for="date_of_birth">Preview</label>
                                                 <img id="avatarPreview" class="mt-3"
-                                                    src="${product_images[0].imageBase64}" alt="Avatar Preview"
-                                                    style="max-width: 300px;">
+                                                    src="data:image/jpeg;base64,${product.productImages[0].imageBase64}"
+                                                    alt="Avatar Preview" style="max-width: 300px;">
                                             </div>
 
                                             <p>${errorMessage}</p>
@@ -351,14 +349,6 @@
 
 
             <script>
-                  <c:if test="${error!=null}">
-            window.alert('${error}');
-            </c:if>
-            <c:if test="${success!=null}">
-            window.alert('${success==true?"Cập nhật thành công":"Cập nhật thất bại"}');
-            </c:if>
-
-
                 // Fetch country list and populate the dropdown
                 fetch('https://restcountries.com/v3.1/all')
                     .then(response => response.json())
@@ -612,23 +602,6 @@
                     document.getElementById("editProductForm").submit();
                 }
 
-                document.getElementById('product_image').addEventListener('change', function (event) {
-                    const file = event.target.files[0];
-                    if (!validateAvatar(file)) {
-                        event.target.value = ''; // Clear the input
-                        return;
-                    } else {
-                        const reader = new FileReader();
-                        reader.onload = function (e) {
-                            const base64Image = e.target.result;
-                            document.getElementById('avatarPreview').src = base64Image;
-                            document.getElementById('avatarPreview').style.display = 'block';
-                            document.getElementById('product_image_submit').value = base64Image;
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-
                 function validateAvatar(file) {
                     const validFileTypes = ['image/jpeg', 'image/png', 'image/gif'];
                     const maxSizeInBytes = 5 * 1024 * 1024; // 5 MB
@@ -645,75 +618,23 @@
 
                     return true;
                 }
-            </script>
 
-            <!--   Core JS Files   -->
-            <script src="./assets/js/core/jquery-3.7.1.min.js"></script>
-            <script src="./assets/js/core/popper.min.js"></script>
-            <script src="./assets/js/core/bootstrap.min.js"></script>
-
-            <!-- jQuery Scrollbar -->
-            <script src="./assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-
-            <!-- Chart JS -->
-            <script src="./assets/js/plugin/chart.js/chart.min.js"></script>
-
-            <!-- jQuery Sparkline -->
-            <script src="./assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
-
-            <!-- Chart Circle -->
-            <script src="./assets/js/plugin/chart-circle/circles.min.js"></script>
-
-            <!-- Datatables -->
-            <script src="./assets/js/plugin/datatables/datatables.min.js"></script>
-
-            <!-- Bootstrap Notify -->
-            <!--<script src="./assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>-->
-
-            <!-- jQuery Vector Maps -->
-            <script src="./assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
-            <script src="./assets/js/plugin/jsvectormap/world.js"></script>
-
-            <!-- Sweet Alert -->
-            <script src="./assets/js/plugin/sweetalert/sweetalert.min.js"></script>
-
-            <!-- Kaiadmin JS -->
-            <script src="./assets/js/kaiadmin.min.js"></script>
-
-            <!-- Kaiadmin DEMO methods, don't include it in your project! -->
-            <script src="./assets/js/setting-demo.js"></script>
-            <script src="./assets/js/demo.js"></script>
-            <script>
-                $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
-                    type: "line",
-                    height: "70",
-                    width: "100%",
-                    lineWidth: "2",
-                    lineColor: "#177dff",
-                    fillColor: "rgba(23, 125, 255, 0.14)",
+                document.getElementById('product_image').addEventListener('change', function (event) {
+                    const file = event.target.files[0];
+                    if (!validateAvatar(file)) {
+                        event.target.value = ''; // Clear the input
+                        return;
+                    } else {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const base64Image = e.target.result;
+                            document.getElementById('avatarPreview').src = base64Image;
+                            document.getElementById('avatarPreview').style.display = 'block';
+                            document.getElementById('product_image_submit').value = base64Image;
+                        };
+                        reader.readAsDataURL(file);
+                    }
                 });
-                $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
-                    type: "line",
-                    height: "70",
-                    width: "100%",
-                    lineWidth: "2",
-                    lineColor: "#f3545d",
-                    fillColor: "rgba(243, 84, 93, .14)",
-                });
-                $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
-                    type: "line",
-                    height: "70",
-                    width: "100%",
-                    lineWidth: "2",
-                    lineColor: "#ffa534",
-                    fillColor: "rgba(255, 165, 52, .14)",
-                });
-            </script>
-            <script>
-                $(document).ready(function () {
-                    $('#tables').DataTable();
-                }
-                );
             </script>
         </body>
 

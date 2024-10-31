@@ -126,7 +126,7 @@
                                             <div>
                                                 <form action="CreateImportOrder" method="post" class="form" style="width: 100%" id="formSubmitListOrderDetail">
                                                     <input type="text" name="product_list_str" id="product_list_str" readonly="" required="" hidden="">
-                                                    <label for="expected_date">Ngày nhập dự kiến*</label>&nbsp&nbsp&nbsp<label for="import_order_code">Mã yêu cầu nhập*</label><br>
+                                                    <label for="expected_date">Ngày nhập dự kiến*</label>&nbsp&nbsp&nbsp<label for="import_order_code">Mã đơn nhập*</label><br>
                                                     <input class="form-control-sm" type="date" name="expected_date" required="" id="expected_date">
                                                     <input class="form-control-sm" type="text" name="import_order_code" required="" id="import_order_code">
                                                     <table class="table" id="import_order_table">
