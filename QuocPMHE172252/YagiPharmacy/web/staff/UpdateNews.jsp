@@ -115,6 +115,16 @@
                                                 <br>
                                                 <br>
                                                 <div class="row">
+                                                    <label>
+                                                        Lý do từ chối:
+                                                    </label>
+                                                    <input id="rejectReason" readonly="" type="text" value="${findingNews.rejectedReason}" name="rejectReason" class="form-control" >
+                                                    <input id="atuhorId" type="hidden" value="${findingNews.creatorId}" name="atuhorId" class="form-control" >
+                                                    <label style="margin-top: 5px;">
+                                                        Trạng thái kiểm duyệt: ${findingNews.getRejectName()}
+                                                    </label>
+                                                </div>
+                                                <div class="row">
                                                     <div class="mt-5">
                                                         <a href="ListNews" class="btn btn-primary">Back to News List</a>
                                                     </div>

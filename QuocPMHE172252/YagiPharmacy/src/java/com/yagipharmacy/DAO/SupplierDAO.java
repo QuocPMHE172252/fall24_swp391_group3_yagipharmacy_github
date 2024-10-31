@@ -28,6 +28,8 @@ public class SupplierDAO implements RowMapper<Supplier> {
                 .supplierCode(rs.getString("supplier_code"))
                 .supplierName(rs.getString("supplier_name"))
                 .supplierCountryCode(rs.getString("supplier_country_code"))
+                .supplierPhone(rs.getString("supplier_phone"))
+                .supplierEmail(rs.getString("supplier_email"))
                 .isDeleted(rs.getBoolean("is_deleted"))
                 .build();
     }
@@ -39,16 +41,20 @@ public class SupplierDAO implements RowMapper<Supplier> {
             supplier_code,
             supplier_name,
             supplier_country_code,
+            supplier_phone,
+            supplier_email,
             is_deleted
         )
-        VALUES (?,?,?,?)
+        VALUES (?,?,?,?,?,?)
     """;
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, t.getSupplierCode());
             ps.setString(2, t.getSupplierName());
             ps.setString(3, t.getSupplierCountryCode());
-            ps.setBoolean(4, t.isDeleted());
+            ps.setString(4, t.getSupplierPhone());
+            ps.setString(5, t.getSupplierEmail());
+            ps.setBoolean(6, t.isDeleted());
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -79,7 +85,7 @@ public class SupplierDAO implements RowMapper<Supplier> {
         String sql = """
         SELECT *
         FROM supplier
-        WHERE supplier_id = ? AND is_deleted = 0  -- Only retrieve non-deleted supplier
+        WHERE supplier_id = ?
     """;
         Supplier supplier = Supplier.builder().build();
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -102,6 +108,8 @@ public class SupplierDAO implements RowMapper<Supplier> {
             supplier_code = ?,
             supplier_name = ?,
             supplier_country_code = ?,
+            supplier_phone = ?,
+            supplier_email = ?,
             is_deleted = ?
         WHERE
             supplier_id = ?
@@ -111,8 +119,10 @@ public class SupplierDAO implements RowMapper<Supplier> {
             ps.setObject(1, t.getSupplierCode());
             ps.setObject(2, t.getSupplierName());
             ps.setObject(3, t.getSupplierCountryCode());
-            ps.setObject(4, t.isDeleted());
-            ps.setObject(5, t.getSupplierId());
+            ps.setObject(4, t.getSupplierPhone());
+            ps.setObject(5, t.getSupplierEmail());
+            ps.setObject(6, t.isDeleted());
+            ps.setObject(7, CalculatorService.parseLong(id));
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -126,14 +136,42 @@ public class SupplierDAO implements RowMapper<Supplier> {
         DELETE FROM supplier
         WHERE supplier_id = ?
     """;
-    int check = 0;
-    try (Connection con = SQLServerConnection.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql)) {
-      ps.setLong(1, CalculatorService.parseLong(id));
-      check = ps.executeUpdate();
-    } catch (Exception e) {
-      e.printStackTrace();
+        int check = 0;
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setLong(1, CalculatorService.parseLong(id));
+            check = ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return check > 0;
     }
-    return check > 0;
+
+    public boolean updateStatusById(String id, String status) throws SQLException, ClassNotFoundException {
+        String sql = " Update [supplier] set [is_deleted] = ? where [supplier_id] = " + id;
+        int check = 0;
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+
+            ps.setObject(1, CalculatorService.parseLong(status));
+            check = ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return check > 0;
     }
+
+    public List<Supplier> fillterSupplier(String status) throws SQLException, ClassNotFoundException {
+        String sql = " SELECT *  FROM supplier   where is_deleted like '%" + status + "%' ";
+
+        List<Supplier> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }
