@@ -46,7 +46,7 @@ public class ProductDAO implements RowMapper<Product> {
                 .productCode(rs.getString("product_code"))
                 .productCategoryId(rs.getLong("product_category_id"))
                 .productCountryCode(rs.getString("product_country_code"))
-                .supplierId(rs.getLong("supplier_id"))
+                .brand(rs.getString("brand"))
                 .productTarget(rs.getString("product_target"))
                 .productName(rs.getString("product_name"))
                 .dosageForm(rs.getString("dosage_form"))
@@ -69,7 +69,7 @@ public class ProductDAO implements RowMapper<Product> {
             product_code,
             product_category_id,
             product_country_code,
-            supplier_id,
+            brand,
             product_target,
             product_name,
             dosage_form,
@@ -85,7 +85,7 @@ public class ProductDAO implements RowMapper<Product> {
             ps.setObject(1, t.getProductCode());
             ps.setObject(2, t.getProductCategoryId());
             ps.setObject(3, t.getProductCountryCode());
-            ps.setObject(4, t.getSupplierId());
+            ps.setObject(4, t.getBrand());
             ps.setObject(5, t.getProductTarget());
             ps.setObject(6, t.getProductName());
             ps.setObject(7, t.getDosageForm());
@@ -146,7 +146,7 @@ public class ProductDAO implements RowMapper<Product> {
             product_code = ?,
             product_category_id = ?,
             product_country_code = ?,
-            supplier_id = ?,
+            brand = ?,
             product_target = ?,
             product_name = ?,
             dosage_form = ?,
@@ -162,7 +162,7 @@ public class ProductDAO implements RowMapper<Product> {
             ps.setObject(1, t.getProductCode());
             ps.setObject(2, t.getProductCategoryId());
             ps.setObject(3, t.getProductCountryCode());
-            ps.setObject(4, t.getSupplierId());
+            ps.setObject(4, t.getBrand());
             ps.setObject(5, t.getProductTarget());
             ps.setObject(6, t.getProductName());
             ps.setObject(7, t.getDosageForm());
@@ -221,7 +221,7 @@ public class ProductDAO implements RowMapper<Product> {
             product_code,
             product_category_id,
             product_country_code,
-            supplier_id,
+            brand,
             product_target,
             product_name,
             dosage_form,
@@ -237,7 +237,7 @@ public class ProductDAO implements RowMapper<Product> {
             ps.setObject(1, t.getProductCode());
             ps.setObject(2, t.getProductCategoryId());
             ps.setObject(3, t.getProductCountryCode());
-            ps.setObject(4, t.getSupplierId());
+            ps.setObject(4, t.getBrand());
             ps.setObject(5, t.getProductTarget());
             ps.setObject(6, t.getProductName());
             ps.setObject(7, t.getDosageForm());

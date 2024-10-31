@@ -24,10 +24,20 @@ import java.util.Date;
 public class ImportOrderDAO implements RowMapper<ImportOrder> {
 
     @Override
-    public ImportOrder mapRow(ResultSet rs) throws SQLException, ClassNotFoundException{
+    public ImportOrder mapRow(ResultSet rs) throws SQLException, ClassNotFoundException {
         ImportOrderDetailDAO importOrderDetailDAO = new ImportOrderDetailDAO();
-        List<ImportOrderDetail> importOrderDetails = importOrderDetailDAO.getByImportOderId(rs.getLong("import_order_id")+"");
+        List<ImportOrderDetail> importOrderDetails = importOrderDetailDAO.getByImportOderId(rs.getLong("import_order_id") + "");
         ImportOrder importOrder = new ImportOrder();
+        String booleanString = rs.getString("is_accepted");
+        Boolean isAccepted = null;
+        if (booleanString != null) {
+            if (booleanString.equals("0")) {
+                isAccepted = false;
+            }
+            if (booleanString.equals("1")) {
+                isAccepted = true;
+            }
+        }
         importOrder.setImportOrderId(rs.getLong("import_order_id"));
         importOrder.setImportOrderCode(rs.getString("import_order_code"));
         importOrder.setCreatedBy(rs.getLong("created_by"));
@@ -35,7 +45,7 @@ public class ImportOrderDAO implements RowMapper<ImportOrder> {
         importOrder.setApprovedBy(rs.getLong("approved_by"));
         importOrder.setApprovedDate(new Date(CalculatorService.parseLong(rs.getString("approved_date"))));
         importOrder.setImportExpectedDate(new Date(CalculatorService.parseLong(rs.getString("import_expected_date"))));
-        importOrder.setAccepted(rs.getBoolean("is_accepted"));
+        importOrder.setIsAccepted(isAccepted);
         importOrder.setRejectedReason(rs.getString("rejected_reason"));
         importOrder.setDeleted(rs.getBoolean("is_deleted"));
         importOrder.setImportOrderDetails(importOrderDetails);
@@ -63,9 +73,9 @@ public class ImportOrderDAO implements RowMapper<ImportOrder> {
             ps.setLong(2, t.getCreatedBy());
             ps.setString(3, t.getCreatedDate().getTime() + "");
             ps.setLong(4, t.getApprovedBy());
-            ps.setString(5, t.getApprovedDate().getTime()+"");
-            ps.setString(6, t.getImportExpectedDate().getTime()+"");
-            ps.setBoolean(7, t.isAccepted());
+            ps.setString(5, t.getApprovedDate().getTime() + "");
+            ps.setString(6, t.getImportExpectedDate().getTime() + "");
+            ps.setBoolean(7, t.getIsAccepted());
             ps.setString(8, t.getRejectedReason());
             ps.setBoolean(9, t.isDeleted());
             check = ps.executeUpdate();
@@ -125,16 +135,16 @@ public class ImportOrderDAO implements RowMapper<ImportOrder> {
                      """;
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, t.getImportOrderCode());
-            ps.setLong(2, t.getCreatedBy());
-            ps.setString(3, t.getCreatedDate().getTime() + "");
-            ps.setLong(4, t.getApprovedBy());
-            ps.setString(5, t.getApprovedDate().getTime()+"");
-            ps.setString(6, t.getImportExpectedDate().getTime()+"");
-            ps.setBoolean(7, t.isAccepted());
-            ps.setString(8, t.getRejectedReason());
-            ps.setBoolean(9, t.isDeleted());
-            ps.setLong(10, CalculatorService.parseLong(id));
+            ps.setObject(1, t.getImportOrderCode());
+            ps.setObject(2, t.getCreatedBy());
+            ps.setObject(3, t.getCreatedDate().getTime() + "");
+            ps.setObject(4, t.getApprovedBy());
+            ps.setObject(5, t.getApprovedDate().getTime() + "");
+            ps.setObject(6, t.getImportExpectedDate().getTime() + "");
+            ps.setObject(7, t.getIsAccepted());
+            ps.setObject(8, t.getRejectedReason());
+            ps.setObject(9, t.isDeleted());
+            ps.setObject(10, CalculatorService.parseLong(id));
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -153,6 +163,64 @@ public class ImportOrderDAO implements RowMapper<ImportOrder> {
             e.printStackTrace();
         }
         return check > 0;
+    }
+
+    public Long addNewAndGetKey(ImportOrder t) throws SQLException, ClassNotFoundException {
+        String sql = """
+                     INSERT INTO [import_order] (
+                     import_order_code, 
+                     created_by, 
+                     created_date, 
+                     approved_by, 
+                     approved_date,
+                     import_expected_date,
+                     is_accepted, 
+                     rejected_reason, 
+                     is_deleted) 
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                     """;
+        int check = 0;
+        Long newId = -1L;
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            ps.setObject(1, t.getImportOrderCode());
+            ps.setObject(2, t.getCreatedBy());
+            ps.setObject(3, t.getCreatedDate().getTime() + "");
+            ps.setObject(4, t.getApprovedBy());
+            ps.setObject(5, t.getApprovedDate().getTime() + "");
+            ps.setObject(6, t.getImportExpectedDate().getTime() + "");
+            ps.setObject(7, t.getIsAccepted());
+            ps.setObject(8, t.getRejectedReason());
+            ps.setObject(9, t.isDeleted());
+            check = ps.executeUpdate();
+            if (check > 0) {
+                ResultSet rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    newId = rs.getLong(1);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return newId;
+    }
+
+    public ImportOrder getByOrderCode(String code) throws SQLException, ClassNotFoundException {
+        String sql = "SELECT * FROM [import_order] WHERE import_order_code = ?";
+        ImportOrder importOrder = ImportOrder.builder()
+                .importOrderId(0L)
+                .build();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setObject(1, code);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    importOrder = mapRow(rs);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return importOrder;
     }
 
 }
