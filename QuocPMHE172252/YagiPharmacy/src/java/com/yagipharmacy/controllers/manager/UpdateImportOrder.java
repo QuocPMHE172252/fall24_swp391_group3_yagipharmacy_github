@@ -4,8 +4,12 @@
  */
 package com.yagipharmacy.controllers.manager;
 
+import com.google.gson.Gson;
 import com.yagipharmacy.DAO.ImportOrderDAO;
+import com.yagipharmacy.DAO.ImportOrderDetailDAO;
+import com.yagipharmacy.constant.services.CalculatorService;
 import com.yagipharmacy.entities.ImportOrder;
+import com.yagipharmacy.entities.ImportOrderDetail;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,15 +17,17 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
  *
  * @author admin
  */
-@WebServlet(name = "ImportOrderList", urlPatterns = {"/manager/ImportOrderList"})
-public class ImportOrderList extends HttpServlet {
+@WebServlet(name = "UpdateImportOrder", urlPatterns = {"/manager/UpdateImportOrder"})
+public class UpdateImportOrder extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +46,10 @@ public class ImportOrderList extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ImportOrderList</title>");
+            out.println("<title>Servlet UpdateImportOrder</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ImportOrderList at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet UpdateImportOrder at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,32 +67,15 @@ public class ImportOrderList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ImportOrderDAO importOrderDAO = new ImportOrderDAO();
-        List<ImportOrder> dataAll = new ArrayList<>();
-        List<ImportOrder> data = new ArrayList<>();
+        String imp_id = request.getParameter("imp_id");
         try {
-            dataAll = importOrderDAO.getAll();
-            String reject_status = request.getParameter("reject_status");
-            String delete_status = request.getParameter("delete_status");
-            if (reject_status == null) {
-                reject_status = "all";
-            }
-            if (delete_status == null) {
-                delete_status = "all";
-            }
-            List<ImportOrder> tempData = getByAccept(dataAll, reject_status);
-            data = getByDeleted(tempData, delete_status);
-
+            ImportOrder importOrder = new ImportOrderDAO().getById(imp_id);
+            String dataImportOrder = new Gson().toJson(importOrder);
+            request.setAttribute("dataImportOrder", dataImportOrder);
+            request.getRequestDispatcher("UpdateImportOrder.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        request.setAttribute("data", data);
-        String created = request.getParameter("created");
-        if (created != null) {
-            request.setAttribute("created", created);
-        }
-
-        request.getRequestDispatcher("ImportOrderList.jsp").forward(request, response);
     }
 
     /**
@@ -100,53 +89,31 @@ public class ImportOrderList extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    public List<ImportOrder> getByAccept(List<ImportOrder> inputData, String target) {
-        boolean checkEq = target.equals("all");
-        List<ImportOrder> list = new ArrayList<>();
-        if (checkEq) {
-            return inputData;
+        String submit_import_detail_id = request.getParameter("submit_import_detail_id");
+        String submit_processing = request.getParameter("submit_processing");
+        String submit_batch_code = request.getParameter("submit_batch_code");
+        String submit_import_price = request.getParameter("submit_import_price");
+        String submit_import_date = request.getParameter("submit_import_date");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        ImportOrderDetailDAO importOrderDetailDAO = new ImportOrderDetailDAO();
+        Long imp_id = 0L;
+        try {
+            Long processing = CalculatorService.parseLong(submit_processing);
+            Double importPrice = CalculatorService.parseDouble(submit_import_price);
+            Date importDate = formatter.parse(submit_import_date);
+            ImportOrderDetail findingImportOrderDetail = importOrderDetailDAO.getById(submit_import_detail_id);
+            imp_id = findingImportOrderDetail.getImportOrderId();
+            findingImportOrderDetail.setProcessing(processing);
+            findingImportOrderDetail.setBatchCode(submit_batch_code);
+            findingImportOrderDetail.setImportPrice(importPrice);
+            findingImportOrderDetail.setImportDate(importDate);
+            importOrderDetailDAO.updateById(submit_import_detail_id, findingImportOrderDetail);
+            response.sendRedirect("UpdateImportOrder?update_success=true&imp_id="+findingImportOrderDetail.getImportOrderId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("UpdateImportOrder?update_success=false&imp_id="+imp_id);
         }
-        Boolean isAccepted = null;
-        if (target.equals("0")) {
-            isAccepted = null;
-        }
-        if (target.equals("1")) {
-            isAccepted = true;
-        }
-        if (target.equals("2")) {
-            isAccepted = false;
-        }
-        for (ImportOrder importOrder : inputData) {
-            if (importOrder == null) {
-                if (isAccepted == null) {
-                    list.add(importOrder);
-                    continue;
-                }
-            } else {
-                if (importOrder.getIsAccepted() == isAccepted) {
-                    list.add(importOrder);
-                    continue;
-                }
-            }
-        }
-        return list;
-    }
-
-    public List<ImportOrder> getByDeleted(List<ImportOrder> inputData, String target) {
-        List<ImportOrder> list = new ArrayList<>();
-        if (target.equals("all")) {
-            return inputData;
-        }
-        for (ImportOrder importOrder : inputData) {
-            if (importOrder.isDeleted() == target.equals("1")) {
-                list.add(importOrder);
-                continue;
-            }
-        }
-        return list;
+        
     }
 
     /**

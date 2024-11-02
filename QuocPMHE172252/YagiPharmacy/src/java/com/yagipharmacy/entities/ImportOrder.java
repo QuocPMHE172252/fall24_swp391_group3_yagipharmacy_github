@@ -39,4 +39,7 @@ public class ImportOrder {
         SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
         return formatter.format(date);
     }
+    public String getStatus(){
+        return "";
+    }
 }

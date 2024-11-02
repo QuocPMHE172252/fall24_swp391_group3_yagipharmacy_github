@@ -21,6 +21,7 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -110,27 +111,27 @@ public class MailService {
         return true;
     }
 
-    public String createAcceptOrderDetailsMail(String suplierId, List<ImportOrderDetail> importOrderDetails) {
+    public static String createAcceptOrderDetailsMail(String suplierId, Date importExpectedDate ,List<ImportOrderDetail> importOrderDetails) {
         String tableDetail = "";
         
         for (ImportOrderDetail importOrderDetail : importOrderDetails) {
             String row = """
                          <tr>
-                            <td>+"""+importOrderDetail.getProduct().getProductCode()+"""
+                            <td>"""+importOrderDetail.getProduct().getProductCode()+"""
                                     </td>
-                            <td>+"""+importOrderDetail.getProduct().getProductName()+"""
+                            <td>"""+importOrderDetail.getProduct().getProductName()+"""
                                     </td>
-                            <td>+"""+importOrderDetail.getUnit().getUnitName()+"""
+                            <td>"""+importOrderDetail.getUnit().getUnitName()+"""
                                     </td>
-                            <td>+"""+importOrderDetail.getQuantity()+"""
+                            <td>"""+importOrderDetail.getQuantity()+"""
                                     </td>
                          </tr>
                          """;
+            tableDetail += row;
         }
         String mail = """
-                      <h1>Đơn xác nhận đặt thuốc</h1><br>
-                      <table>
-                      <thead>Bảng nhập hàng</thead>
+                      <h1>Bảng sản phẩm yêu cầu</h1><br>
+                      <table border='solid'>
                       <tr>
                       <th>Mã sản phẩm</td>
                       <th>Tên sản phẩm</td>
@@ -140,7 +141,7 @@ public class MailService {
                 + """ 
                                            </table><br>
                       """;
-        mail += "<span></span>";
+        mail += "<span style='color:red'>Ngày nhập yêu cầu:"+importExpectedDate.getDate()+"/"+importExpectedDate.getMonth()+"/"+(importExpectedDate.getYear()+1900)+"</span>";
         return mail;
     }
 }

@@ -144,7 +144,7 @@
                                                         <th>Ngày tạo</th>
                                                         <th>Ngày chấp thuận</th>
                                                         <th>Ngày nhận dự kiến</th>
-                                                        <th>Trạng thái đơn hàng</th>
+                                                        <th>Kiểm định</th>
                                                         <th>Xác nhận</th>
                                                         <th>Xóa</th>
                                                         <th>Xóa/Khôi phục</th>
@@ -174,13 +174,13 @@
                                                             </c:if>
                                                             <c:if test="${imp_order.isAccepted!=null}">
                                                                     <td style="display: flex;flex-direction: row">
-                                                                        <a class="btn-sm" style="background-color: gray">Approve</a>
-                                                                        <a class="btn-sm">Reject</a>
+                                                                        <a class="btn-sm" style="background-color: ${imp_order.isAccepted.booleanValue()==true?"gray":"white"}">Approve</a>
+                                                                        <a class="btn-sm" style="background-color: ${imp_order.isAccepted.booleanValue()!=true?"gray":"white"}">Reject</a>
                                                                     </td>
                                                             </c:if>
                                                             <td>${imp_order.isDeleted()?"yes":"no"}</td>
                                                             <td><a href="./DeleteImportOrder?id=${imp_order.importOrderId}" class="btn btn-warning">${imp_order.isDeleted()?"Khôi phục":"Xóa"}</a></td>
-                                                            <td><a href="#" class="btn btn-warning">Cập nhật</a></td>
+                                                            <td><a href="UpdateImportOrder?imp_id=${imp_order.importOrderId}" class="btn btn-warning">Cập nhật</a></td>
                                                         </tr>
                                                     </c:forEach>
                                                 </tbody>
@@ -298,6 +298,11 @@
         <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>-->
         <!-- Khởi tạo Select2 -->
         <script>
+            <c:if test="${created!=null}">
+                if('${created}'=='true'){
+                    window.alert('Tạo đơn nhập thành công');
+                }
+            </c:if>
                                 $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
                                     type: "line",
                                     height: "70",

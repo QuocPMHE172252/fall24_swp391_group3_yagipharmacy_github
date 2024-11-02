@@ -66,6 +66,7 @@ public class ApproveImportOrder extends HttpServlet {
             if(findingImportOrder.getImportOrderId()!=0){
                 findingImportOrder.setIsAccepted(status.equals("1"));
                 findingImportOrder.setRejectedReason(reject_reason);
+                findingImportOrder.setApprovedBy(1L);
                 boolean check = importOrderDAO.updateById(import_order_id, findingImportOrder);
                 response.sendRedirect("ImportOrderList");
             }

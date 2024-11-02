@@ -14,6 +14,7 @@ import com.yagipharmacy.entities.ProductExcipient;
 import com.yagipharmacy.entities.ProductImage;
 import com.yagipharmacy.entities.ProductUnit;
 import com.yagipharmacy.entities.Supplier;
+import com.yagipharmacy.entities.User;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -31,6 +32,7 @@ public class ProductDAO implements RowMapper<Product> {
     @Override
     public Product mapRow(ResultSet rs) throws SQLException, ClassNotFoundException{
         Date createdDate = new Date(CalculatorService.parseLong(rs.getString("created_date")));
+        User author = new UserDAO().getById(rs.getLong("authorId")+"");
         ProductCategoryDAO productCategoryDAO = new ProductCategoryDAO();
         ProductUnitDAO productUnitDAO = new ProductUnitDAO();
         ProductExcipientDAO productExcipientDAO = new ProductExcipientDAO();
@@ -40,7 +42,6 @@ public class ProductDAO implements RowMapper<Product> {
         List<ProductExcipient> productExcipients = productExcipientDAO.getListByProductId(rs.getLong("product_id")+"");
         List<ProductUnit> productUnits = productUnitDAO.getListByProductId(rs.getLong("product_id")+"");
         List<ProductImage> productImages = productImageDAO.getListByProductId(rs.getLong("product_id")+"");
-        Supplier supplier = supplierDAO.getById(rs.getString("supplier_id"));
         return Product.builder()
                 .productId(rs.getLong("product_id"))
                 .productCode(rs.getString("product_code"))
@@ -58,7 +59,8 @@ public class ProductDAO implements RowMapper<Product> {
                 .productExcipients(productExcipients)
                 .productUnits(productUnits)
                 .productImages(productImages)
-                .supplier(supplier)
+                .authorId(rs.getLong("authorId"))
+                .author(author)
                 .build();
     }
 
@@ -67,6 +69,7 @@ public class ProductDAO implements RowMapper<Product> {
         String sql = """
         INSERT INTO product (
             product_code,
+            authorId,
             product_category_id,
             product_country_code,
             brand,
@@ -78,21 +81,22 @@ public class ProductDAO implements RowMapper<Product> {
             created_date,
             is_deleted
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
     """;
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
             ps.setObject(1, t.getProductCode());
-            ps.setObject(2, t.getProductCategoryId());
-            ps.setObject(3, t.getProductCountryCode());
-            ps.setObject(4, t.getBrand());
-            ps.setObject(5, t.getProductTarget());
-            ps.setObject(6, t.getProductName());
-            ps.setObject(7, t.getDosageForm());
-            ps.setObject(8, t.getProductSpecification());
-            ps.setObject(9, t.getProductDescription());
-            ps.setObject(10, t.getCreatedDate());
-            ps.setObject(11, t.isDeleted());
+            ps.setObject(2, t.getAuthorId());
+            ps.setObject(3, t.getProductCategoryId());
+            ps.setObject(4, t.getProductCountryCode());
+            ps.setObject(5, t.getBrand());
+            ps.setObject(6, t.getProductTarget());
+            ps.setObject(7, t.getProductName());
+            ps.setObject(8, t.getDosageForm());
+            ps.setObject(9, t.getProductSpecification());
+            ps.setObject(10, t.getProductDescription());
+            ps.setObject(11, t.getCreatedDate());
+            ps.setObject(12, t.isDeleted());
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -144,6 +148,7 @@ public class ProductDAO implements RowMapper<Product> {
         UPDATE product
         SET
             product_code = ?,
+            authorId = ?,
             product_category_id = ?,
             product_country_code = ?,
             brand = ?,
@@ -160,17 +165,18 @@ public class ProductDAO implements RowMapper<Product> {
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
             ps.setObject(1, t.getProductCode());
-            ps.setObject(2, t.getProductCategoryId());
-            ps.setObject(3, t.getProductCountryCode());
-            ps.setObject(4, t.getBrand());
-            ps.setObject(5, t.getProductTarget());
-            ps.setObject(6, t.getProductName());
-            ps.setObject(7, t.getDosageForm());
-            ps.setObject(8, t.getProductSpecification());
-            ps.setObject(9, t.getProductDescription());
-            ps.setObject(10, t.getCreatedDate());
-            ps.setObject(11, t.isDeleted());
-            ps.setObject(12, CalculatorService.parseLong(id));
+            ps.setObject(2, t.getAuthorId());
+            ps.setObject(3, t.getProductCategoryId());
+            ps.setObject(4, t.getProductCountryCode());
+            ps.setObject(5, t.getBrand());
+            ps.setObject(6, t.getProductTarget());
+            ps.setObject(7, t.getProductName());
+            ps.setObject(8, t.getDosageForm());
+            ps.setObject(9, t.getProductSpecification());
+            ps.setObject(10, t.getProductDescription());
+            ps.setObject(11, t.getCreatedDate());
+            ps.setObject(12, t.isDeleted());
+            ps.setObject(13, CalculatorService.parseLong(id));
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -219,6 +225,7 @@ public class ProductDAO implements RowMapper<Product> {
         String sql = """
         INSERT INTO product (
             product_code,
+            authorId,
             product_category_id,
             product_country_code,
             brand,
@@ -230,21 +237,22 @@ public class ProductDAO implements RowMapper<Product> {
             created_date,
             is_deleted
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """;
         Long check = -1L;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql,PreparedStatement.RETURN_GENERATED_KEYS);) {
             ps.setObject(1, t.getProductCode());
-            ps.setObject(2, t.getProductCategoryId());
-            ps.setObject(3, t.getProductCountryCode());
-            ps.setObject(4, t.getBrand());
-            ps.setObject(5, t.getProductTarget());
-            ps.setObject(6, t.getProductName());
-            ps.setObject(7, t.getDosageForm());
-            ps.setObject(8, t.getProductSpecification());
-            ps.setObject(9, t.getProductDescription());
-            ps.setObject(10, t.getCreatedDate().getTime()+"");
-            ps.setObject(11, t.isDeleted());
+            ps.setObject(2, t.getAuthorId());
+            ps.setObject(3, t.getProductCategoryId());
+            ps.setObject(4, t.getProductCountryCode());
+            ps.setObject(5, t.getBrand());
+            ps.setObject(6, t.getProductTarget());
+            ps.setObject(7, t.getProductName());
+            ps.setObject(8, t.getDosageForm());
+            ps.setObject(9, t.getProductSpecification());
+            ps.setObject(10, t.getProductDescription());
+            ps.setObject(11, t.getCreatedDate().getTime()+"");
+            ps.setObject(12, t.isDeleted());
             int affectedRows = ps.executeUpdate();
             if(affectedRows>0){
                 try(ResultSet rs = ps.getGeneratedKeys()) {

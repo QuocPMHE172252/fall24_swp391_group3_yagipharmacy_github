@@ -138,6 +138,7 @@ public class AddProduct extends HttpServlet {
                 Product newProduct = Product.builder()
                         .productId(0L)
                         .productCode(product_code)
+                        .authorId(1L)
                         .productCategoryId(CalculatorService.parseLong(product_category))
                         .productCountryCode(product_country_code)
                         .brand(brand)

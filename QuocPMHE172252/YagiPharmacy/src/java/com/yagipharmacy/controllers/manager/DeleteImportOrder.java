@@ -70,6 +70,7 @@ public class DeleteImportOrder extends HttpServlet {
             if (findingImportOrder.getImportOrderId() != 0L) {
             boolean isDelete = findingImportOrder.isDeleted();
             findingImportOrder.setDeleted(!isDelete);
+            findingImportOrder.setApprovedBy(null);
             importOrderDAO.updateById(id, findingImportOrder);
         }
 
