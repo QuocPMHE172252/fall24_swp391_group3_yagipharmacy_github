@@ -28,5 +28,6 @@ public class Staff {
     private String staffEducation;
     private String staffExperience;
     private String staffDescription;
+    private boolean gender;
     private boolean isDeleted;
 }

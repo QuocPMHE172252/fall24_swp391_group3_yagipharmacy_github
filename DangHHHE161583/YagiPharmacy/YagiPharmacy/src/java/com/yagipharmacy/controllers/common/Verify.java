@@ -108,6 +108,7 @@ public class Verify extends HttpServlet {
             } else {
                 request.setAttribute("error", "Bạn đã nhập sai mã kích hoạt hoặc đường dẫn hết hạn!");
                 request.setAttribute("activecode", activeCode);
+                request.setAttribute("email", email);
                 doGet(request, response);
             }
         } catch (Exception e) {
