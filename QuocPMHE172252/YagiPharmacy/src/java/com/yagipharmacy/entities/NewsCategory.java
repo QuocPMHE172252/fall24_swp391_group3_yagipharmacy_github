@@ -28,4 +28,5 @@ public class NewsCategory {
     private String newsCategoryName;
     private String newsCategoryDetail;
     private boolean isDelete;
+    private NewsCategory parentNewsCategory;
 }
