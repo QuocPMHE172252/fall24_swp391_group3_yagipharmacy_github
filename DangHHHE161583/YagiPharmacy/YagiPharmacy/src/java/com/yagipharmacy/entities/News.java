@@ -4,7 +4,11 @@
  */
 package com.yagipharmacy.entities;
 
+import com.yagipharmacy.constant.variables.RejectStatus;
+import com.yagipharmacy.constant.variables.UserRole;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,5 +36,13 @@ public class News {
     private String newsHashtag;
     private Long updatedId;
     private Date createdDate;
+    private int isRejected;
+    private String rejectedReason;
     private boolean isDeleted;
+    private NewsCategory newsCategory;
+    
+    public String getRejectName(){
+        return  RejectStatus.getNameById(isRejected);
+    }
+    
 }

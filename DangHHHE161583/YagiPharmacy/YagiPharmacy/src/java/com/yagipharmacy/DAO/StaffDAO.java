@@ -29,6 +29,7 @@ public class StaffDAO implements RowMapper<Staff> {
         String staffEducation = rs.getString("staff_education");
         String staffExperience = rs.getString("staff_experience");
         String staffDescription = rs.getString("staff_description");
+        boolean gender = rs.getBoolean("gender");
         boolean isDeleted = rs.getBoolean("is_deleted");
         return Staff.builder()
                 .staffId(staffId)
@@ -37,6 +38,7 @@ public class StaffDAO implements RowMapper<Staff> {
                 .staffEducation(staffEducation)
                 .staffExperience(staffExperience)
                 .staffDescription(staffDescription)
+                .gender(gender)
                 .isDeleted(isDeleted)
                 .build();
     }
@@ -50,8 +52,9 @@ public class StaffDAO implements RowMapper<Staff> {
                      staff_education, 
                      staff_experience, 
                      staff_description,
+                     gender,
                      is_deleted) 
-                     VALUES (?, ?, ?, ?, ?, ?)
+                     VALUES (?, ?, ?, ?, ?, ?,?)
                      """;
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -61,7 +64,8 @@ public class StaffDAO implements RowMapper<Staff> {
             ps.setObject(3, t.getStaffEducation());
             ps.setObject(4, t.getStaffExperience());
             ps.setObject(5, t.getStaffDescription());
-            ps.setObject(6, t.isDeleted());
+            ps.setObject(6, t.isGender());
+            ps.setObject(7, t.isDeleted());
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -107,18 +111,22 @@ public class StaffDAO implements RowMapper<Staff> {
                      staff_major = ?, 
                      staff_education = ?, 
                      staff_experience = ?, 
-                     staff_description = ? 
+                     staff_description = ?,
+                     gender = ?,
+                     is_deleted = ?,
                      WHERE staff_id = ?
                      """;
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setLong(1, t.getUserId());
-            ps.setString(2, t.getStaffMajor());
-            ps.setString(3, t.getStaffEducation());
-            ps.setString(4, t.getStaffExperience());
-            ps.setString(5, t.getStaffDescription());
-            ps.setLong(6, CalculatorService.parseLong(id));
+            ps.setObject(1, t.getUserId());
+            ps.setObject(2, t.getStaffMajor());
+            ps.setObject(3, t.getStaffEducation());
+            ps.setObject(4, t.getStaffExperience());
+            ps.setObject(5, t.getStaffDescription());
+            ps.setObject(6, t.isGender());
+            ps.setObject(7, t.isDeleted());
+            ps.setObject(8, CalculatorService.parseLong(id));
             check = ps.executeUpdate();
         }catch (Exception e) {
             e.printStackTrace();

@@ -18,7 +18,7 @@ import java.util.List;
  */
 public interface RowMapper<T> {
 
-    T mapRow(ResultSet rs) throws SQLException;
+    T mapRow(ResultSet rs) throws SQLException, ClassNotFoundException;
 
     boolean addNew(T t) throws SQLException, ClassNotFoundException;
 

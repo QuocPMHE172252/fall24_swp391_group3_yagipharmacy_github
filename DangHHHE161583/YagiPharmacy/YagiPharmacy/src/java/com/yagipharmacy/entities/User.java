@@ -4,6 +4,7 @@
  */
 package com.yagipharmacy.entities;
 
+import com.yagipharmacy.constant.variables.UserRole;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,8 +31,6 @@ public class User {
     private String userPassword;
     private Long roleLevel;
     private String userAvatar;
-    private String userBank;
-    private String userBankCode;
     private String userProvince;
     private String userDistrict;
     private String userCommune;
@@ -41,4 +40,8 @@ public class User {
     private String activeCode;
     private boolean isActive;
     private boolean isDeleted;
+    
+    public String getRoleNamee(){
+        return  UserRole.getRoleNameById(roleLevel);
+    }
 }

@@ -9,6 +9,7 @@ package com.yagipharmacy.constant.services;
  * @author admin
  */
 import com.yagipharmacy.constant.variables.SystemVariable;
+import com.yagipharmacy.entities.ImportOrderDetail;
 import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
@@ -20,6 +21,7 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -106,5 +108,28 @@ public class MailService {
             return false;
         }
         return true;
+    }
+
+    public String createAcceptOrderDetailsMail(String suplierId, List<ImportOrderDetail> importOrderDetails) {
+        String tableDetail = "";
+        String mail = """
+                      <h1>Đơn xác nhận đặt thuốc</h1><br>
+                      <table>
+                      <thead>Bảng nhập hàng</thead>
+                      <tr>
+                      <th>Mã sản phẩm</td>
+                      <th>Tên sản phẩm</td>
+                      <th>Đơn vị</td>
+                      <th>Số lượng</td>
+                      </tr>""" + tableDetail
+                + """ 
+                                           </table>
+                      """;
+        for (ImportOrderDetail importOrderDetail : importOrderDetails) {
+            String row = """
+                         <>
+                         """;
+        }
+        return mail;
     }
 }
