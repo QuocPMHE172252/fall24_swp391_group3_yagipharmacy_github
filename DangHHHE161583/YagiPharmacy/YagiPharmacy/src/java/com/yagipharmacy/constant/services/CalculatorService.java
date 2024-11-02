@@ -11,7 +11,7 @@ package com.yagipharmacy.constant.services;
 public class CalculatorService {
     public static Long parseLong(String n) {
         if(n==null){
-            n = "0";
+            n ="0";
         }
         try {
             Long i = Long.parseLong(n.trim());
@@ -23,6 +23,9 @@ public class CalculatorService {
     }
 
     public static Double parseDouble(String n) {
+        if(n==null){
+            n ="0";
+        }
         try {
             Double i = Double.parseDouble(n.trim());
             return i;

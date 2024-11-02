@@ -22,9 +22,14 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class NewsCategory {
+
     private Long newsCategoryId;
     private Long newsCategoryParentId;
+    private Long newsCategoryLevel;
     private String newsCategoryName;
     private String newsCategoryDetail;
+    private String newsImg;
     private boolean isDelete;
+    private int numberNews;
+    private NewsCategory parentNewsCategory;
 }
