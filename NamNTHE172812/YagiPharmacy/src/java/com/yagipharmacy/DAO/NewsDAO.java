@@ -8,6 +8,7 @@ import com.yagipharmacy.JDBC.RowMapper;
 import com.yagipharmacy.JDBC.SQLServerConnection;
 import com.yagipharmacy.constant.services.CalculatorService;
 import com.yagipharmacy.entities.News;
+import com.yagipharmacy.entities.NewsCategory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,8 +24,11 @@ import java.util.List;
 public class NewsDAO implements RowMapper<News> {
 
     @Override
-    public News mapRow(ResultSet rs) throws SQLException {
+    public News mapRow(ResultSet rs) throws SQLException, ClassNotFoundException {
         Long dateTime = CalculatorService.parseLong(rs.getString("created_date"));
+        NewsCategoryDAO newsCategoryDAO = new NewsCategoryDAO();
+        List<NewsCategory> newsCategorys = new ArrayList<>();
+        NewsCategory findingNewsCate = newsCategoryDAO.getById(rs.getLong("news_category_id") + "");
         return News.builder()
                 .newsId(rs.getLong("news_id"))
                 .newsCategoryId(rs.getLong("news_category_id"))
@@ -35,7 +39,11 @@ public class NewsDAO implements RowMapper<News> {
                 .newsHashtag(rs.getString("news_hashtag"))
                 .updatedId(rs.getLong("updated_id"))
                 .createdDate(new Date(dateTime))
+                .isRejected(rs.getInt("is_rejected"))
+                .rejectedReason(rs.getString("rejected_reason"))
                 .isDeleted(rs.getBoolean("is_deleted"))
+                .viewCount(rs.getInt("view_count"))
+                .newsCategory(findingNewsCate)
                 .build();
     }
 
@@ -51,9 +59,11 @@ public class NewsDAO implements RowMapper<News> {
                          news_hashtag,
                          updated_id,
                          created_date,
+                         is_rejected,
+                         rejected_reason,
                          is_deleted
                      )
-                     VALUES (?,?,?,?,?,?,?,?,?)
+                     VALUES (?,?,?,?,?,?,?,?,?,?,?)
                      """;
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
@@ -64,8 +74,10 @@ public class NewsDAO implements RowMapper<News> {
             ps.setObject(5, t.getNewsImage());
             ps.setObject(6, t.getNewsHashtag());
             ps.setObject(7, t.getUpdatedId());
-            ps.setObject(8, t.getCreatedDate().getTime()+"");
-            ps.setObject(9, t.isDeleted());
+            ps.setObject(8, t.getCreatedDate().getTime() + "");
+            ps.setObject(9, 1);
+            ps.setObject(10, t.getRejectedReason());
+            ps.setObject(11, t.isDeleted());
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,7 +95,7 @@ public class NewsDAO implements RowMapper<News> {
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                list.add(mapRow(rs)); // Call the mapRow method to convert ResultSet to Post object
+                list.add(mapRow(rs));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -91,9 +103,77 @@ public class NewsDAO implements RowMapper<News> {
         return list;
     }
 
+    public List<News> getTop5new() throws SQLException, ClassNotFoundException {
+        String sql = """
+                      SELECT top (5) *
+                      FROM [news] order by [created_date] desc
+                     """;
+        List<News> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<News> getTop6hot() throws SQLException, ClassNotFoundException {
+        String sql = """
+                      SELECT top (6) *
+                      FROM [news] order by [view_count] desc
+                     """;
+        List<News> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<News> getList(String search, String category, int currentpage, int pagesize) throws SQLException, ClassNotFoundException {
+        String sql = "  select * from [news] where [news_title] like '%" + search + "%' ";
+        if (!category.isEmpty()) {
+            sql += "and [news_category_id] = " + category;
+        }
+        sql += "order by [news_id] OFFSET " + pagesize * (currentpage - 1) + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY";
+        List<News> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public int countList(String search, String category) throws SQLException, ClassNotFoundException {
+        String sql = "  select count(*) from [news] where [news_title] like '%" + search + "%' ";
+        if (!category.isEmpty()) {
+            sql += "and [news_category_id] = " + category;
+        }
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+               return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     @Override
     public News getById(String id) throws SQLException, ClassNotFoundException {
-       String sql = """
+        String sql = """
                      SELECT *
                      FROM [news] WHERE news_id = ?
                      """;
@@ -114,7 +194,7 @@ public class NewsDAO implements RowMapper<News> {
 
     @Override
     public boolean updateById(String id, News t) throws SQLException, ClassNotFoundException {
-       String sql = """
+        String sql = """
                      UPDATE [news]
                      SET
                          news_category_id = ?,
@@ -125,21 +205,25 @@ public class NewsDAO implements RowMapper<News> {
                          news_hashtag = ?,
                          updated_id = ?,
                          created_date = ?,
+                         is_rejected,
+                         rejected_reason,
                          is_deleted = ?
                      WHERE
                          news_id = ?;
                      """;
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
-            ps.setObject(1,t.getNewsCategoryId());
+            ps.setObject(1, t.getNewsCategoryId());
             ps.setObject(2, t.getCreatorId());
             ps.setObject(3, t.getNewsTitle());
             ps.setObject(4, t.getNewsContent());
             ps.setObject(5, t.getNewsImage());
             ps.setObject(6, t.getNewsHashtag());
             ps.setObject(7, t.getUpdatedId());
-            ps.setObject(8, t.getCreatedDate().getTime()+"");
-            ps.setObject(9, t.isDeleted());
+            ps.setObject(8, t.getCreatedDate().getTime() + "");
+            ps.setObject(9, t.getIsRejected());
+            ps.setObject(10, t.getRejectedReason());
+            ps.setObject(11, t.isDeleted());
             ps.setObject(10, CalculatorService.parseLong(id));
             check = ps.executeUpdate();
         } catch (Exception e) {
@@ -158,6 +242,44 @@ public class NewsDAO implements RowMapper<News> {
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
             ps.setObject(1, CalculatorService.parseLong(id));
+            check = ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return check > 0;
+    }
+
+    public List<News> getAllNewsNotDeleted() throws SQLException, ClassNotFoundException {
+        String sql = """
+                     SELECT *
+                     FROM [news] where [is_deleted] = 0
+                     """;
+        List<News> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs)); // Call the mapRow method to convert ResultSet to Post object
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public boolean updateRejectById(String id, News t) throws SQLException, ClassNotFoundException {
+        String sql = """
+                     UPDATE [news]
+                     SET
+                         is_rejected=?,
+                         rejected_reason =?
+                     WHERE
+                         news_id = ?;
+                     """;
+        int check = 0;
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, t.getIsRejected());
+            ps.setObject(2, t.getRejectedReason());
+            ps.setObject(3, CalculatorService.parseLong(id));
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

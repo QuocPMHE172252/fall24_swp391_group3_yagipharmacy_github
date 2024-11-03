@@ -156,12 +156,8 @@
                                         </div>
 
                                         <div class="form-group  mb-3 col-md-6">
-                                            <label>Nhà cung cấp*</label><br/>
-                                            <select class="form-control-sm" id="suplier_id" name="suplier_id" required>
-                                                <c:forEach items="${suppliers}" var="supplier">
-                                                    <option value="${supplier.supplierId}">${supplier.supplierName}</option>
-                                                </c:forEach>
-                                            </select>
+                                            <label>Thương hiệu*</label><br/>
+                                            <input type="text" class="form-control" name="brand" value="" id="brand" placeholder="Thương hiệu sản xuất" required>
                                         </div>
                                         <div class="form-group  mb-3 col-md-6">
                                             <label>Quốc gia*</label><br/>

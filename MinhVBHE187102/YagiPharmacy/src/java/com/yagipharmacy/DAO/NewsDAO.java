@@ -39,7 +39,7 @@ public class NewsDAO implements RowMapper<News> {
                 .newsHashtag(rs.getString("news_hashtag"))
                 .updatedId(rs.getLong("updated_id"))
                 .createdDate(new Date(dateTime))
-                .isRejected(rs.getBoolean("is_rejected"))
+                .isRejected(rs.getInt("is_rejected"))
                 .rejectedReason(rs.getString("rejected_reason"))
                 .isDeleted(rs.getBoolean("is_deleted"))
                 .newsCategory(findingNewsCate)
@@ -74,7 +74,7 @@ public class NewsDAO implements RowMapper<News> {
             ps.setObject(6, t.getNewsHashtag());
             ps.setObject(7, t.getUpdatedId());
             ps.setObject(8, t.getCreatedDate().getTime() + "");
-            ps.setObject(9, t.isRejected());
+            ps.setObject(9, 1);
             ps.setObject(10, t.getRejectedReason());
             ps.setObject(11, t.isDeleted());
             check = ps.executeUpdate();
@@ -152,7 +152,7 @@ public class NewsDAO implements RowMapper<News> {
             ps.setObject(6, t.getNewsHashtag());
             ps.setObject(7, t.getUpdatedId());
             ps.setObject(8, t.getCreatedDate().getTime() + "");
-            ps.setObject(9, t.isRejected());
+            ps.setObject(9, t.getIsRejected());
             ps.setObject(10, t.getRejectedReason());
             ps.setObject(11, t.isDeleted());
             ps.setObject(10, CalculatorService.parseLong(id));
@@ -195,6 +195,27 @@ public class NewsDAO implements RowMapper<News> {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public boolean updateRejectById(String id, News t) throws SQLException, ClassNotFoundException {
+        String sql = """
+                     UPDATE [news]
+                     SET
+                         is_rejected=?,
+                         rejected_reason =?
+                     WHERE
+                         news_id = ?;
+                     """;
+        int check = 0;
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, t.getIsRejected());
+            ps.setObject(2, t.getRejectedReason());
+            ps.setObject(3, CalculatorService.parseLong(id));
+            check = ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return check > 0;
     }
 
 }

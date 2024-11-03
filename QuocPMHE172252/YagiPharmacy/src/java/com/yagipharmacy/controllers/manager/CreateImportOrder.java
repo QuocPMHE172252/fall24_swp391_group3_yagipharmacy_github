@@ -8,10 +8,13 @@ import com.google.gson.Gson;
 import com.yagipharmacy.DAO.ImportOrderDAO;
 import com.yagipharmacy.DAO.ImportOrderDetailDAO;
 import com.yagipharmacy.DAO.ProductDAO;
+import com.yagipharmacy.DAO.SupplierDAO;
 import com.yagipharmacy.constant.services.CalculatorService;
+import com.yagipharmacy.constant.services.MailService;
 import com.yagipharmacy.entities.ImportOrder;
 import com.yagipharmacy.entities.ImportOrderDetail;
 import com.yagipharmacy.entities.Product;
+import com.yagipharmacy.entities.Supplier;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -70,13 +73,19 @@ public class CreateImportOrder extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ProductDAO productDAO = new ProductDAO();
+        SupplierDAO supplierDAO = new SupplierDAO();
         List<Product> products = new ArrayList<>();
+        List<Supplier> suppliers = new ArrayList<>();
         try {
             products = productDAO.getAll();
+            suppliers = supplierDAO.getAll();
         } catch (Exception e) {
+            e.printStackTrace();
         }
         String productsJson = new Gson().toJson(products);
+        String suppliersJson = new Gson().toJson(suppliers);
         request.setAttribute("productsJson", productsJson);
+        request.setAttribute("suppliersJson", suppliersJson);
         request.getRequestDispatcher("CreateImportOrder.jsp").forward(request, response);
     }
 
@@ -120,30 +129,51 @@ public class CreateImportOrder extends HttpServlet {
             }
             if (!checkExistOrder) {
                 newImportOrderId = importOrderDAO.addNewAndGetKey(newImportOrder);
+                System.out.println(newImportOrderId);
             }
             if (newImportOrderId != -1L) {
+                List<Long> supplierList = new ArrayList();
                 for (int i = 0; i < arrLe; i++) {
-                    String batchCode = request.getParameter("batch_code_" + arrProductStr[i]);
                     String unitIdStr = request.getParameter("unit_for_product_" + arrProductStr[i]);
                     String quantityStr = request.getParameter("quantity_" + arrProductStr[i]);
-                    String import_priceStr = request.getParameter("import_price_" + arrProductStr[i]);
+                    String supplier_id = request.getParameter("supplier_id_" + arrProductStr[i]);
 
                     Long productId = CalculatorService.parseLong(arrProductStr[i]);
                     Long unitId = CalculatorService.parseLong(unitIdStr);
                     Long quantity = CalculatorService.parseLong(quantityStr);
-                    Double importPrice = CalculatorService.parseDouble(import_priceStr);
+                    Long supplierId = CalculatorService.parseLong(supplier_id);
+                    System.out.println(supplier_id);
+                    boolean checkNotEx = true;
+                    for (Long supId : supplierList) {
+                        if(supplierId.equals(supId)){
+                            checkNotEx = false;
+                            break;
+                        }
+                    }
+                    if(checkNotEx){
+                        supplierList.add(supplierId);
+                    }
                     ImportOrderDetail newImportOrderDetail = ImportOrderDetail.builder()
-                            .batchCode(batchCode)
+                            .batchCode(null)
                             .importOrderId(newImportOrderId)
                             .productId(productId)
                             .unitId(unitId)
                             .quantity(quantity)
-                            .importPrice(importPrice)
-                            .importDate(new Date())
+                            .importPrice(null)
+                            .importDate(null)
+                            .supplierId(supplierId)
+                            .processing(0L)
                             .isDeleted(false)
                             .build();
                     boolean check = importOrderDetailDAO.addNew(newImportOrderDetail);
+                    
                 }
+                for (Long supId : supplierList) {
+                    List<ImportOrderDetail> listOrderDetails = importOrderDetailDAO.getListByImportOrderIdAndSupplierId(newImportOrderId+"",supId+"");
+                    String mailContent = MailService.createAcceptOrderDetailsMail(supId+"", importExpectedDate, listOrderDetails);
+                    MailService.sentEmail(listOrderDetails.get(0).getSupplier().getSupplierEmail(), "Yêu cầu nhập hàng", mailContent);
+                }
+                response.sendRedirect("ImportOrderList?created=true");
             }else{
                 request.setAttribute("error", "Mã nhập hàng đã tồn tại");
                 doGet(request, response);

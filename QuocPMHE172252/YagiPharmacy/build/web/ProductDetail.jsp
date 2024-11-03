@@ -14,10 +14,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>Sản phẩm | Chi tiết sản phẩm</title>
 
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css" type="text/css">
-        <!-- Font awesome -->
-        <link rel="stylesheet" href="vendor/font-awesome/css/font-awesome.min.css" type="text/css">
+        <link rel="shortcut icon" type="image/x-icon" href="https://freevector-images.s3.amazonaws.com/uploads/vector/preview/36682/36682.png" />
+        <link rel="stylesheet" href="./css/main.css">
+        <link rel="stylesheet" href="./css/font-awesome.min.css">
+        <link rel="stylesheet" href="./css/bootstrap.css">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
         <!-- Custom css - Các file css do chúng ta tự viết -->
         <link rel="stylesheet" href="assets/css/product-detail.css" type="text/css">
@@ -25,44 +27,7 @@
 
     <body>
         <!-- header -->
-        <nav class="navbar navbar-expand-md navbar-dark sticky-top bg-dark">
-            <div class="container">
-                <a class="navbar-brand" href="https://nentang.vn">Nền tảng</a>
-                <div class="navbar-collapse collapse" id="navbarCollapse">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="../index.html">Trang chủ <span class="sr-only">(current)</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="https://nentang.vn">Quản trị</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="products.html">Sản phẩm</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="about.html">Giới thiệu</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="contact.html">Liên hệ</a>
-                        </li>
-                    </ul>
-                    <form class="form-inline mt-2 mt-md-0" method="get" action="search.html">
-                        <input class="form-control mr-sm-2" type="text" placeholder="Tìm kiếm" aria-label="Search"
-                               name="keyword_tensanpham">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Tìm kiếm</button>
-                    </form>
-                </div>
-                <ul class="navbar-nav px-3">
-                    <li class="nav-item text-nowrap">
-                        <a class="nav-link" href="ViewCart">Giỏ hàng</a>
-                    </li>
-                    <li class="nav-item text-nowrap">
-                        <!-- Nếu chưa đăng nhập thì hiển thị nút Đăng nhập -->
-                        <a class="nav-link" href="login.html">Đăng nhập</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+         <jsp:include page="./layout/header.jsp"/>
         <!-- end header -->
 
         <main role="main">
@@ -118,7 +83,7 @@
                                         </div>
                                         <span class="review-no">999 reviews</span>
                                     </div>
-                                    <h4 class="price" id="price_area">Giá/: <span id="price_location">10,990,000.00 vnđ</span></h4>
+                                    <h4 class="price" style="text-decoration-line:none;" id="price_area">Giá/: <span id="price_location"></span></h4>
                                     <h5 class="">Chọn đơn vị tính:
                                         <c:forEach items="${product.productUnits}" var="p_unit">
                                             <c:if test="${p_unit.canBeSold}">
@@ -129,9 +94,8 @@
                                     </h5>
                                     <h5 class="">Danh mục:  ${product.productCategory.productCategoryName}</h5></br>
                                     <h5 class="">Quy cách:  ${product.productSpecification}</h5></br>
-                                    <h5 class="">Xuất xứ thương hiệu:  ${product.supplier.supplierCountryCode}</h5></br>
-                                    <h5 class="">Nhà sản xuất:  ${product.supplier.supplierName}</h5></br>
-                                    <h5 class="">Nước sản xuất:  ${product.supplier.supplierCountryCode}</h5></br>
+                                    <h5 class="">Xuất xứ thương hiệu:  ${product.productCountryCode}</h5></br>
+                                    <h5 class="">Nhà sản xuất:  ${product.brand}</h5></br>
 
                                     <%count = 0;%>
                                     <h5 class="">Thành phần:  <c:forEach items="${product.productExcipients}" var="p_ex">
@@ -176,16 +140,7 @@
         </main>
 
         <!-- footer -->
-        <footer class="footer mt-auto py-3">
-            <div class="container">
-                <span>Bản quyền © bởi <a href="https://nentang.vn">Nền Tảng</a> - <script>document.write(new Date().getFullYear());</script>.</span>
-                <span class="text-muted">Hành trang tới Tương lai</span>
-
-                <p class="float-right">
-                    <a href="#">Về đầu trang</a>
-                </p>
-            </div>
-        </footer>
+        <jsp:include page="./layout/footer.jsp"/>
         <!-- end footer -->
 
         <!-- Optional JavaScript -->

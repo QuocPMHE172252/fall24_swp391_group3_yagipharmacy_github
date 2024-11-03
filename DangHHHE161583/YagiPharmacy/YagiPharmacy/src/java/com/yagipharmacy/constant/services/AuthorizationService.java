@@ -9,10 +9,11 @@ import com.yagipharmacy.entities.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
+import java.util.List;
 
 /**
- *
  * @author admin
  */
 public interface AuthorizationService {
@@ -20,22 +21,21 @@ public interface AuthorizationService {
     default void loginRedirect(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         User userAuth = (User) request.getSession().getAttribute("userAuth");
-        if (userAuth != null) {
-            Long role = userAuth.getRoleLevel();
-            if (role == SystemVariable.ADMIN) {
-            }
-            if (role == SystemVariable.MANAGER) {
-            }
-            if (role == SystemVariable.MARKETER) {
-            }
-            if (role == SystemVariable.STAFF) {
-            }
-            if (role == SystemVariable.CUSTOMER) {
-                request.getRequestDispatcher("index.html").forward(request, response);
-            }
-        } else {
-            response.sendRedirect("Login");
+        Long role = userAuth.getRoleLevel();
+        if (role == SystemVariable.ADMIN) {
+            response.sendRedirect(request.getContextPath() + "/admin/AdminDashboard");
+            return;
         }
+        if (role == SystemVariable.MANAGER) {
+        }
+        if (role == SystemVariable.STAFF) {
+        }
+        if (role == SystemVariable.CUSTOMER) {
+            request.getRequestDispatcher("index.html").forward(request, response);
+        }
+    }
+
+    default void acceptAuth(HttpServletRequest request, HttpServletResponse response, List<Long> roleListAccept) throws ServletException, IOException {
 
     }
 }

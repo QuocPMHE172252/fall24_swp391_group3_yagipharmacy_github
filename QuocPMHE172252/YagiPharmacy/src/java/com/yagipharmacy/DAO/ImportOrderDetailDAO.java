@@ -8,6 +8,7 @@ import com.yagipharmacy.JDBC.RowMapper;
 import com.yagipharmacy.JDBC.SQLServerConnection;
 import com.yagipharmacy.constant.services.CalculatorService;
 import com.yagipharmacy.entities.ImportOrderDetail;
+import com.yagipharmacy.entities.Product;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.Date;
 public class ImportOrderDetailDAO implements RowMapper<ImportOrderDetail> {
 
     @Override
-    public ImportOrderDetail mapRow(ResultSet rs) throws SQLException {
+    public ImportOrderDetail mapRow(ResultSet rs) throws SQLException,ClassNotFoundException {
         Long longDate = CalculatorService.parseLong(rs.getString("import_date"));
         ImportOrderDetail importOrderDetail = new ImportOrderDetail();
         importOrderDetail.setImportOrderDetailId(rs.getLong("import_order_detail_id"));
@@ -34,7 +35,12 @@ public class ImportOrderDetailDAO implements RowMapper<ImportOrderDetail> {
         importOrderDetail.setQuantity(rs.getLong("quantity"));
         importOrderDetail.setImportPrice(rs.getDouble("import_price"));
         importOrderDetail.setImportDate(new Date(longDate));
+        importOrderDetail.setSupplierId(rs.getLong("supplier_id"));
+        importOrderDetail.setProcessing(rs.getLong("processing"));
         importOrderDetail.setDeleted(rs.getBoolean("is_deleted"));
+        importOrderDetail.setSupplier(new SupplierDAO().getById(rs.getLong("supplier_id")+""));
+        importOrderDetail.setProduct(new ProductDAO().getById(rs.getLong("product_id")+""));
+        importOrderDetail.setUnit(new UnitDAO().getById(rs.getLong("unit_id")+""));
         return importOrderDetail;
     }
 
@@ -48,9 +54,11 @@ public class ImportOrderDetailDAO implements RowMapper<ImportOrderDetail> {
                      unit_id, 
                      quantity, 
                      import_price, 
-                     import_date, 
+                     import_date,
+                     supplier_id,
+                     processing,
                      is_deleted) 
-                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?,?,?)
                      """;
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -60,8 +68,10 @@ public class ImportOrderDetailDAO implements RowMapper<ImportOrderDetail> {
             ps.setObject(4, t.getUnitId());
             ps.setObject(5, t.getQuantity());
             ps.setObject(6, t.getImportPrice());
-            ps.setObject(7, t.getImportDate().getTime() + "");
-            ps.setObject(8, t.isDeleted());
+            ps.setObject(7, t.getImportDate()==null?null:t.getImportDate().getTime() + "");
+            ps.setObject(8, t.getSupplierId());
+            ps.setObject(9, t.getProcessing());
+            ps.setObject(10, t.isDeleted());
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -112,7 +122,9 @@ public class ImportOrderDetailDAO implements RowMapper<ImportOrderDetail> {
                      unit_id = ?, 
                      quantity = ?, 
                      import_price = ?, 
-                     import_date = ?, 
+                     import_date = ?,
+                     supplier_id = ?,
+                     processing = ?,
                      is_deleted = ?
                      WHERE import_order_detail_id = ?
                      """;
@@ -125,8 +137,10 @@ public class ImportOrderDetailDAO implements RowMapper<ImportOrderDetail> {
             ps.setObject(5, t.getQuantity());
             ps.setObject(6, t.getImportPrice());
             ps.setObject(7, t.getImportDate().getTime() + "");
-            ps.setObject(8, t.isDeleted());
-            ps.setObject(9, CalculatorService.parseLong(id));
+            ps.setObject(8, t.getSupplierId());
+            ps.setObject(9, t.getProcessing());
+            ps.setObject(10, t.isDeleted());
+            ps.setObject(11, CalculatorService.parseLong(id));
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -152,6 +166,22 @@ public class ImportOrderDetailDAO implements RowMapper<ImportOrderDetail> {
         List<ImportOrderDetail> importOrderDetails = new ArrayList<>();
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
             ps.setObject(1, CalculatorService.parseLong(importOderId));
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                importOrderDetails.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return importOrderDetails;
+    }
+    
+    public List<ImportOrderDetail> getListByImportOrderIdAndSupplierId(String orderId, String supId) throws SQLException, ClassNotFoundException {
+        String sql = "SELECT * FROM [import_order_detail] where import_order_id = ? and supplier_id = ?";
+        List<ImportOrderDetail> importOrderDetails = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql); ) {
+            ps.setObject(1, CalculatorService.parseLong(orderId));
+            ps.setObject(2, CalculatorService.parseLong(supId));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 importOrderDetails.add(mapRow(rs));

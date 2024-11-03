@@ -126,25 +126,21 @@
                                             <div>
                                                 <form action="CreateImportOrder" method="post" class="form" style="width: 100%" id="formSubmitListOrderDetail">
                                                     <input type="text" name="product_list_str" id="product_list_str" readonly="" required="" hidden="">
-                                                    <label for="expected_date">Ngày nhập dự kiến*</label>&nbsp&nbsp&nbsp<label for="import_order_code">Mã yêu cầu nhập*</label><br>
+                                                    <label for="expected_date">Ngày nhập dự kiến*</label>&nbsp&nbsp&nbsp<label for="import_order_code">Mã đơn nhập*</label><br>
                                                     <input class="form-control-sm" type="date" name="expected_date" required="" id="expected_date">
                                                     <input class="form-control-sm" type="text" name="import_order_code" required="" id="import_order_code">
                                                     <table class="table" id="import_order_table">
                                                         <h2>Danh sách sản phẩm được thêm</h2>
                                                         <tr>
                                                             <th>Mã sp</th>
-                                                            <th>Số lô</th>
                                                             <th>Tên sp</th>
                                                             <th>Ảnh</th>
                                                             <th>Đơn vị</th>
                                                             <th style="color: red">Số lượng*</th>                                                        
-                                                            <th style="color: red">Giá đơn vị*</th>                                                        
-                                                            <th>Tổng giá</th>                                                        
+                                                            <th style="color: red">Nhà cung cấp*</th>                                                                                                             
                                                             <th>Xóa</th>                                                        
                                                         </tr>
                                                     </table>
-
-                                                    <div style="display: flex;flex-direction: row;justify-content: end"><div>Tổng giá trị đơn hàng:&nbsp&nbsp</div> <div><span id="total_price_order_list">0</span>&nbspVND</div></div>
                                                     <div style="display: flex;flex-direction: row;justify-content: space-between">
                                                         <button type="button" onclick="backToMain()" class="btn btn-danger">Thoát</button>
                                                         <button type="button" onclick="submitCreateForm()" class="btn btn-success">Xác nhận tạo</button>
@@ -189,7 +185,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td>Nhà sản xuất</td>
-                                                            <td id="modal_product_sup">Cell2</td>
+                                                            <td id="modal_product_brand">Cell2</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Quốc gia</td>
@@ -242,6 +238,7 @@
                 </footer>
             </div>
                     
+
                     
 
         </div>
@@ -277,6 +274,11 @@
         <script>
             var product_list_submit = [];
             const products = JSON.parse('${productsJson}');
+            const suppliers = JSON.parse('${suppliersJson}');
+            var suppliersSelections = '';
+            suppliers.forEach(supplier => {
+                suppliersSelections += `<option value="`+supplier.supplierId+`">`+supplier.supplierName+`</option>`;
+            });
             console.log(products);
             products.forEach(product => {
                 var newRow = document.createElement('option');
@@ -313,13 +315,13 @@
                         }
                         var selectionUnits = `<select name="unit_for_product_`+product_id+`" id="unit_for_product_`+product_id+`" class="form-control-sm">`+listSelectionUnit+`</select>`
                         var rowContent = `                  <td>` + product.productCode + `</td>
-                                                            <td><input class="form-control-sm" value="" type="text" id="batch_code_`+product.productId+`" name="batch_code_`+product.productId+`" required=""></td>
                                                             <td>` + truncateString(product.productName) + `</td>
-                                                            <td><img style="height: 60px;width: auto class="img-fluid" src="` + (product.productImages.length >= 1 ? product.productImages[0].imageBase64 : "") + `" alt="alt"/></td>
+                                                            <td><img style="height: 60px;width: auto" class="img-fluid" src="` + (product.productImages.length >= 1 ? product.productImages[0].imageBase64 : "") + `" alt="alt"/></td>
                                                             <td>`+selectionUnits+`</td>
-                                                            <td><input required value="0" onchange="changeProductPrice(`+product.productId+`)" class="form-control-sm" type="number" min="1" id="quantity_`+product.productId+`" name="quantity_`+product.productId+`"></td>
-                                                            <td><input required value="0" id="import_price_`+product.productId+`" onchange="changeProductPrice(`+product.productId+`)" step="0.01"  class="form-control-sm" type="number" min="0.01" name="import_price_`+product.productId+`"> VND</td>
-                                                            <td><span id="total_price_row_`+product.productId+`" name="total_price_row_`+product.productId+`">0</span> VND</td>
+                                                            <td><input required value="0" class="form-control-sm" type="number" min="1" id="quantity_`+product.productId+`" name="quantity_`+product.productId+`"></td>
+                                                            <td><select id="supplier_id_`+product_id+`" name="supplier_id_`+product_id+`">
+                                                                    `+suppliersSelections+`
+                                                                </select></td>
                                                             <td><button type="button" class="btn-sm btn-close" onclick="removeProduct(`+product.productId+`)"></button></td>`;
                         newRow.innerHTML = rowContent;
                         document.getElementById("import_order_table").appendChild(newRow);
@@ -339,29 +341,6 @@
                 if(removeE){
                     removeE.remove();
                 }
-                getFullPrice();
-            }
-            function changeProductPrice(product_id){
-                var priceString = document.getElementById("import_price_"+product_id).value;
-                var quantityString = document.getElementById("quantity_"+product_id).value;
-                if(quantityString==null||quantityString==''){
-                    document.getElementById("quantity_"+product_id).value = "0";
-                }
-                if(priceString==null||priceString==''){
-                    document.getElementById("import_price_"+product_id).value = "0";
-                }
-                var pricePerUnit = parseFloat(document.getElementById("import_price_"+product_id).value);
-                var quantity= parseInt(document.getElementById("quantity_"+product_id).value);
-                if(pricePerUnit<0){
-                    document.getElementById("import_price_"+product_id).value = "0";
-                }
-                if(quantity<0){
-                    document.getElementById("quantity_"+product_id).value = "0";
-                }
-                pricePerUnit = parseFloat(document.getElementById("import_price_"+product_id).value);
-                quantity= parseInt(document.getElementById("quantity_"+product_id).value);
-                document.getElementById("total_price_row_"+product_id).innerHTML = pricePerUnit*quantity;
-                getFullPrice();
             }
             function viewProductDetailAction(){
                 var pidStr = document.getElementById("product_selection").value;
@@ -371,7 +350,7 @@
                        document.getElementById("modal_product_code").innerHTML = products[i].productCode;
                        document.getElementById("modal_product_name").innerHTML = products[i].productName;
                        document.getElementById("modal_product_cate").innerHTML = products[i].productCategory.productCategoryName;
-                       document.getElementById("modal_product_sup").innerHTML = products[i].supplier.supplierName;
+                       document.getElementById("modal_product_brand").innerHTML = products[i].brand;
                        document.getElementById("modal_product_country").innerHTML = products[i].productCountryCode;
                        var arrULe = products[i].productUnits.length;
                        document.getElementById("modal_product_price").innerHTML = '';
@@ -384,16 +363,6 @@
                        }
                    }
                 }
-            }
-            function getFullPrice(){
-                var arrLe = product_list_submit.length;
-                var fullPrice = 0;
-                for(i=0;i<arrLe;i++){
-                    var tempPrice = parseFloat(document.getElementById("total_price_row_"+product_list_submit[i]).innerHTML);
-                    fullPrice += tempPrice;
-                }
-                document.getElementById("total_price_order_list").innerHTML = fullPrice;
-                return fullPrice;
             }
             function backToMain(){
                 document.getElementById("backToMainForm").submit();
@@ -408,19 +377,11 @@
                 var arrLe = product_list_submit.length;
                 for(i=0;i<arrLe;i++){
                     var quant = parseInt(document.getElementById("quantity_"+product_list_submit[i]).value);
-                    var pricePer = parseFloat(document.getElementById("import_price_"+product_list_submit[i]).value);
-                    console.log("batch_code_"+product_list_submit[i]);
-                    var batch = document.getElementById("batch_code_"+product_list_submit[i]).value;
-                    if(quant<=0||pricePer<=0){
+                    if(quant<=0){
                         check = false;
                         window.alert("Giá trị của một đơn hàng phải lớn hơn 0");
                         break;
-                    }
-                    if(batch.replace(/\s+/g, '')==''){
-                            check = false;
-                            window.alert("Mã lô không được để trống");
-                            break;
-                        }    
+                    }  
                 }
                 if(document.getElementById("import_order_code").value.replace(/\s+/g, '')==''){
                     check = false;
