@@ -4,31 +4,40 @@
  */
 package com.yagipharmacy.entities;
 
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  *
- * @author admin
+ * @author Tunkyo
  */
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class Staff {
-    private Long staffId;
-    private Long userId;
-    private String staffMajor;
-    private String staffEducation;
-    private String staffExperience;
-    private String staffDescription;
-    private boolean gender;
+
+public class MajorCategory {
+
+    private Long MajorCategoryId;
+    private String MajorCategoryName;
+    private String MajorCategoryDetail;
     private boolean isDeleted;
-    private User user;
+
+    public boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
 }

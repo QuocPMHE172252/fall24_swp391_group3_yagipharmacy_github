@@ -58,7 +58,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="components/avatars.html">
+                                    <a href="./StaffList">
                                         <span class="sub-item">Staff List</span>
                                     </a>
                                 </li>

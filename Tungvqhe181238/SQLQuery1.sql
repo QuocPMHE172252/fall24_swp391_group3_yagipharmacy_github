@@ -1,4 +1,4 @@
-use master
+﻿use master
 GO
 drop database if exists yagi_pharmacy
 GO
@@ -209,3 +209,26 @@ is_deleted bit default(0),
 )
 
 
+DROP TABLE IF EXISTS major_category
+GO
+
+ALTER TABLE staff
+ALTER COLUMN staff_major NVARCHAR(200)
+
+
+CREATE TABLE major_category(
+	major_category_id int primary key identity(1,1),
+	major_category_name nvarchar(200) collate Latin1_General_CI_AS not null unique,
+	major_category_description nvarchar(500),
+	is_deleted bit default(0)
+)
+GO
+
+INSERT INTO major_category(major_category_name,is_deleted)
+VALUES (N'Truyền Nhiễm',0)
+
+INSERT INTO major_category(major_category_name,is_deleted)
+VALUES (N'Sản Phụ Khoa',0)
+
+INSERT INTO major_category(major_category_name,is_deleted)
+VALUES (N'Chẩn Đoán Hình Ảnh',0)

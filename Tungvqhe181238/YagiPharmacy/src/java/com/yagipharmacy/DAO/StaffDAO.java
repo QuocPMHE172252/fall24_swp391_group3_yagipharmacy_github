@@ -7,6 +7,8 @@ package com.yagipharmacy.DAO;
 import com.yagipharmacy.JDBC.RowMapper;
 import com.yagipharmacy.JDBC.SQLServerConnection;
 import com.yagipharmacy.constant.services.CalculatorService;
+import com.yagipharmacy.entities.MajorCategory;
+import com.yagipharmacy.entities.User;
 import com.yagipharmacy.entities.Staff;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,9 +24,11 @@ import java.util.List;
 public class StaffDAO implements RowMapper<Staff> {
 
     @Override
-    public Staff mapRow(ResultSet rs) throws SQLException {
+    public Staff mapRow(ResultSet rs) throws SQLException, ClassNotFoundException {
+       UserDAO uDAO = new UserDAO();
         Long staffId = rs.getLong("staff_id");
         Long userId = rs.getLong("user_id");
+        User findUser = uDAO.getById(rs.getLong("user_id")+"");
         String staffMajor = rs.getString("staff_major");
         String staffEducation = rs.getString("staff_education");
         String staffExperience = rs.getString("staff_experience");
@@ -34,6 +38,7 @@ public class StaffDAO implements RowMapper<Staff> {
         return Staff.builder()
                 .staffId(staffId)
                 .userId(userId)
+                .user(findUser)
                 .staffMajor(staffMajor)
                 .staffEducation(staffEducation)
                 .staffExperience(staffExperience)
@@ -133,6 +138,23 @@ public class StaffDAO implements RowMapper<Staff> {
         }
         return check > 0;
     }
+    
+     public List<Staff> filterStaff(String status, String major) throws SQLException, ClassNotFoundException {
+        String sql = " SELECT *  FROM staff where is_deleted LIKE '%"+ status + "%' ";
+        if (major != null && !"".equals(major)) {
+            sql += " and staff_major LIKE  '%"+ major + "%' ";
+        }
+        List<Staff> staffs = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                staffs.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return staffs;
+    }
 
     @Override
     public boolean deleteById(String id) throws SQLException, ClassNotFoundException {
@@ -143,6 +165,19 @@ public class StaffDAO implements RowMapper<Staff> {
             ps.setLong(1, CalculatorService.parseLong(id));
             check = ps.executeUpdate();
         }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return check > 0;
+    }
+    
+     public boolean updateStatusById(String id, String status) throws SQLException, ClassNotFoundException {
+        String sql = " Update [staff] set [is_deleted] = ? where [staff_id] = " + id;
+        int check = 0;
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+
+            ps.setObject(1, CalculatorService.parseLong(status));
+            check = ps.executeUpdate();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return check > 0;
