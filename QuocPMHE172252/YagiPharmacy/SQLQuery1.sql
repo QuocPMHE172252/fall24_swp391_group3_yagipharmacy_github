@@ -275,3 +275,4 @@ INSERT INTO supplier (supplier_code, supplier_name, supplier_country_code, suppl
 ('SUP005', N'Công ty Dược Shiu Chen Yang', 'CN', '0956789012', 'jkl@duoc.com', 0);
 
 
+SELECT DISTINCT product_target FROM product;

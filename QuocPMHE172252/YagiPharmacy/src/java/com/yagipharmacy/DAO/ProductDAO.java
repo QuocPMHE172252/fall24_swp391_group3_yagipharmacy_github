@@ -37,7 +37,6 @@ public class ProductDAO implements RowMapper<Product> {
         ProductUnitDAO productUnitDAO = new ProductUnitDAO();
         ProductExcipientDAO productExcipientDAO = new ProductExcipientDAO();
         ProductImageDAO productImageDAO = new ProductImageDAO();
-        SupplierDAO supplierDAO = new SupplierDAO();
         ProductCategory findingProductCate = productCategoryDAO.getById(rs.getLong("product_category_id")+"");
         List<ProductExcipient> productExcipients = productExcipientDAO.getListByProductId(rs.getLong("product_id")+"");
         List<ProductUnit> productUnits = productUnitDAO.getListByProductId(rs.getLong("product_id")+"");
@@ -298,5 +297,70 @@ public class ProductDAO implements RowMapper<Product> {
         return check > 0;
     }
 
+    public List<Product> getNewTop6() throws SQLException, ClassNotFoundException {
+        String sql = """
+                SELECT top(6) *
+                FROM [product] order by [created_date]
+    """;
+        List<Product> products = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                products.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return products;
+    }
+
+    public List<String> getAllProductTarget() throws SQLException, ClassNotFoundException {
+        String sql = """
+                        SELECT DISTINCT product_target FROM product;
+                     """;
+        List<String> targets = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                targets.add(rs.getString("product_target"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return targets;
+    }
+    
+    public List<String> getAllProductCountry() throws SQLException, ClassNotFoundException {
+        String sql = """
+                        SELECT DISTINCT product_country_code FROM product;
+                     """;
+        List<String> countries = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                countries.add(rs.getString("product_country_code"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Long s =0L;
+        return countries;
+    }
+    
+    public List<String> getAllProductBrand() throws SQLException, ClassNotFoundException {
+        String sql = """
+                        SELECT DISTINCT brand FROM product;
+                     """;
+        List<String> brands = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                brands.add(rs.getString("brand"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return brands;
+    }
 
 }

@@ -217,5 +217,39 @@ public class NewsDAO implements RowMapper<News> {
         }
         return check > 0;
     }
+    public List<News> getTop6hot() throws SQLException, ClassNotFoundException {
+        String sql = """
+                      SELECT top (6) *
+                      FROM [news] order by [view_count] desc
+                     """;
+        List<News> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<News> getTop5new() throws SQLException, ClassNotFoundException {
+        String sql = """
+                      SELECT top (5) *
+                      FROM [news] order by [created_date] desc
+                     """;
+        List<News> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 
 }

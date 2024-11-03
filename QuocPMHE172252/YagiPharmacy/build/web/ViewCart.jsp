@@ -211,7 +211,12 @@
         <c:if test="${cartDetailsJson!=null}">
             const cartDetailsJson = JSON.parse('${cartDetailsJson}');
         </c:if>
-        var cart = JSON.parse(getCookie("cart"));
+        var cartStrJ = getCookie("cart");
+        var cart = [];
+        if(cartStrJ!=null){
+           cart = JSON.parse(getCookie("cart"));
+        }
+        
         console.log(getCookie('cart'));
          <c:if test="${buy_success!=null}">
             cart.length = 0;
@@ -229,11 +234,19 @@
             var newRow = document.createElement('div');
             newRow.class = 'row border-top border-bottom';
             newRow.id = 'product_row_' + cartDetail.product.productId;
+            var unit_name = "";
+            cartDetail.product.productUnits.forEach(productU =>{
+                if(productU.productUnitId==cartDetail.selectedUnit){
+                    unit_name = productU.unit.unitName;
+                }
+            });
             var rowContent = `<div class="row main align-items-center">
                             <div class="col-2"><img class="img-fluid" src="` + cartDetail.product.productImages[0].imageBase64 + `"></div>
                             <div class="col">
-                                <div class="row text-muted">Shirt</div>
-                                <div class="row">Cotton T-shirt</div>
+                                <div class="row text-muted">`+cartDetail.product.productName+`</div>
+                            </div>
+                            <div class="col">
+                                <div class="row text-muted">Hộp</div>
                             </div>
                             <div class="col">
                                 <a href="#" onclick="minus(` + cartDetail.product.productId + `)">-</a><a href="#" class="border" id="quantity_` + cartDetail.product.productId + `">` + cartDetail.quantity + `</a><a onclick="plus(` + cartDetail.product.productId + `)" href="#">+</a>

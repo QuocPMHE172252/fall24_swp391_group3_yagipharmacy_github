@@ -148,7 +148,7 @@
                                                         <th>Xác nhận</th>
                                                         <th>Xóa</th>
                                                         <th>Xóa/Khôi phục</th>
-                                                        <th>Cập nhật</th>
+                                                        <th>Chi tiết</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -180,7 +180,7 @@
                                                             </c:if>
                                                             <td>${imp_order.isDeleted()?"yes":"no"}</td>
                                                             <td><a href="./DeleteImportOrder?id=${imp_order.importOrderId}" class="btn btn-warning">${imp_order.isDeleted()?"Khôi phục":"Xóa"}</a></td>
-                                                            <td><a href="UpdateImportOrder?imp_id=${imp_order.importOrderId}" class="btn btn-warning">Cập nhật</a></td>
+                                                            <td><a href="UpdateImportOrder?imp_id=${imp_order.importOrderId}" class="btn btn-warning">Xem</a></td>
                                                         </tr>
                                                     </c:forEach>
                                                 </tbody>

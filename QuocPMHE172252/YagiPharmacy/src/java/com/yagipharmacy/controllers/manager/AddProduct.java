@@ -93,7 +93,7 @@ public class AddProduct extends HttpServlet {
             suppliers = supplierDAO.getAll();
             excipients = excipientDAO.getAll();
             String excipientsJson = gson.toJson(excipients);
-            productCategorys = productCategoryDAO.getListLastChildren();
+            productCategorys = productCategoryDAO.getListChildren();
             request.setAttribute("unitsJson", unitsJson);
             request.setAttribute("excipientsJson", excipientsJson);
             request.setAttribute("productCategorys", productCategorys);

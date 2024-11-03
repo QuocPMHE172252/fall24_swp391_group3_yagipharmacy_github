@@ -211,7 +211,12 @@
         <c:if test="${cartDetailsJson!=null}">
             const cartDetailsJson = JSON.parse('${cartDetailsJson}');
         </c:if>
-        var cart = JSON.parse(getCookie("cart"));
+        var cartStrJ = getCookie("cart");
+        var cart = [];
+        if(cartStrJ!=null){
+           cart = JSON.parse(getCookie("cart"));
+        }
+        
         console.log(getCookie('cart'));
          <c:if test="${buy_success!=null}">
             cart.length = 0;
