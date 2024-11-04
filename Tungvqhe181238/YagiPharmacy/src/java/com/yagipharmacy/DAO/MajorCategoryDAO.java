@@ -108,8 +108,8 @@ public class MajorCategoryDAO implements RowMapper<MajorCategory> {
                    
                   
                  
-                    product_category_name = ?,
-                    product_category_detail = ?,
+                    major_category_name = ?,
+                    major_category_description = ?,
                     is_deleted = ?
                 WHERE
                     major_category_id = ?;

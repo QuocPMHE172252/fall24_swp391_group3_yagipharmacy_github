@@ -5,6 +5,7 @@
 package com.yagipharmacy.controllers.admin;
 
 import com.yagipharmacy.DAO.MajorCategoryDAO;
+import com.yagipharmacy.constant.services.CalculatorService;
 import com.yagipharmacy.entities.MajorCategory;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -88,13 +89,16 @@ public class MajorCategoryUpdate extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+
         MajorCategoryDAO majorcateDao = new MajorCategoryDAO();
         MajorCategory majorCate = MajorCategory.builder()
                 .MajorCategoryId(Long.parseLong(request.getParameter("major_category_id")))
-                .MajorCategoryDetail(request.getParameter("major_category_description"))
+                .MajorCategoryDetail(request.getParameter("major_category_detail"))
                 .MajorCategoryName(request.getParameter("major_category_name"))
                 .isDeleted(Boolean.parseBoolean(request.getParameter("is_deleted")))
                 .build();
+        
 
         try {
             boolean check = majorcateDao.updateById(String.valueOf(majorCate.getMajorCategoryId()), majorCate);

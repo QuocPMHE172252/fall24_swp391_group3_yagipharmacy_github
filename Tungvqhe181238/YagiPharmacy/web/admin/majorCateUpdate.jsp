@@ -89,11 +89,11 @@
                                     <h3>Update Major Category</h3>
                                 </div>
                                 <div class="card-body">
-                                    <form method="post" action="CategoryUpdate" id="updateCategoryForm" class="row">
+                                    <form method="post" action="MajorCategoryUpdate" id="updateCategoryForm" class="row">
 
                                         
-                                        <!-- Hidden Field for Category ID -->
-                                        <input type="text" name="major_category_id" value="${cate.majorCategoryId}" />
+                                        
+                                        <input type="hidden" name="major_category_id" value="${cate.majorCategoryId}" />
 
 
                                         <div class="form-group mb-3 col-md-6">
