@@ -29,11 +29,11 @@ public class StockDAO implements RowMapper<Stock> {
         Long expLong = CalculatorService.parseLong(rs.getString("EXP_date"));
         stock.setStockId(rs.getLong("stock_id"));
         stock.setBatchCode(rs.getString("batch_code"));
-        stock.setQuantity(rs.getInt("quantity"));
+        stock.setQuantity(rs.getLong("quantity"));
         stock.setProductId(rs.getLong("product_id"));
         stock.setUnitId(rs.getLong("unit_id"));
         stock.setMfgDate(new Date(mfgLong));
-        stock.setExpDate(new Date(expLong ));
+        stock.setExpDate(new Date(expLong));
         stock.setDeleted(rs.getBoolean("is_deleted"));
         return stock;
     }
@@ -52,15 +52,14 @@ public class StockDAO implements RowMapper<Stock> {
                      VALUES (?, ?, ?, ?, ?, ?, ?)
                      """;
         int check = 0;
-        try (Connection con = SQLServerConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, t.getBatchCode());
-            ps.setInt(2, t.getQuantity());
-            ps.setLong(3, t.getProductId());
-            ps.setLong(4, t.getUnitId());
-            ps.setString(5, t.getMfgDate().getTime()+"");
-            ps.setString(6, t.getExpDate().getTime()+"");
-            ps.setBoolean(7, t.isDeleted());
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setObject(1, t.getBatchCode());
+            ps.setObject(2, t.getQuantity());
+            ps.setObject(3, t.getProductId());
+            ps.setObject(4, t.getUnitId());
+            ps.setObject(5, t.getMfgDate().getTime() + "");
+            ps.setObject(6, t.getExpDate().getTime() + "");
+            ps.setObject(7, t.isDeleted());
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,9 +71,7 @@ public class StockDAO implements RowMapper<Stock> {
     public List<Stock> getAll() throws SQLException, ClassNotFoundException {
         String sql = "SELECT * FROM [stock]";
         List<Stock> stocks = new ArrayList<>();
-        try (Connection con = SQLServerConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 stocks.add(mapRow(rs));
@@ -89,8 +86,7 @@ public class StockDAO implements RowMapper<Stock> {
     public Stock getById(String id) throws SQLException, ClassNotFoundException {
         String sql = "SELECT * FROM [stock] WHERE stock_id = ?";
         Stock stock = null;
-        try (Connection con = SQLServerConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, CalculatorService.parseLong(id));
             try (ResultSet rs = ps.executeQuery()) {
@@ -118,16 +114,15 @@ public class StockDAO implements RowMapper<Stock> {
                      WHERE stock_id = ?
                      """;
         int check = 0;
-        try (Connection con = SQLServerConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, t.getBatchCode());
-            ps.setInt(2, t.getQuantity());
-            ps.setLong(3, t.getProductId());
-            ps.setLong(4, t.getUnitId());
-            ps.setString(5, t.getMfgDate().getTime()+"");
-            ps.setString(6, t.getExpDate().getTime()+"");
-            ps.setBoolean(7, t.isDeleted());
-            ps.setLong(8, CalculatorService.parseLong(id));
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setObject(1, t.getBatchCode());
+            ps.setObject(2, t.getQuantity());
+            ps.setObject(3, t.getProductId());
+            ps.setObject(4, t.getUnitId());
+            ps.setObject(5, t.getMfgDate().getTime() + "");
+            ps.setObject(6, t.getExpDate().getTime() + "");
+            ps.setObject(7, t.isDeleted());
+            ps.setObject(8, CalculatorService.parseLong(id));
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -139,13 +134,43 @@ public class StockDAO implements RowMapper<Stock> {
     public boolean deleteById(String id) throws SQLException, ClassNotFoundException {
         String sql = "DELETE FROM [stock] WHERE stock_id = ?";
         int check = 0;
-        try (Connection con = SQLServerConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setLong(1, CalculatorService.parseLong(id));
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return check > 0;
+    }
+
+    public List<Stock> getByBatchCode(String batchCode) throws SQLException, ClassNotFoundException {
+        String sql = "SELECT * FROM [stock] WHERE batch_code = ?";
+        List<Stock> stocks = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, batchCode);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                stocks.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stocks;
+    }
+    
+    public List<Stock> getByProductIdAndUnitId(String productId,String unitId) throws SQLException, ClassNotFoundException {
+        String sql = "SELECT * FROM [stock] WHERE product_id = ? and unit_id = ?";
+        List<Stock> stocks = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, CalculatorService.parseLong(productId));
+            ps.setObject(2, CalculatorService.parseLong(unitId));
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                stocks.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stocks;
     }
 }

@@ -110,7 +110,7 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <a href="./CategoryAdd" class="btn btn-primary">Add category</a>
+                                        <a href="./MajorCategoryAdd" class="btn btn-primary">Add category</a>
                                     </div>
                                     <div class="card-body">
                                         <div class="table-responsive">

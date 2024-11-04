@@ -25,8 +25,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {
+
     private Long productId;
     private String productCode;
+    private Long authorId;
     private Long productCategoryId;
     private String productCountryCode;
     private String brand;
@@ -40,8 +42,9 @@ public class Product {
     private boolean isDeleted;
     private ProductCategory productCategory;
     private Supplier supplier;
+    private User author;
     private List<ProductExcipient> productExcipients;
-    private  List<ProductUnit> productUnits;
+    private List<ProductUnit> productUnits;
     private List<ProductImage> productImages;
 
 }

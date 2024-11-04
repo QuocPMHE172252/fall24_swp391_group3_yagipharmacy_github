@@ -31,11 +31,23 @@ public interface AuthorizationService {
         if (role == SystemVariable.STAFF) {
         }
         if (role == SystemVariable.CUSTOMER) {
-            request.getRequestDispatcher("index.html").forward(request, response);
+            response.sendRedirect("HomePage");
         }
     }
 
-    default void acceptAuth(HttpServletRequest request, HttpServletResponse response, List<Long> roleListAccept) throws ServletException, IOException {
-
+    default boolean acceptAuth(HttpServletRequest request, HttpServletResponse response, List<Long> roleListAccept) throws ServletException, IOException {
+        User userAuth = (User)request.getSession().getAttribute("userAuth");
+        boolean isAccept= false; 
+        if(userAuth==null){
+            return false;
+        } else{
+            for (Long roleLv : roleListAccept) {
+                if(userAuth.getRoleLevel()==roleLv){
+                    isAccept = true;
+                    break;
+                }
+            }
+        }
+        return isAccept;
     }
 }

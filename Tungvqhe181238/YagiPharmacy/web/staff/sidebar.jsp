@@ -53,13 +53,18 @@
                         <div class="collapse" id="base">
                             <ul class="nav nav-collapse">
                                 <li>
-                                    <a href="./AccountList">
+                                    <a href="../admin/AccountList">
                                         <span class="sub-item">Account List</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="components/avatars.html">
+                                    <a href="/YagiPharmacy/admin/StaffList">
                                         <span class="sub-item">Staff List</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../manager/Add-UpdateStaff">
+                                        <span class="sub-item">Add or Update Staff</span>
                                     </a>
                                 </li>
                             </ul>

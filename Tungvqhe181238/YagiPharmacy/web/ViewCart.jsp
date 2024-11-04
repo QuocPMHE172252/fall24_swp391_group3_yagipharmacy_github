@@ -173,7 +173,9 @@
             <div class="row">
                 <div class="col-md-8 cart" id="listCartDetail">
                     <div class="title">
+                        <a href="CommonProducts" class="" style="font-size: 20px;font-weight: 30px">⬅</a>
                         <div class="row">
+                            
                             <div class="col">
                                 <h4><b>Shopping Cart</b></h4>
                             </div>
@@ -211,7 +213,12 @@
         <c:if test="${cartDetailsJson!=null}">
             const cartDetailsJson = JSON.parse('${cartDetailsJson}');
         </c:if>
-        var cart = JSON.parse(getCookie("cart"));
+        var cartStrJ = getCookie("cart");
+        var cart = [];
+        if(cartStrJ!=null){
+           cart = JSON.parse(getCookie("cart"));
+        }
+        
         console.log(getCookie('cart'));
          <c:if test="${buy_success!=null}">
             cart.length = 0;

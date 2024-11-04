@@ -22,6 +22,7 @@ import com.yagipharmacy.entities.ProductImage;
 import com.yagipharmacy.entities.ProductUnit;
 import com.yagipharmacy.entities.Supplier;
 import com.yagipharmacy.entities.Unit;
+import com.yagipharmacy.entities.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -93,7 +94,7 @@ public class AddProduct extends HttpServlet {
             suppliers = supplierDAO.getAll();
             excipients = excipientDAO.getAll();
             String excipientsJson = gson.toJson(excipients);
-            productCategorys = productCategoryDAO.getListLastChildren();
+            productCategorys = productCategoryDAO.getListChildren();
             request.setAttribute("unitsJson", unitsJson);
             request.setAttribute("excipientsJson", excipientsJson);
             request.setAttribute("productCategorys", productCategorys);
@@ -114,6 +115,7 @@ public class AddProduct extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User userAuth = (User)request.getSession().getAttribute("userAuth");
         String product_code = request.getParameter("product_code");
         String product_name = request.getParameter("product_name");
         String product_category = request.getParameter("product_category");
@@ -138,6 +140,7 @@ public class AddProduct extends HttpServlet {
                 Product newProduct = Product.builder()
                         .productId(0L)
                         .productCode(product_code)
+                        .authorId(userAuth.getUserId())
                         .productCategoryId(CalculatorService.parseLong(product_category))
                         .productCountryCode(product_country_code)
                         .brand(brand)

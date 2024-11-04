@@ -217,22 +217,6 @@
 
         <script>
             
-            fetch('https://api.vietqr.io/v2/banks')
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                data.data.forEach((bank, bank_index) => {
-                    let optionBank = '<option value="' + bank.code + '">' + bank.name + '</option>';
-                    if(bank.code == '${user.userBank}'){
-                        optionBank = '<option selected value="' + bank.code + '">' + bank.name + '</option>';
-                    }
-                    document.getElementById("user_bank").innerHTML += optionBank;
-                });
-            })
-            .catch(error => {
-                console.error('Lỗi khi gọi API:', error);
-            });
-            
             document.getElementById('user_avatar').addEventListener('change', function (event) {
                 const file = event.target.files[0];
                 const reader = new FileReader();

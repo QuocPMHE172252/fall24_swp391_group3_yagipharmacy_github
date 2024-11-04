@@ -136,7 +136,7 @@ public class ViewCart extends HttpServlet {
                 }
             }
         }
-        return null;
+        return "[]";
     }
 
     /**

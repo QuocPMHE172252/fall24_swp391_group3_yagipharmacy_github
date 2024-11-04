@@ -42,6 +42,7 @@ public class NewsDAO implements RowMapper<News> {
                 .isRejected(rs.getInt("is_rejected"))
                 .rejectedReason(rs.getString("rejected_reason"))
                 .isDeleted(rs.getBoolean("is_deleted"))
+                .viewCount(rs.getInt("view_count"))
                 .newsCategory(findingNewsCate)
                 .build();
     }
@@ -100,6 +101,74 @@ public class NewsDAO implements RowMapper<News> {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public List<News> getTop5new() throws SQLException, ClassNotFoundException {
+        String sql = """
+                      SELECT top (5) *
+                      FROM [news] order by [created_date] desc
+                     """;
+        List<News> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<News> getTop6hot() throws SQLException, ClassNotFoundException {
+        String sql = """
+                      SELECT top (6) *
+                      FROM [news] order by [view_count] desc
+                     """;
+        List<News> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<News> getList(String search, String category, int currentpage, int pagesize) throws SQLException, ClassNotFoundException {
+        String sql = "  select * from [news] where [news_title] like N'%" + search + "%' ";
+        if (!category.isEmpty()) {
+            sql += "and [news_category_id] = " + category;
+        }
+        sql += "order by [news_id] OFFSET " + pagesize * (currentpage - 1) + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY";
+        List<News> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public int countList(String search, String category) throws SQLException, ClassNotFoundException {
+        String sql = "  select count(*) from [news] where [news_title] like N'%" + search + "%' ";
+        if (!category.isEmpty()) {
+            sql += "and [news_category_id] = " + category;
+        }
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+               return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     @Override
@@ -217,5 +286,4 @@ public class NewsDAO implements RowMapper<News> {
         }
         return check > 0;
     }
-
 }

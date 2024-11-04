@@ -68,19 +68,24 @@ public class ImportOrderList extends HttpServlet {
             dataAll = importOrderDAO.getAll();
             String reject_status = request.getParameter("reject_status");
             String delete_status = request.getParameter("delete_status");
-            if(reject_status==null){
+            if (reject_status == null) {
                 reject_status = "all";
             }
-            if (delete_status==null) {
+            if (delete_status == null) {
                 delete_status = "all";
             }
             List<ImportOrder> tempData = getByAccept(dataAll, reject_status);
             data = getByDeleted(tempData, delete_status);
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         request.setAttribute("data", data);
+        String created = request.getParameter("created");
+        if (created != null) {
+            request.setAttribute("created", created);
+        }
+
         request.getRequestDispatcher("ImportOrderList.jsp").forward(request, response);
     }
 
@@ -97,31 +102,31 @@ public class ImportOrderList extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
-    
-    public List<ImportOrder> getByAccept(List<ImportOrder> inputData,String target){
+
+    public List<ImportOrder> getByAccept(List<ImportOrder> inputData, String target) {
         boolean checkEq = target.equals("all");
         List<ImportOrder> list = new ArrayList<>();
-        if(checkEq){
+        if (checkEq) {
             return inputData;
         }
         Boolean isAccepted = null;
-        if(target.equals("0")){
+        if (target.equals("0")) {
             isAccepted = null;
         }
-        if(target.equals("1")){
+        if (target.equals("1")) {
             isAccepted = true;
         }
-        if(target.equals("2")){
+        if (target.equals("2")) {
             isAccepted = false;
         }
         for (ImportOrder importOrder : inputData) {
-            if(importOrder==null){
-                if(isAccepted==null){
+            if (importOrder == null) {
+                if (isAccepted == null) {
                     list.add(importOrder);
                     continue;
                 }
-            } else{
-                if(importOrder.getIsAccepted()==isAccepted){
+            } else {
+                if (importOrder.getIsAccepted() == isAccepted) {
                     list.add(importOrder);
                     continue;
                 }
@@ -129,17 +134,17 @@ public class ImportOrderList extends HttpServlet {
         }
         return list;
     }
-    
-    public List<ImportOrder> getByDeleted(List<ImportOrder> inputData,String target){
+
+    public List<ImportOrder> getByDeleted(List<ImportOrder> inputData, String target) {
         List<ImportOrder> list = new ArrayList<>();
-        if(target.equals("all")){
+        if (target.equals("all")) {
             return inputData;
         }
         for (ImportOrder importOrder : inputData) {
-           if(importOrder.isDeleted()==target.equals("1")){
-               list.add(importOrder);
-               continue;
-           }
+            if (importOrder.isDeleted() == target.equals("1")) {
+                list.add(importOrder);
+                continue;
+            }
         }
         return list;
     }

@@ -303,7 +303,7 @@ public class UserDAO implements RowMapper<User> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return user;
     }
 
     public User getByUsername(String username) throws SQLException, ClassNotFoundException {
@@ -347,7 +347,7 @@ public class UserDAO implements RowMapper<User> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return user;
     }
 
     public List<User> getAllAvailable() throws SQLException, ClassNotFoundException {

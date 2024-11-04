@@ -97,7 +97,7 @@ public class EditProduct extends HttpServlet {
             suppliers = supplierDAO.getAll();
             excipients = excipientDAO.getAll();
             String excipientsJson = gson.toJson(excipients);
-            productCategorys = productCategoryDAO.getListLastChildren();
+            productCategorys = productCategoryDAO.getListChildren();
             String productId = request.getParameter("product_id");
             Product product = productDAO.getById(productId);
             List<ProductExcipient> productExcipients = productExcipientDAO.getListByProductId(productId);

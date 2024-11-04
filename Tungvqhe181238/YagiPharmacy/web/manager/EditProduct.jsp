@@ -216,14 +216,14 @@
                                                 <label>Prescription</label><br />
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="radio" name="is_prescription"
-                                                        id="is_prescription_yes" value="0" ${product.isPrescription
+                                                        id="is_prescription_yes" value="0" ${product.isPrescription()
                                                         ? 'checked' : '' } />
                                                     <label class="form-check-label"
                                                         for="is_prescription_yes">Yes</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="radio" name="is_prescription"
-                                                        id="is_prescription_no" value="1" ${!product.isPrescription
+                                                        id="is_prescription_no" value="1" ${!product.isPrescription()
                                                         ? 'checked' : '' } />
                                                     <label class="form-check-label" for="is_prescription_no">No</label>
                                                 </div>

@@ -10,10 +10,12 @@ import com.yagipharmacy.DAO.ProductDAO;
 import com.yagipharmacy.DAO.SaleOrderDAO;
 import com.yagipharmacy.DAO.SaleOrderDetailDAO;
 import com.yagipharmacy.constant.services.CalculatorService;
+import com.yagipharmacy.constant.services.MailService;
 import com.yagipharmacy.entities.CartDetail;
 import com.yagipharmacy.entities.Product;
 import com.yagipharmacy.entities.SaleOrder;
 import com.yagipharmacy.entities.SaleOrderDetail;
+import com.yagipharmacy.entities.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -112,6 +114,13 @@ public class CreateSaleOrder extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User userAuth = (User)request.getSession().getAttribute("userAuth");
+        Long uId = null;
+        if(userAuth==null){
+            uId = null;
+        } else{
+            uId = userAuth.getUserId();
+        }
         String decodedString = URLDecoder.decode(getCookieValue(request, "cart"), "UTF-8");
         Gson gson = new Gson();
         Type listType = new TypeToken<List<String>>() {
@@ -123,7 +132,7 @@ public class CreateSaleOrder extends HttpServlet {
         SaleOrderDetailDAO saleOrderDetailDAO = new SaleOrderDetailDAO();
         try {
             SaleOrder newSaleOrder = SaleOrder.builder()
-                        .orderBy(null)
+                        .orderBy(uId)
                         .receiverName(request.getParameter("name"))
                         .receiverPhone(request.getParameter("phone"))
                         .specificAddress(request.getParameter("location"))
@@ -146,6 +155,7 @@ public class CreateSaleOrder extends HttpServlet {
                         .build();
                 saleOrderDetailDAO.addNew(newSaleOrderDetail);
             }
+            MailService.sentEmail(request.getParameter("email"), "Thông báo đơn hàng", "Đơn hàng của bạn đã được chấp thuận");
         } catch (Exception e) {
             e.printStackTrace();
         }

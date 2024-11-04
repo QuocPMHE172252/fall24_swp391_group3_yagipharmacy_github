@@ -58,7 +58,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="./StaffList">
+                                    <a href="../admin/StaffList">
                                         <span class="sub-item">Staff List</span>
                                     </a>
                                 </li>

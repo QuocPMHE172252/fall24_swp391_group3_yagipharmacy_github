@@ -24,10 +24,13 @@ public class Stock {
 
     private Long stockId;
     private String batchCode;
-    private Integer quantity;
+    private Long quantity;
     private Long productId;
     private Long unitId;
     private Date mfgDate;
     private Date expDate;
     private boolean isDeleted;
+    private Product product;
+    private Unit unit;
+    private ProductUnit productUnit;
 }

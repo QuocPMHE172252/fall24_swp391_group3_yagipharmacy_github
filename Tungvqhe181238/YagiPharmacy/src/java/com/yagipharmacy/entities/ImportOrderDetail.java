@@ -33,4 +33,6 @@ public class ImportOrderDetail {
     private Long processing;
     private boolean isDeleted;
     private Supplier supplier;
+    private Product product;
+    private Unit unit;
 }

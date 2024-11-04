@@ -149,6 +149,10 @@
                                                         <th>IsDeleted</th>
                                                         <th>Delete</th>
                                                         <th>Update</th>
+                                                            <c:if test="${sessionScope.userAuth.roleLevel==2}">
+                                                            <th>Confirm</th>
+                                                            </c:if>
+
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -168,6 +172,9 @@
                                                                 <td><a href="./ChangeProductStatus?pid=${u.productId}&status=0" class="btn btn-success">Restore</a></td>
                                                             </c:if>
                                                             <td><a href="../manager/EditProduct?product_id=${u.productId}" class="btn btn-warning">Update</a></td>
+                                                            <c:if test="${sessionScope.userAuth.roleLevel==2 && u.isDeleted()!=true}">
+                                                                <td> <a href="../manager/ConfirmProduct?product_id=${u.productId}" class="btn btn-info">Confirm </a></td>
+                                                            </c:if>
                                                         </tr>
                                                     </c:forEach>
                                                 </tbody>

@@ -112,7 +112,7 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <a href="/YagiPharmacy/manager/AddProduct" class="btn btn-primary">Add Product</a>
+                                        <a href="/YagiPharmacy/manager/Add-UpdateStaff" class="btn btn-primary">Add Staff</a>
                                         <form method="get" action="./StaffList" style="display: flex; display: flex; justify-content: center;">
                                             <div style="width: 50%; display: flex; justify-content: space-between;position: absolute; top: 85px">
                                                 <div>
@@ -171,7 +171,7 @@
                                                             <c:if test="${s.isDeleted()==true}">
                                                                 <td><a href="./ChangeStaffStatus?sid=${s.staffId}&is_deleted=0" class="btn btn-success">Restore</a></td>
                                                             </c:if>
-                                                            <td><a href="../manager/EditProduct?product_id=${s.staffId}" class="btn btn-warning">Update</a></td>
+                                                            <td><a href="#" class="btn btn-warning">Update</a></td>
                                                         </tr>
                                                     </c:forEach>
                                                 </tbody>

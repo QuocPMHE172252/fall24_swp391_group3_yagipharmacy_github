@@ -175,7 +175,7 @@ public class ProductCategoryDAO implements RowMapper<ProductCategory> {
         }
         return check > 0;
     }
-    public List<ProductCategory> getListLastChildren() throws SQLException, ClassNotFoundException {
+    public List<ProductCategory> getListChildren() throws SQLException, ClassNotFoundException {
         String sql = """
                 SELECT * 
                 FROM product_category 

@@ -27,6 +27,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class News {
+
     private Long newsId;
     private Long newsCategoryId;
     private Long creatorId;
@@ -40,9 +41,10 @@ public class News {
     private String rejectedReason;
     private boolean isDeleted;
     private NewsCategory newsCategory;
-    
-    public String getRejectName(){
-        return  RejectStatus.getNameById(isRejected);
+    private int viewCount;
+
+    public String getRejectName() {
+        return RejectStatus.getNameById(isRejected);
     }
-    
+
 }

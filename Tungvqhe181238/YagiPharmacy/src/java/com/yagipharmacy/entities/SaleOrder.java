@@ -35,5 +35,6 @@ public class SaleOrder {
     private Date createdDate;
     private boolean isPaid;
     private boolean isDeleted;
+    private Long processing;
     private List<SaleOrderDetail> saleOrderDetails;
 }

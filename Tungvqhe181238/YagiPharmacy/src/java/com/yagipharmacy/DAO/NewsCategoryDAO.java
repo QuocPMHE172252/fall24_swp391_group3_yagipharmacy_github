@@ -8,6 +8,7 @@ import com.yagipharmacy.JDBC.RowMapper;
 import com.yagipharmacy.JDBC.SQLServerConnection;
 import com.yagipharmacy.constant.services.CalculatorService;
 import com.yagipharmacy.entities.NewsCategory;
+import com.yagipharmacy.entities.NewsCategoryDTO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,8 +26,8 @@ public class NewsCategoryDAO implements RowMapper<NewsCategory> {
     public NewsCategory mapRow(ResultSet rs) throws SQLException, ClassNotFoundException {
         Long parentId = rs.getLong("news_category_parent_id");
         NewsCategory parent = NewsCategory.builder().newsCategoryId(0L).build();
-        if(parentId!=null&&parentId!=0L){
-            parent = getById(parentId+"");
+        if (parentId != null && parentId != 0L) {
+            parent = getById(parentId + "");
         }
         return NewsCategory.builder()
                 .newsCategoryId(rs.getLong("news_category_id"))
@@ -35,9 +36,10 @@ public class NewsCategoryDAO implements RowMapper<NewsCategory> {
                 .newsCategoryName(rs.getString("news_category_name"))
                 .newsCategoryDetail(rs.getString("news_category_detail"))
                 .isDelete(rs.getBoolean("is_delete"))
+                .newsImg(rs.getString("news_img"))
                 .parentNewsCategory(parent)
                 .build();
-        
+
     }
 
     @Override
@@ -76,6 +78,42 @@ public class NewsCategoryDAO implements RowMapper<NewsCategory> {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 list.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            list = new ArrayList<>();
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<NewsCategoryDTO> getAllSuperParent() throws SQLException, ClassNotFoundException {
+        String sql = """
+                   select * from news_category where [news_category_parent_id] is null
+                     """;
+        List<NewsCategoryDTO> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                NewsCategoryDTO data = new NewsCategoryDTO(mapRow(rs));
+                data.setCategories(new NewsCategoryDAO().getListByParentId(rs.getString("news_category_id")));
+                list.add(data);
+            }
+        } catch (Exception e) {
+            list = new ArrayList<>();
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public ArrayList<NewsCategory> getListByParentId(String id) throws SQLException, ClassNotFoundException {
+        String sql = " select *, (select count(*) from [news] n where n.[news_category_id] = c.[news_category_id]) as numberNews from news_category c where c.[news_category_parent_id]  = " + id;
+        ArrayList<NewsCategory> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                NewsCategory data = mapRow(rs);
+                data.setNumberNews(rs.getInt("numberNews"));
+                list.add(data);
             }
         } catch (Exception e) {
             list = new ArrayList<>();
@@ -145,7 +183,7 @@ public class NewsCategoryDAO implements RowMapper<NewsCategory> {
         }
         return check > 0;
     }
-    
+
     public List<NewsCategory> getAllParent() throws SQLException, ClassNotFoundException {
         String sql = """
                      select * from news_category where news_category_parent_id is NULL
@@ -162,7 +200,7 @@ public class NewsCategoryDAO implements RowMapper<NewsCategory> {
         }
         return list;
     }
-    
+
     public List<NewsCategory> getAllChild() throws SQLException, ClassNotFoundException {
         String sql = """
                      select * from news_category where news_category_parent_id is not NULL
