@@ -112,7 +112,7 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="mt-5">
-                                                        <a href="ListNews" class="btn btn-primary">Back to News List</a>
+                                                        <a href="../staff/ListNews" class="btn btn-primary">Back to News List</a>
                                                     </div>
                                                     <div class="col d-flex justify-content-end">
                                                         <input type="text" name="reject" value="false" id="is_rejecting" hidden="">

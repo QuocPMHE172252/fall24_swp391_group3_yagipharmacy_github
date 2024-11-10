@@ -5,6 +5,7 @@
 package com.yagipharmacy.controllers.admin;
 
 import com.yagipharmacy.DAO.UserDAO;
+import com.yagipharmacy.constant.services.AuthorizationService;
 import com.yagipharmacy.entities.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,18 +15,31 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
  * @author author
  */
 @WebServlet(name = "CreateAccount", urlPatterns = {"/admin/CreateAccount"})
-public class CreateAccount extends HttpServlet {
+public class CreateAccount extends HttpServlet implements AuthorizationService {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User userAuth = (User) request.getSession().getAttribute("userAuth");
+        if (userAuth == null) {
+            response.sendRedirect("../Login");
+            return;
+        }
+        List<Long> roleList = Arrays.asList(1L);
+        boolean checkAcpt = acceptAuth(request, response, roleList);
+        if (!checkAcpt) {
+            response.sendRedirect("../ErrorPage");
+            return;
+        }
         request.getRequestDispatcher("./accountAdd.jsp").forward(request, response);
     }
 
@@ -55,20 +69,15 @@ public class CreateAccount extends HttpServlet {
             Date dateOfBirth = dateFormat.parse(dateOfBirthString);
             UserDAO userDAO = new UserDAO();
             String messErrorEmail = "";
-            String messErrorUsername = "";
             String messErrorPhone = "";
-            if (userDAO.getByEmail(userEmail) != null) {
+            if (userDAO.getByEmail(userEmail) != null && userDAO.getByEmail(userEmail).getUserId() != 0) {
                 messErrorEmail = "This email already exist in system. Try again!";
             }
-            if (userDAO.getByUsername(userName) != null) {
-                messErrorUsername = "This username already exist in system. Try again!";
-            }
-            if (userDAO.getByPhone(userPhone) != null) {
+            if (userDAO.getByPhone(userPhone) != null && userDAO.getByPhone(userPhone).getUserId() != 0) {
                 messErrorPhone = "This phone number already exist in system. Try again!";
             }
-            if (messErrorEmail != "" || messErrorUsername != "" || messErrorPhone != "") {
+            if (messErrorEmail != ""|| messErrorPhone != "") {
                 request.setAttribute("messErrorPhone", messErrorPhone);
-                request.setAttribute("messErrorUsername", messErrorUsername);
                 request.setAttribute("messErrorEmail", messErrorEmail);
                 request.getRequestDispatcher("./accountAdd.jsp").forward(request, response);
             } else {
@@ -86,8 +95,6 @@ public class CreateAccount extends HttpServlet {
                 newUser.setDeleted(is_deleted.equals("1"));
                 newUser.setRoleLevel(Long.valueOf(role_level));
                 newUser.setCreatedDate(new Date());
-                System.out.println(newUser.isDeleted());
-                System.out.println(newUser.isActive());
                 // Call the addUser method from UserDAO
                 boolean isAdded = false;
 

@@ -24,10 +24,13 @@ import lombok.ToString;
 public class Staff {
     private Long staffId;
     private Long userId;
-    private String staffMajor;
+    private Long staffMajorId;
     private String staffEducation;
     private String staffExperience;
     private String staffDescription;
     private boolean gender;
     private boolean isDeleted;
+    private String staffDegree;
+    private MajorCategory staffMajor;
+    private User user;
 }

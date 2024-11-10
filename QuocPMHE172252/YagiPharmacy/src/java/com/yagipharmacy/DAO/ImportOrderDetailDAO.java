@@ -191,4 +191,19 @@ public class ImportOrderDetailDAO implements RowMapper<ImportOrderDetail> {
         }
         return importOrderDetails;
     }
+    
+    public List<Long> getListSupplierIdByImportOrderId(String impId) throws SQLException, ClassNotFoundException{
+        String sql = """
+                     SELECT DISTINCT supplier_id from import_order_detail where import_order_detail.import_order_id = ?
+                     """;
+        List<Long> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql); ){
+            ps.setObject(1, CalculatorService.parseLong(impId));
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {                
+                list.add(rs.getLong("supplier_id"));
+            }
+        }
+        return list;
+    }
 }

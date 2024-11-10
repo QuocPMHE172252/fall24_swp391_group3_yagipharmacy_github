@@ -15,7 +15,6 @@ public interface SystemVariable {
     final String KEY_ABSTRACT_API = "400f778610164802ac9a46584026a854";
     final Long ADMIN = 1L;
     final Long MANAGER = 2L;
-    final Long MARKETER = 3L;
-    final Long STAFF = 4L;
+    final Long STAFF = 3L;
     final Long CUSTOMER = 5L;
 }

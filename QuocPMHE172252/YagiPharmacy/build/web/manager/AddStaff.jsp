@@ -87,87 +87,52 @@
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h3>Create New Account</h3>
+                                    <h3>Create New Staff</h3>
                                 </div>
                                 <div class="card-body">
-                                    <form method="post" action="CreateAccount" id="createAccountForm" class="row"  onsubmit="return validateForm()">
+                                    <form method="post" action="Add-UpdateStaff" id="createStaffForm" class="row">
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="user_name">Username</label>
-                                            <input type="text" class="form-control" name="user_name" id="user_name" value="${param.user_name}" placeholder="Enter username" required>
-                                            <p style="color: red">${messErrorUsername}</p>
-
-                                        </div>
-
-                                        <div class="form-group mb-3 col-md-6">
-                                            <label for="user_phone">Phone</label>
-                                            <input type="text" class="form-control" name="user_phone" id="user_phone" value="${param.user_phone}" placeholder="Enter phone number" required>
+                                            <label for="user_phone_email">Email/Số điện thoại</label>
+                                            <input type="text" class="form-control" name="user_phone_email" id="user_phone_email" value="${findingUser==null?param.user_phone_email:findingUser.userEmail}" placeholder="Enter phone number" required>
                                             <p style="color: red">${messErrorPhone}</p>
 
                                         </div>
 
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="user_email">Email</label>
-                                            <input type="email" class="form-control" name="user_email" id="user_email"  value="${param.user_email}" placeholder="Enter email" required>
-                                            <p style="color: red">${messErrorEmail}</p>
-
-                                        </div>
-
-                                        <div class="form-group mb-3 col-md-6">
-                                            <label for="user_password">Password</label>
-                                            <input type="password" class="form-control" name="user_password" id="user_password" placeholder="Enter password" required>
-                                        </div>
-
-                                        <div class="form-group mb-3 col-md-6">
-                                            <label for="specific_address">Address</label>
-                                            <input type="text" class="form-control" name="specific_address" value="${param.specific_address}" id="specific_address" placeholder="Enter address" required>
-                                        </div>
-
-                                        <div class="form-group mb-3 col-md-6">
-                                            <label for="date_of_birth">Date of Birth</label>
-                                            <input type="date" class="form-control" name="date_of_birth"   value="${param.date_of_birth}" id="date_of_birth" required>
-                                        </div>
-
-                                        <div class="form-group  mb-3 col-md-6">
-                                            <label>Is Active</label><br />
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="is_active" id="isActiveYes" value="1" checked />
-                                                <label class="form-check-label" for="isActiveYes">Yes</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="is_active" id="isActiveNo" value="0" />
-                                                <label class="form-check-label" for="isActiveNo">No</label>
-                                            </div>
-                                        </div>
-                                        <div class="form-group  mb-3 col-md-6">
-                                            <label>Is Deleted</label><br />
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="is_deleted" id="isDeletedYes" value="0" checked />
-                                                <label class="form-check-label" for="isDeletedYes">No</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="is_deleted" id="isDeletedNo" value="1" />
-                                                <label class="form-check-label" for="isDeletedNo">Yes</label>
-                                            </div>
-                                        </div>
-                                        <div class="form-group mb-3 col-md-6">
-                                            <label for="user_role">Role</label>
-                                            <select class="form-select" name="user_role" id="user_role" required>
-                                                <option value="1">Admin</option>
-                                                <option value="2">Manager</option>
-                                                <option value="3">Staff</option>
-                                                <option value="3">Marketer</option>
-                                                <option value="5">Customer</option>
+                                            <label for="staff_major">Chuyên ngành</label>
+                                            <select id="staff_major" name="staff_major" class="form-control">
+                                                <c:if test="${findingStaff==null}">
+                                                    <c:forEach items="${majorCategorys}" var="mCate">
+                                                        <option value="${mCate.getMajorCategoryId()}" ${param.staff_major==mCate.getMajorCategoryId()?"selected":""}>${mCate.getMajorCategoryName()}</option>
+                                                    </c:forEach>
+                                                </c:if>
+                                                
+                                                <c:if test="${findingStaff!=null}">
+                                                    <c:forEach items="${majorCategorys}" var="mCate">
+                                                        <option value="${mCate.getMajorCategoryId()}" ${findingStaff.staffMajorId==mCate.getMajorCategoryId()?"selected":""}>${mCate.getMajorCategoryName()}</option>
+                                                    </c:forEach>
+                                                </c:if>            
                                             </select>
-                                        </div>
-                                        <div class="form-group mb-3 col-md-6">
-                                            <label for="user_avatar">Avatar</label>
-                                            <input type="file" class="form-control" id="user_avatar" accept="image/*" required>
-                                            <input type="text" class="form-control" id="user_avatar_submit" style="display: none" name="user_avatar">
 
                                         </div>
+                                            <div class="form-group mb-3 col-md-6">
+                                                <label for="staff_degree">Học vị</label>
+                                                <input type="text" class="form-control" name="staff_degree" id="staff_degree" value="${findingStaff==null?param.staff_degree:findingStaff.staffDegree}" placeholder="" required>
+                                            </div>
+
                                         <div class="form-group mb-3 col-md-6">
-                                            <label for="date_of_birth">Demo Img</label>
-                                            <img id="avatarPreview" class="mt-3" src=""  alt="Avatar Preview" style="max-width: 300px; display: none;">
+                                            <label for="staff_education">Học vấn</label>
+                                            <textarea type="text" class="form-control" name="staff_education" id="staff_education" required rows="20"><c:if test="${findingStaff==null}">${param.staff_education}</c:if><c:if test="${findingStaff!=null}">${findingStaff.staffEducation}</c:if></textarea>
+                                        </div>
+
+                                        <div class="form-group mb-3 col-md-6">
+                                            <label for="staff_description">Miêu tả ngắn</label>
+                                            <textarea class="form-control" name="staff_description" id="staff_description" required rows="20"><c:if test="${findingStaff==null}">${param.staff_description}</c:if><c:if test="${findingStaff!=null}">${findingStaff.staffDescription}</c:if></textarea>
+                                        </div>
+
+                                        <div class="form-group  mb-3 col-md-6">
+                                            <label for="staff_experience">Kinh nghiệm làm việc</label>
+                                            <textarea class="form-control" name="staff_experience" id="staff_experience" required rows="20"><c:if test="${findingStaff==null}">${param.staff_experience}</c:if><c:if test="${findingStaff!=null}">${findingStaff.staffExperience}</c:if></textarea>
                                         </div>
                                         <p>${errorMessage}</p>
                                         <div class="form-group mb-3 col-md-12">
@@ -213,22 +178,20 @@
 
 
         <script>
-            
-             fetch('https://api.vietqr.io/v2/banks')
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                data.data.forEach((bank, bank_index) => {
-                    let optionBank = '<option value="' + bank.code + '">' + bank.name + '</option>';
-                    if(bank.code == '${user.userBank}'){
-                        optionBank = '<option selected value="' + bank.code + '">' + bank.name + '</option>';
-                    }
-                    document.getElementById("user_bank").innerHTML += optionBank;
-                });
-            })
-            .catch(error => {
-                console.error('Lỗi khi gọi API:', error);
-            });
+            document.getElementById("staff_major").value = '${param.staff_major}';
+            <c:if test="${error!=null}">
+            window.alert('${error}');
+            </c:if>
+            <c:if test="${findingUser!=null}">
+                document.getElementById("user_phone_email").setAttribute("readonly",true);
+                
+            </c:if>
+            <c:if test="${findingStaff!=null}">
+                document.getElementById("staff_major").value = '${findingStaff.staffMajorId}';
+            </c:if>
+            <c:if test="${findingStaff==null}">
+                document.getElementById("staff_major").value = '${param.staff_major}';
+            </c:if>
             // Validate date of birth to ensure it's not greater than today
             function validateDateOfBirth(dateOfBirth) {
                 const today = new Date();
@@ -277,58 +240,6 @@
             }
 
             // Avatar preview and encoding to base64
-            document.getElementById('user_avatar').addEventListener('change', function (event) {
-                const file = event.target.files[0];
-
-                if (!validateAvatar(file)) {
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const base64Image = e.target.result;
-                    document.getElementById('avatarPreview').src = base64Image;
-                    document.getElementById('avatarPreview').style.display = 'block';
-                    document.getElementById('user_avatar_submit').value = base64Image;
-                };
-                reader.readAsDataURL(file);
-            });
-
-
-            function isValidPhoneNumber(phoneNumber) {
-                const cleanedNumber = phoneNumber.replace(/\s+/g, '').replace(/-/g, '');
-                const phoneRegex = /^(84|0[35789])+([0-9]{8})\b/;
-                if (!/^(\+|\d)/.test(cleanedNumber)) {
-                    return false;
-                }
-                if (!phoneRegex.test(phoneNumber)) {
-                    return false;
-                }
-                if (cleanedNumber.length < 10 || cleanedNumber.length > 15) {
-                    return false;
-                }
-                return true;
-            }
-            function isValidPassword(password) {
-                if (password.length < 8 || password.length > 16) {
-                    return false;
-                }
-                if (!/[A-Z]/.test(password)) {
-                    return false;
-                }
-                if (!/[a-z]/.test(password)) {
-                    return false;
-                }
-                if (!/\d/.test(password)) {
-                    return false;
-                }
-                return true;
-            }
-            function isValidEmail(email) {
-                const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-                return emailRegex.test(email);
-            }
         </script>
 
         <!--   Core JS Files   -->

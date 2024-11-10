@@ -201,4 +201,22 @@ public class ProductUnitDAO implements RowMapper<ProductUnit> {
         }
         return check;
     }
+    
+    public ProductUnit getByProductIdAndUnitId(String pid,String uid) throws SQLException, ClassNotFoundException {
+        String sql = "SELECT * FROM [product_unit] WHERE product_id = ? and unit_id = ?";
+        ProductUnit productUnit = null;
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setLong(1, CalculatorService.parseLong(pid));
+            ps.setLong(2, CalculatorService.parseLong(uid));
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    productUnit = mapRow(rs);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return productUnit;
+    }
 }

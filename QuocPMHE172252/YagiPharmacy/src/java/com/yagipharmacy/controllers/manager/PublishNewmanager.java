@@ -66,10 +66,10 @@ public class PublishNewmanager extends HttpServlet {
             throws ServletException, IOException {
         String newsId = request.getParameter("newsId");
         if (newsId == null) {
-            response.sendRedirect("ListNews");
+            response.sendRedirect("../staff/ListNews");
         } else {
             if (newsId.trim().equals("")) {
-                response.sendRedirect("ListNews");
+                response.sendRedirect("../staff/ListNews");
             } else {
                 Long newsIdLong = CalculatorService.parseLong(newsId);
                 NewsDAO newsDAO = new NewsDAO();
@@ -79,10 +79,10 @@ public class PublishNewmanager extends HttpServlet {
                         request.setAttribute("findingNews", findingNews);
                         request.getRequestDispatcher("PublishNew.jsp").forward(request, response);
                     } else {
-                        response.sendRedirect("ListNews");
+                        response.sendRedirect("./staff/ListNews");
                     }
                 } catch (Exception e) {
-                    response.sendRedirect("ListNews");
+                    response.sendRedirect("./staff/ListNews");
                 }
             }
 
@@ -119,10 +119,10 @@ public class PublishNewmanager extends HttpServlet {
             User authorNew = udao.getById(atuhorId);
             String host = request.getServerName(); 
             int port = request.getServerPort();
-            String subject = curentUser.getUserName() + " have been reject your news ";
+            String subject = curentUser.getUserName() + (Integer.valueOf(reject)==3?" have been reject your news ":" have been aprove your news ");
             String url = "http://" + host + ":" + port + request.getContextPath() 
                      + "/staff/UpdateNews?newsId=" + newsId; 
-            String body = "If you want to see detain click here <a href='"+url+"'>News Detail</a>";
+            String body = "Cảm ơn đã đóng góp";
             new MailService().sentEmail(authorNew.getUserEmail(), subject, body);
             boolean check = newsDAO.updateRejectById(newsId, findingNews);
             News newsss = newsDAO.getById(newsId);

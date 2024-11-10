@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
@@ -208,9 +209,30 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="chart-container" style="min-height: 375px">
-                                            <canvas id="statisticsChart"></canvas>
+                                            <form action="AdminDashboard" class="form-search">
+                                                <select id="year_select" name="year" class="" value="${year}">
+                                                    <option value="2018" ${year==2018?"selected":""}>2018</option>
+                                                    <option value="2019" ${year==2019?"selected":""}>2019</option>
+                                                    <option value="2020" ${year==2020?"selected":""}>2020</option>
+                                                    <option value="2021" ${year==2021?"selected":""}>2021</option>
+                                                    <option value="2022" ${year==2022?"selected":""}>2022</option>
+                                                    <option value="2023" ${year==2023?"selected":""}>2023</option>
+                                                    <option value="2024" ${year==2024?"selected":""}>2024</option>
+                                                </select>
+                                                <select id="product_select" name="product_id" class="">
+                                                    <c:forEach items="${listP}" var="p">
+                                                        <option value="${p.productId}" ${productId==p.productId.toString()?"selected":""}>${p.productName}</option>
+                                                    </c:forEach>
+                                                </select>
+                                                <button type="submit">Lấy dữ liệu</button>
+                                            </form>
+                                            <canvas id="revenueInMonthOfOneProduct"></canvas>
                                         </div>
-                                        <div id="myChartLegend"></div>
+                                        
+                                        <div class="chart-container" style="min-height: 375px">
+                                            <canvas id="revenueQuanBy"></canvas>
+                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -244,24 +266,54 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="card-category">March 25 - April 02</div>
+                                        <div class="card-category" id="currentDate1"></div>
                                     </div>
                                     <div class="card-body pb-0">
                                         <div class="mb-4 mt-2">
-                                            <h1>$4,578.58</h1>
+                                            <h1>${dailyTotal} VNĐ</h1>
                                         </div>
                                         <div class="pull-in">
                                             <canvas id="dailySalesChart"></canvas>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card card-round">
+                                <div class="card card-primary card-round">
+                                    <div class="card-header">
+                                        <div class="card-head-row">
+                                            <div class="card-title">Total sales revenue</div>
+                                            <div class="card-tools">
+                                                <div class="dropdown">
+                                                    <button
+                                                        class="btn btn-sm btn-label-light dropdown-toggle"
+                                                        type="button"
+                                                        id="dropdownMenuButton"
+                                                        data-bs-toggle="dropdown"
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                        >
+                                                        Export
+                                                    </button>
+                                                    <div
+                                                        class="dropdown-menu"
+                                                        aria-labelledby="dropdownMenuButton"
+                                                        >
+                                                        <a class="dropdown-item" href="#">Action</a>
+                                                        <a class="dropdown-item" href="#">Another action</a>
+                                                        <a class="dropdown-item" href="#"
+                                                           >Something else here</a
+                                                        >
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-category" id="currentDate2"></div>
+                                    </div>
                                     <div class="card-body pb-0">
-                                        <div class="h1 fw-bold float-end text-primary">+5%</div>
-                                        <h2 class="mb-2">17</h2>
-                                        <p class="text-muted">Users online</p>
-                                        <div class="pull-in sparkline-fix">
-                                            <div id="lineChart"></div>
+                                        <div class="mb-4 mt-2">
+                                            <h1>${allTotal} VNĐ</h1>
+                                        </div>
+                                        <div class="pull-in">
+                                            <canvas id="dailySalesChart"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -766,6 +818,7 @@
 
         <!-- Kaiadmin JS -->
         <script src="./assets/js/kaiadmin.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
         <!-- Kaiadmin DEMO methods, don't include it in your project! -->
         <script src="./assets/js/setting-demo.js"></script>
@@ -798,5 +851,78 @@
                 fillColor: "rgba(255, 165, 52, .14)",
             });
         </script>
+        
+        <script>
+            document.getElementById("product_select").value ='${product_id}';
+        // JavaScript để tạo biểu đồ cột
+        const  revDTO = document.getElementById('revenueInMonthOfOneProduct').getContext('2d');
+        const myChart = new Chart(revDTO, {
+            type: 'bar',
+            data: {
+                labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6','Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+                datasets: [{
+                    label: 'Doanh thu',
+                    data: [${reDTO.m1}, ${reDTO.m2}, ${reDTO.m3}, ${reDTO.m4}, ${reDTO.m5}, ${reDTO.m6},${reDTO.m7}, ${reDTO.m8}, ${reDTO.m9}, ${reDTO.m10}, ${reDTO.m11}, ${reDTO.m12}],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        const litPRQs = JSON.parse(`${litPRQsJson}`);
+        var lableArr = [];
+        var dataArr = [];
+        litPRQs.forEach(listPRQ =>{
+            lableArr.push(listPRQ.productName);
+            dataArr.push(listPRQ.quantity);
+        });
+        const proDto = document.getElementById("revenueQuanBy").getContext('2d');
+        const myChart2 = new Chart(proDto, {
+            type: 'bar',
+            data: {
+                labels: lableArr,
+                datasets: [{
+                    label: 'Top mặt hàng',
+                    data: dataArr,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        function formatDateTimeVN() {
+            const date = new Date();
+
+            const day = date.getDate();
+            const month = date.getMonth() + 1; // Tháng trong JavaScript bắt đầu từ 0
+            const year = date.getFullYear();
+
+            const hours = date.getHours();
+            const minutes = date.getMinutes();
+            const seconds = date.getSeconds();
+
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            const formattedHours = hours % 12 || 12; // Chuyển đổi sang định dạng 12 giờ
+
+            // Tạo chuỗi ngày tháng theo định dạng tiếng Việt
+            const dateStr = `Ngày `+day+` tháng `+month+` năm `+year;
+            const timeStr = `lúc `+formattedHours+`:`+minutes+`:`+seconds+``+ampm;
+
+            return dateStr;
+        }
+        document.getElementById('currentDate1').innerHTML = formatDateTimeVN();
+        document.getElementById('currentDate2').innerHTML = formatDateTimeVN();
+    </script>
     </body>
 </html>

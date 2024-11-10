@@ -4,8 +4,11 @@
  */
 package com.yagipharmacy.controllers.admin;
 
+import com.yagipharmacy.controllers.manager.CreateSupplier;
 import com.yagipharmacy.DAO.SupplierDAO;
+import com.yagipharmacy.constant.services.AuthorizationService;
 import com.yagipharmacy.entities.Supplier;
+import com.yagipharmacy.entities.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,6 +16,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,7 +26,7 @@ import java.util.logging.Logger;
  * @author author
  */
 @WebServlet(name = "UpdateSupllier", urlPatterns = {"/admin/UpdateSupllier"})
-public class UpdateSupllier extends HttpServlet {
+public class UpdateSupllier extends HttpServlet implements AuthorizationService{
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -61,6 +66,17 @@ public class UpdateSupllier extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Get the supplier ID from the request
+        User userAuth = (User)request.getSession().getAttribute("userAuth");
+        if(userAuth==null){
+            response.sendRedirect("../Login");
+            return;
+        }
+        List<Long> roleList = Arrays.asList(2L);
+        boolean checkAcpt = acceptAuth(request, response, roleList);
+        if(!checkAcpt){
+            response.sendRedirect("../ErrorPage");
+            return;
+        }
         String supplierId = request.getParameter("id");
 
         SupplierDAO supplierDAO = new SupplierDAO();

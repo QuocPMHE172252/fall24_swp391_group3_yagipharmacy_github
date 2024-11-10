@@ -106,11 +106,20 @@
                                 </li>
                             </ul>
                         </div>
+                        
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
+                                    
                                     <div class="card-header">
-                                        <a href="/YagiPharmacy/manager/AddProduct" class="btn btn-primary">Add Product</a>
+                                        
+                                        <c:if test="${sessionScope.userAuth.roleLevel==3}">
+                                            <a href="/YagiPharmacy/manager/AddProduct" class="btn btn-primary">Add Product</a>
+                                        </c:if>
+                                            <c:if test="${sessionScope.userAuth.roleLevel!=3}">
+                                                <button disabled="" class="btn btn-primary">Add Product</button>
+                                            </c:if>
+                                            
                                         <form method="get" action="./ProductsList" style="display: flex; display: flex; justify-content: center;">
                                             <div style="width: 50%; display: flex; justify-content: space-between;position: absolute; top: 85px">
                                                 <div>
@@ -146,9 +155,18 @@
                                                         <th>Category</th>
                                                         <th>Dosage form</th>
                                                         <th>product specification</th>
-                                                        <th>IsDeleted</th>
-                                                        <th>Delete</th>
+                                                        <th>Status</th>
+                                                        <c:if test="${sessionScope.userAuth.roleLevel==3}">
                                                         <th>Update</th>
+                                                        </c:if>
+                                                        
+                                                            <c:if test="${sessionScope.userAuth.roleLevel==2}">
+                                                            <th>Confirm</th>
+                                                            </c:if>
+                                                            <c:if test="${sessionScope.userAuth.roleLevel==2}">
+                                                            <th>Quick Reject</th>    
+                                                            </c:if>
+
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -160,14 +178,22 @@
                                                             <td>${u.productCategory.productCategoryName}</td>
                                                             <td>${u.dosageForm}</td>
                                                             <td>${u.productSpecification}</td>
-                                                            <td>${u.isDeleted()==false?"Active":"Inactive"}</td>
-                                                            <c:if test="${u.isDeleted()==false}">
-                                                                <td><a href="./ChangeProductStatus?pid=${u.productId}&status=1" class="btn btn-danger">Delete</a></td>
+                                                            <td>${u.deleteProcess==null?"Đang chờ xác nhận":(u.deleteProcess==1?"Đã hủy":"Đã xác nhận")}</td>
+                                                            <c:if test="${sessionScope.userAuth.roleLevel==3}">
+                                                                <td><a href="../manager/EditProduct?product_id=${u.productId}" class="btn btn-warning">Update</a></td>
                                                             </c:if>
-                                                            <c:if test="${u.isDeleted()==true}">
-                                                                <td><a href="./ChangeProductStatus?pid=${u.productId}&status=0" class="btn btn-success">Restore</a></td>
+                                                            
+                                                            <c:if test="${sessionScope.userAuth.roleLevel==2}">
+                                                                <c:if test="${u.deleteProcess==null}">
+                                                                    <td> <a href="../manager/ConfirmProduct?product_id=${u.productId}" class="btn btn-info">Confirm </a></td>
+                                                                    <td> <a href="../manager/QuickRejectPro?pid=${u.productId}" class="btn btn-info">Reject</a></td>
+                                                                </c:if>
+                                                                <c:if test="${u.deleteProcess!=null}">
+                                                                    <td> <button class="btn btn-info" ${u.deleteProcess!=null?"disabled":""}>Confirm </button></td>
+                                                                    <td> <a href="../manager/QuickRejectPro?pid=${u.productId}" class="btn btn-info">Reject</a></td>
+                                                                </c:if>
+                                                                
                                                             </c:if>
-                                                            <td><a href="../manager/EditProduct?product_id=${u.productId}" class="btn btn-warning">Update</a></td>
                                                         </tr>
                                                     </c:forEach>
                                                 </tbody>

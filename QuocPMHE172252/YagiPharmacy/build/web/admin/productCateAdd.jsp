@@ -94,13 +94,13 @@
 
                                         <!-- Category Code -->
                                         <div class="mb-3">
-                                            <label for="productCategoryCode" class="form-label">Category Code</label>
+                                            <label for="productCategoryCode" class="form-label">Category Code <span style="color: red">*</span></label>
                                             <input type="text" class="form-control" id="productCategoryCode" name="productCategoryCode" placeholder="Enter category code" required>
                                         </div>
 
                                         <!-- Category Name -->
                                         <div class="mb-3">
-                                            <label for="productCategoryName" class="form-label">Category Name</label>
+                                            <label for="productCategoryName" class="form-label">Category Name <span style="color: red">*</span></label>
                                             <input type="text" class="form-control" id="productCategoryName" name="productCategoryName" placeholder="Enter category name" required>
                                         </div>
 

@@ -7,6 +7,7 @@ package com.yagipharmacy.controllers.staff;
 import com.google.gson.Gson;
 import com.yagipharmacy.DAO.NewsCategoryDAO;
 import com.yagipharmacy.DAO.NewsDAO;
+import com.yagipharmacy.constant.services.AuthorizationService;
 import com.yagipharmacy.constant.services.CalculatorService;
 import com.yagipharmacy.entities.News;
 import com.yagipharmacy.entities.NewsCategory;
@@ -19,6 +20,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +29,7 @@ import java.util.List;
  * @author admin
  */
 @WebServlet(name = "AddNews", urlPatterns = {"/staff/AddNews"})
-public class AddNews extends HttpServlet {
+public class AddNews extends HttpServlet implements AuthorizationService{
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -67,6 +69,17 @@ public class AddNews extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User userAuth = (User)request.getSession().getAttribute("userAuth");
+        if(userAuth==null){
+            response.sendRedirect("../Login");
+            return;
+        }
+        List<Long> roleList = Arrays.asList(3L);
+        boolean checkAcpt = acceptAuth(request, response, roleList);
+        if(!checkAcpt){
+            response.sendRedirect("../ErrorPage");
+            return;
+        }
         List<NewsCategory> listParentCates = new ArrayList<>();
         List<NewsCategory> listChildCates = new ArrayList<>();
         NewsCategoryDAO newsCategoryDAO = new NewsCategoryDAO();
@@ -119,7 +132,7 @@ public class AddNews extends HttpServlet {
             boolean check = newsDAO.addNew(newsCreating);
             if(check){
                 request.setAttribute("error", true);
-                doGet(request, response);
+                response.sendRedirect("ListNews");
             }
         } catch (Exception e) {
             request.setAttribute("error", false);

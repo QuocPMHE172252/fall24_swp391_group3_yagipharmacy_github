@@ -110,21 +110,29 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <a href="./CategoryAdd" class="btn btn-primary">Add category</a>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table id="tables" class="table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Id</th>
-                                                        <th>Code</th>
-                                                        <th>Name</th>
-                                                        <th>Parent Name</th>
-                                                        <th>Detail</th>
-                                                        <th>IsDeleted</th>
-                                                        <th>Delete</th>
-                                                        <th>Update</th>
+                                        <c:if test="${sessionScope.userAuth!=null&&sessionScope.userAuth.roleLevel==3}"><a href="./CategoryAdd" class="btn btn-primary">Add category</a></c:if>
+
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table id="tables" class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Id</th>
+                                                            <th>Code</th>
+                                                            <th>Name</th>
+                                                            <th>Parent Name</th>
+                                                            <th>Detail</th>
+                                                            <th>IsDeleted</th>
+                                                            <c:if test="${sessionScope.userAuth!=null&&sessionScope.userAuth.roleLevel==2}">
+                                                            <th>Delete</th>
+                                                            <th>Update</th>
+                                                            </c:if>
+                                                            <c:if test="${sessionScope.userAuth!=null&&sessionScope.userAuth.roleLevel==3}">
+                                                            <th>Update</th>
+                                                            </c:if>
+
+                                                        
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -136,13 +144,19 @@
                                                             <td>${u.parentProductCategory!=null?u.parentProductCategory.productCategoryName:"Null"}</td>
                                                             <td>${u.productCategoryDetail}</td>
                                                             <td>${u.isDeleted()==false?"Active":"Inactive"}</td>
-                                                            <c:if test="${u.isDeleted()==false}">
-                                                                <td><a href="./CategoryDelete?cid=${u.productCategoryId}&status=1" class="btn btn-danger">Delete</a></td>
+                                                            <c:if test="${sessionScope.userAuth!=null&&sessionScope.userAuth.roleLevel==2}">
+                                                                <c:if test="${u.isDeleted()==false}">
+                                                                    <td><a href="./CategoryDelete?cid=${u.productCategoryId}&status=1" class="btn btn-danger">Delete</a></td>
+                                                                </c:if>
+                                                                <c:if test="${u.isDeleted()==true}">
+                                                                    <td><a href="./CategoryDelete?cid=${u.productCategoryId}&status=0" class="btn btn-success">Restore</a></td>
+                                                                </c:if>
+                                                                    <td><a href="./CategoryUpdate?cid=${u.productCategoryId}" class="btn btn-warning">Detail</a></td>
                                                             </c:if>
-                                                            <c:if test="${u.isDeleted()==true}">
-                                                                <td><a href="./CategoryDelete?cid=${u.productCategoryId}&status=0" class="btn btn-success">Restore</a></td>
+                                                            <c:if test="${sessionScope.userAuth!=null&&sessionScope.userAuth.roleLevel==3}">
+                                                                <td><a href="./CategoryUpdate?cid=${u.productCategoryId}" class="btn btn-warning">Update</a></td>
                                                             </c:if>
-                                                            <td><a href="./CategoryUpdate?cid=${u.productCategoryId}" class="btn btn-warning">Update</a></td>
+
                                                         </tr>
                                                     </c:forEach>
                                                 </tbody>

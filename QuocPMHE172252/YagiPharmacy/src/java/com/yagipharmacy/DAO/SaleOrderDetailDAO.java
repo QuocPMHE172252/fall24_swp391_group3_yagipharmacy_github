@@ -8,6 +8,7 @@ import com.yagipharmacy.JDBC.RowMapper;
 import com.yagipharmacy.JDBC.SQLServerConnection;
 import com.yagipharmacy.constant.services.CalculatorService;
 import com.yagipharmacy.entities.Product;
+import com.yagipharmacy.entities.ProductUnit;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -27,6 +28,7 @@ public class SaleOrderDetailDAO implements RowMapper<SaleOrderDetail> {
     public SaleOrderDetail mapRow(ResultSet rs) throws SQLException, ClassNotFoundException{
         Product findingProduct = new ProductDAO().getById(rs.getLong("product_id")+"");
         Unit findingUnit = new UnitDAO().getById(rs.getLong("unit_id")+"");
+        ProductUnit findingProductUnit = new ProductUnitDAO().getByProductIdAndUnitId(rs.getLong("product_id")+"", rs.getLong("unit_id")+"");
         SaleOrderDetail saleOrderDetail = new SaleOrderDetail();
         saleOrderDetail.setOrderDetailId(rs.getLong("order_detail_id"));
         saleOrderDetail.setSaleOrderId(rs.getLong("sale_order_id"));
@@ -37,6 +39,7 @@ public class SaleOrderDetailDAO implements RowMapper<SaleOrderDetail> {
         saleOrderDetail.setDeleted(rs.getBoolean("is_deleted"));
         saleOrderDetail.setProduct(findingProduct);
         saleOrderDetail.setUnit(findingUnit);
+        saleOrderDetail.setProductUnit(findingProductUnit);
         return saleOrderDetail;
     }
 

@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div class="sidebar" data-background-color="dark">
     <div class="sidebar-logo">
         <!-- Logo Header -->
@@ -31,8 +32,13 @@
                         <div class="collapse" id="dashboard">
                             <ul class="nav nav-collapse">
                                 <li>
-                                    <a href="./index.jsp">
+                                    <a href="../admin/AdminDashboard">
                                         <span class="sub-item">Dashboard </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../HomePage">
+                                        <span class="sub-item">HomePage </span>
                                     </a>
                                 </li>
                             </ul>
@@ -52,16 +58,28 @@
                         </a>
                         <div class="collapse" id="base">
                             <ul class="nav nav-collapse">
-                                <li>
-                                    <a href="./AccountList">
-                                        <span class="sub-item">Account List</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="components/avatars.html">
-                                        <span class="sub-item">Staff List</span>
-                                    </a>
-                                </li>
+                                <c:if test="${sessionScope.userAuth!=null&&sessionScope.userAuth.roleLevel==1}">
+                                    <li>
+                                        <a href="../admin/AccountList">
+                                            <span class="sub-item">Account List</span>
+                                        </a>
+                                    </li>
+                                </c:if>
+
+                                <c:if test="${sessionScope.userAuth!=null&&sessionScope.userAuth.roleLevel==2}">
+                                    <li>
+                                        <a href="/YagiPharmacy/manager/StaffList">
+                                            <span class="sub-item">Staff List</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="../manager/Add-UpdateStaff">
+                                            <span class="sub-item">Add or Update Staff</span>
+                                        </a>
+                                    </li>
+
+                                </c:if>
+
                             </ul>
                         </div>
                     </li>
@@ -73,33 +91,40 @@
                         </a>
                         <div class="collapse" id="sidebarLayouts">
                             <ul class="nav nav-collapse">
-                                <li>
-                                    <a href="/YagiPharmacy/admin/ProductsList">
-                                        <span class="sub-item">Products</span>
-                                    </a>
-                                </li>
-                                <li>
-                                   <a href="/YagiPharmacy/admin/CategoryList">
-                                        <span class="sub-item">Product Categories</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="/YagiPharmacy/manager/ImportOrderList">
-                                        <span class="sub-item">Import Order List</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="/YagiPharmacy/admin/SupplierList">
-                                        <span class="sub-item">Suppliers List</span>
-                                    </a>
-                                </li>
-                                <ul class="nav nav-collapse">
-                                <li>
-                                    <a href="/YagiPharmacy/admin/OrderList">
-                                        <span class="sub-item">Order List</span>
-                                    </a>
-                                </li>
-                            </ul>
+                                <c:if test="${sessionScope.userAuth!=null&&sessionScope.userAuth.roleLevel<5&&sessionScope.userAuth.roleLevel>1}">
+                                    <li>
+                                        <a href="/YagiPharmacy/admin/ProductsList">
+                                            <span class="sub-item">Products</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/YagiPharmacy/admin/CategoryList">
+                                            <span class="sub-item">Product Categories</span>
+                                        </a>
+                                    </li>
+                                </c:if>
+                                <c:if test="${sessionScope.userAuth!=null&&sessionScope.userAuth.roleLevel<5&&sessionScope.userAuth.roleLevel>1}">
+                                    <li>
+                                        <a href="/YagiPharmacy/manager/ImportOrderList">
+                                            <span class="sub-item">Import Order List</span>
+                                        </a>
+                                    </li>
+                                </c:if>
+                                <c:if test="${sessionScope.userAuth!=null&&sessionScope.userAuth.roleLevel==2}">
+                                    <li>
+                                        <a href="/YagiPharmacy/manager/SupplierList">
+                                            <span class="sub-item">Suppliers List</span>
+                                        </a>
+                                    </li>
+                                </c:if>
+                                <c:if test="${sessionScope.userAuth!=null&&sessionScope.userAuth.roleLevel==3}">
+                                    <li>
+                                        <a href="/YagiPharmacy/staff/OrderList">
+                                            <span class="sub-item">Order List</span>
+                                        </a>
+                                    </li>
+                                </c:if>
+
                             </ul>
                         </div>
                     </li>
@@ -111,11 +136,13 @@
                         </a>
                         <div class="collapse" id="forms">
                             <ul class="nav nav-collapse">
-                                <li>
-                                    <a href="/YagiPharmacy/staff/ListNews">
-                                        <span class="sub-item">News</span>
-                                    </a>
-                                </li>
+                                <c:if test="${sessionScope.userAuth!=null&&sessionScope.userAuth.roleLevel<5&&sessionScope.userAuth.roleLevel>1}">
+                                    <li>
+                                        <a href="/YagiPharmacy/staff/ListNews">
+                                            <span class="sub-item">News</span>
+                                        </a>
+                                    </li>
+                                </c:if>
                                 <li>
                                     <a href="forms/forms.html">
                                         <span class="sub-item">New categories</span>

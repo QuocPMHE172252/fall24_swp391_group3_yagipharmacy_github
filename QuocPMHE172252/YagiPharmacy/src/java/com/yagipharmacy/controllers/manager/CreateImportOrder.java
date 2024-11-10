@@ -9,12 +9,14 @@ import com.yagipharmacy.DAO.ImportOrderDAO;
 import com.yagipharmacy.DAO.ImportOrderDetailDAO;
 import com.yagipharmacy.DAO.ProductDAO;
 import com.yagipharmacy.DAO.SupplierDAO;
+import com.yagipharmacy.constant.services.AuthorizationService;
 import com.yagipharmacy.constant.services.CalculatorService;
 import com.yagipharmacy.constant.services.MailService;
 import com.yagipharmacy.entities.ImportOrder;
 import com.yagipharmacy.entities.ImportOrderDetail;
 import com.yagipharmacy.entities.Product;
 import com.yagipharmacy.entities.Supplier;
+import com.yagipharmacy.entities.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -24,6 +26,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +35,7 @@ import java.util.List;
  * @author admin
  */
 @WebServlet(name = "CreateImportOrder", urlPatterns = {"/manager/CreateImportOrder"})
-public class CreateImportOrder extends HttpServlet {
+public class CreateImportOrder extends HttpServlet implements AuthorizationService{
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -72,12 +75,23 @@ public class CreateImportOrder extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User userAuth = (User)request.getSession().getAttribute("userAuth");
+        if(userAuth==null){
+            response.sendRedirect("../Login");
+            return;
+        }
+        List<Long> roleList = Arrays.asList(3L);
+        boolean checkAcpt = acceptAuth(request, response, roleList);
+        if(!checkAcpt){
+            response.sendRedirect("../ErrorPage");
+            return;
+        }
         ProductDAO productDAO = new ProductDAO();
         SupplierDAO supplierDAO = new SupplierDAO();
         List<Product> products = new ArrayList<>();
         List<Supplier> suppliers = new ArrayList<>();
         try {
-            products = productDAO.getAll();
+            products = productDAO.getAllNoLongDes();
             suppliers = supplierDAO.getAll();
         } catch (Exception e) {
             e.printStackTrace();
@@ -169,9 +183,7 @@ public class CreateImportOrder extends HttpServlet {
                     
                 }
                 for (Long supId : supplierList) {
-                    List<ImportOrderDetail> listOrderDetails = importOrderDetailDAO.getListByImportOrderIdAndSupplierId(newImportOrderId+"",supId+"");
-                    String mailContent = MailService.createAcceptOrderDetailsMail(supId+"", importExpectedDate, listOrderDetails);
-                    MailService.sentEmail(listOrderDetails.get(0).getSupplier().getSupplierEmail(), "Yêu cầu nhập hàng", mailContent);
+                    
                 }
                 response.sendRedirect("ImportOrderList?created=true");
             }else{

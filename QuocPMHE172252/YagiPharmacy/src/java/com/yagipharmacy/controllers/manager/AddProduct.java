@@ -13,6 +13,7 @@ import com.yagipharmacy.DAO.ProductImageDAO;
 import com.yagipharmacy.DAO.ProductUnitDAO;
 import com.yagipharmacy.DAO.SupplierDAO;
 import com.yagipharmacy.DAO.UnitDAO;
+import com.yagipharmacy.constant.services.AuthorizationService;
 import com.yagipharmacy.constant.services.CalculatorService;
 import com.yagipharmacy.entities.Excipient;
 import com.yagipharmacy.entities.Product;
@@ -22,6 +23,7 @@ import com.yagipharmacy.entities.ProductImage;
 import com.yagipharmacy.entities.ProductUnit;
 import com.yagipharmacy.entities.Supplier;
 import com.yagipharmacy.entities.Unit;
+import com.yagipharmacy.entities.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -30,6 +32,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -38,7 +41,7 @@ import java.util.List;
  * @author admin
  */
 @WebServlet(name = "AddProduct", urlPatterns = {"/manager/AddProduct"})
-public class AddProduct extends HttpServlet {
+public class AddProduct extends HttpServlet implements AuthorizationService{
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -78,6 +81,18 @@ public class AddProduct extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        User userAuth = (User)request.getSession().getAttribute("userAuth");
+        if(userAuth==null){
+            response.sendRedirect("../Login");
+            return;
+        }
+        List<Long> roleList = Arrays.asList(3L);
+        boolean checkAcpt = acceptAuth(request, response, roleList);
+        if(!checkAcpt){
+            response.sendRedirect("../ErrorPage");
+            return;
+        }
         UnitDAO unitDAO = new UnitDAO();
         SupplierDAO supplierDAO = new SupplierDAO();
         ExcipientDAO excipientDAO = new ExcipientDAO();
@@ -93,7 +108,7 @@ public class AddProduct extends HttpServlet {
             suppliers = supplierDAO.getAll();
             excipients = excipientDAO.getAll();
             String excipientsJson = gson.toJson(excipients);
-            productCategorys = productCategoryDAO.getListChildren();
+            productCategorys = productCategoryDAO.getLastChildren();
             request.setAttribute("unitsJson", unitsJson);
             request.setAttribute("excipientsJson", excipientsJson);
             request.setAttribute("productCategorys", productCategorys);
@@ -114,6 +129,7 @@ public class AddProduct extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User userAuth = (User)request.getSession().getAttribute("userAuth");
         String product_code = request.getParameter("product_code");
         String product_name = request.getParameter("product_name");
         String product_category = request.getParameter("product_category");
@@ -127,6 +143,7 @@ public class AddProduct extends HttpServlet {
         String product_image_submit = request.getParameter("product_image_submit");
         String product_target = request.getParameter("product_target");
         String product_desciption = request.getParameter("product_desciption");
+        String long_description = request.getParameter("long_desciption");
 
         ProductDAO productDAO = new ProductDAO();
         ProductUnitDAO productUnitDAO = new ProductUnitDAO();
@@ -138,7 +155,7 @@ public class AddProduct extends HttpServlet {
                 Product newProduct = Product.builder()
                         .productId(0L)
                         .productCode(product_code)
-                        .authorId(1L)
+                        .authorId(userAuth.getUserId())
                         .productCategoryId(CalculatorService.parseLong(product_category))
                         .productCountryCode(product_country_code)
                         .brand(brand)
@@ -150,6 +167,7 @@ public class AddProduct extends HttpServlet {
                         .createdDate(new Date())
                         .isPrescription(is_prescription.equals("1"))
                         .isDeleted(false)
+                        .productLongDesciption(long_description==null?null:long_description.replace('\"', '\''))
                         .build();
                 Long genId = productDAO.addNewAndGetKey(newProduct);
                 ProductImage newProductImg = ProductImage.builder()
@@ -198,6 +216,7 @@ public class AddProduct extends HttpServlet {
                 doGet(request, response);
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }

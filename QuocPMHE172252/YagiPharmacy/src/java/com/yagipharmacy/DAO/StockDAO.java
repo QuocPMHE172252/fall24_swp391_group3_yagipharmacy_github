@@ -7,6 +7,9 @@ package com.yagipharmacy.DAO;
 import com.yagipharmacy.JDBC.RowMapper;
 import com.yagipharmacy.JDBC.SQLServerConnection;
 import com.yagipharmacy.constant.services.CalculatorService;
+import com.yagipharmacy.entities.Product;
+import com.yagipharmacy.entities.ProductUnit;
+import com.yagipharmacy.entities.QuanOfProductUnit;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -156,5 +159,99 @@ public class StockDAO implements RowMapper<Stock> {
             e.printStackTrace();
         }
         return stocks;
+    }
+
+    public List<Stock> getByProductIdAndUnitId(String productId, String unitId) throws SQLException, ClassNotFoundException {
+        String sql = "SELECT * FROM [stock] WHERE product_id = ? and unit_id = ?";
+        List<Stock> stocks = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, CalculatorService.parseLong(productId));
+            ps.setObject(2, CalculatorService.parseLong(unitId));
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                stocks.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stocks;
+    }
+
+    public Long getNotOutOfDateSumQuantityOfProductUnit(String productId, String unitId) throws SQLException, ClassNotFoundException {
+        String sql = """
+                     SELECT SUM(quantity) AS total_quantity
+                     FROM stock
+                     WHERE product_id = ? AND unit_id = ? AND is_deleted = 0 AND cast(EXP_date as real)-(?)>0;
+                     """;
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, CalculatorService.parseLong(productId));
+            ps.setObject(2, CalculatorService.parseLong(unitId));
+            ps.setObject(3, new Date().getTime());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getLong("total_quantity");
+            }
+        }
+        return 0L;
+    }
+
+    public List<Stock> getAllNotOutOfDateByProductIdAndUnitId(String productId, String unitId) throws SQLException, ClassNotFoundException {
+        String sql = "SELECT * FROM [stock] WHERE product_id = ? AND unit_id = ? AND is_deleted = 0 AND cast(EXP_date as int)-(?)>0;";
+        List<Stock> stocks = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, CalculatorService.parseLong(productId));
+            ps.setObject(2, CalculatorService.parseLong(unitId));
+            ps.setObject(3, new Date().getTime());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                stocks.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stocks;
+    }
+
+    public boolean updateStockAsyncById(Connection conn, Stock stock, String id) throws SQLException, ClassNotFoundException {
+        String sql = """
+                     update stock set quantity = ? where stock_id =?
+                     """;
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setObject(1, stock.getQuantity());
+        stmt.setObject(2, CalculatorService.parseLong(id));
+        int rowE = stmt.executeUpdate();
+        return rowE > 0;
+    }
+    
+    public List<Stock> getAllNotOutOfDateAsyncByProductIdAndUnitId(Connection conn,String productId, String unitId) throws SQLException, ClassNotFoundException {
+        String sql = "SELECT * FROM [stock] WHERE product_id = ? AND unit_id = ? AND is_deleted = 0 AND cast(EXP_date as int)-(?)>0;";
+        List<Stock> stocks = new ArrayList<>();
+        try (PreparedStatement ps = conn.prepareStatement(sql);) {
+            ps.setObject(1, CalculatorService.parseLong(productId));
+            ps.setObject(2, CalculatorService.parseLong(unitId));
+            ps.setObject(3, new Date().getTime());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                stocks.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stocks;
+    }
+    public boolean updateTransStock(String productId,String unitId,String quantity) throws SQLException, ClassNotFoundException{
+        List<QuanOfProductUnit> quanOfProductUnits = new ArrayList<>();
+        Product findingProduct = new ProductDAO().getById(productId);
+        for (ProductUnit pu : findingProduct.getProductUnits()) {
+            quanOfProductUnits.add(QuanOfProductUnit.builder()
+                    .productUnit(pu)
+                    .totalQuan(getNotOutOfDateSumQuantityOfProductUnit(productId, unitId))
+                    .build());
+        }
+        ProductUnit curentProductUnit = new ProductUnitDAO().getByProductIdAndUnitId(productId, unitId);
+        for (QuanOfProductUnit quanOfProductUnit : quanOfProductUnits) {
+            
+        }
+        return true;
     }
 }

@@ -136,6 +136,7 @@
                                             <label for="product_desciption">Thông tin thêm</label>
                                             <textarea class="form-control" id="product_desciption" name="product_desciption" rows="5" cols="10"></textarea>
                                         </div>
+                                        
 
                                         <div class="form-group mb-3 col-md-6">
                                             <label for="excipients">Thành phần*</label> 
@@ -203,6 +204,11 @@
                                             <img id="avatarPreview" class="mt-3" src=""  alt="Avatar Preview" style="max-width: 300px; display: none;">
                                         </div>
                                         <p>${errorMessage}</p>
+                                        
+                                        <div class="">
+                                            <label for="long_desciption">Bài viết miêu tả sản phẩm</label>
+                                            <textarea id="long_desciption" name="long_desciption" rows="30"></textarea>
+                                        </div>
                                         <div class="form-group mb-3 col-md-12">
                                             <button type="submit" class="btn btn-success" style="width: 100px" onclick="submitForm()">Submit</button>
                                         </div>
@@ -244,7 +250,9 @@
 
         </div>
 
-
+        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.1/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.tiny.cloud/1/bxb68lg12i11zhb0ei9ubbfw1t388posa12jg0hpmq8570dg/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
         <script>
             <c:if test="${error!=null}">
             window.alert('${error}');
@@ -252,6 +260,7 @@
             <c:if test="${success!=null}">
             window.alert('${success==true?"Tạo thành công":"Tạo thất bại"}');
             </c:if>
+            tinymce.init({selector: '#long_desciption'});
             function ExcipientDetail(ex_id, quantity, uni_measurement) {
                 this.ex_id = ex_id;
                 this.quantity = quantity;

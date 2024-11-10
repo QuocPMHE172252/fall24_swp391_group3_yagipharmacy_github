@@ -137,7 +137,7 @@
     <body>
         
         <form action="Login" method="post">
-            <img src="https://cms-prod.s3-sgn09.fptcloud.com/smalls/Logo_LC_Default_2e36f42b6b.svg" alt="">
+            <a href="HomePage"><img src="https://cms-prod.s3-sgn09.fptcloud.com/smalls/Logo_LC_Default_2e36f42b6b.svg" alt=""></a>
             <h2>Đăng nhập</h2>
             <div class="form-group date">
                 <label for="email_phone">Số điện thoại hoặc email</label>

@@ -7,9 +7,11 @@ package com.yagipharmacy.controllers.staff;
 import com.google.gson.Gson;
 import com.yagipharmacy.DAO.NewsCategoryDAO;
 import com.yagipharmacy.DAO.NewsDAO;
+import com.yagipharmacy.constant.services.AuthorizationService;
 import com.yagipharmacy.constant.services.CalculatorService;
 import com.yagipharmacy.entities.News;
 import com.yagipharmacy.entities.NewsCategory;
+import com.yagipharmacy.entities.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -19,6 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +30,7 @@ import java.util.List;
  * @author admin
  */
 @WebServlet(name = "ListNews", urlPatterns = {"/staff/ListNews"})
-public class ListNews extends HttpServlet {
+public class ListNews extends HttpServlet implements AuthorizationService{
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -67,6 +70,17 @@ public class ListNews extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User userAuth = (User)request.getSession().getAttribute("userAuth");
+        if(userAuth==null){
+            response.sendRedirect("../Login");
+            return;
+        }
+        List<Long> roleList = Arrays.asList(4L,2L,3L);
+        boolean checkRole = acceptAuth(request, response, roleList);
+        if(!checkRole){
+            response.sendRedirect("../ErrorPage");
+            return;
+        }
         String parent_cate = request.getParameter("parent_cate");
         String cateId = request.getParameter("cateId");
         String title = request.getParameter("title");

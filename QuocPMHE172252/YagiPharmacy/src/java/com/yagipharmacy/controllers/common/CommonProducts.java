@@ -92,6 +92,7 @@ public class CommonProducts extends HttpServlet {
 
             }
         }
+        String temp = see_more;
         if (see_more == null) {
             see_more = "false";
         }
@@ -105,17 +106,14 @@ public class CommonProducts extends HttpServlet {
         Long size_of_page_num = 12L;
         if (size_of_page != null) {
             size_of_page_num = CalculatorService.parseLong(size_of_page);
-            request.setAttribute("size_of_page", size_of_page_num + 8);
+            request.setAttribute("size_of_page", size_of_page_num);
 
-        }
-        if (see_more.equals("true")) {
-            request.setAttribute("size_of_page", size_of_page_num + 8);
         } else {
             request.setAttribute("size_of_page", size_of_page_num);
         }
 
         try {
-            List<ProductCategory> pCates = productCategoryDAO.getListChildren();
+            List<ProductCategory> pCates = productCategoryDAO.getLastChildren();
             request.setAttribute("pCates", pCates);
 
             List<String> targets = productDAO.getAllProductTarget();
@@ -126,11 +124,11 @@ public class CommonProducts extends HttpServlet {
 
             List<String> brands = productDAO.getAllProductBrand();
             request.setAttribute("brands", brands);
-            
-            List<Product> products = productDAO.getAll();
+
+            List<Product> products = productDAO.getAllNoLongDes();
             if (searching.equals("all")) {
             }
-            if(searching.equals("true")){
+            if (searching.equals("true")) {
                 products = filterByName(products, searchProduct);
                 String jsonProducts = gson.toJson(products);
                 request.setAttribute("jsonProducts", jsonProducts);
@@ -147,7 +145,6 @@ public class CommonProducts extends HttpServlet {
             String jsonProducts = gson.toJson(products);
             request.setAttribute("jsonProducts", jsonProducts);
 
-            
             request.getRequestDispatcher("CommonProducts.jsp").forward(request, response);
         } catch (Exception e) {
         }
@@ -306,8 +303,18 @@ public class CommonProducts extends HttpServlet {
         if (name.equals("all")) {
             return products;
         }
+        String[] arrName = name.trim().split("\\s+");
+        int arrLe = arrName.length;
         for (Product product : products) {
-            if (product.getProductName().contains(name)) {
+            boolean check = true;
+            for (int i = 0; i < arrLe; i++) {
+                if (product.getProductName().toLowerCase().contains(arrName[i].toLowerCase())) {
+                    continue;
+                } else {
+                    check = false;
+                }
+            }
+            if (check) {
                 resultList.add(product);
             }
         }

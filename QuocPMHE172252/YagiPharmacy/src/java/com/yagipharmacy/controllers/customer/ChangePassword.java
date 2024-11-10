@@ -5,6 +5,7 @@
 package com.yagipharmacy.controllers.customer;
 
 import com.yagipharmacy.DAO.UserDAO;
+import com.yagipharmacy.constant.services.AuthorizationService;
 import com.yagipharmacy.entities.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,13 +14,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
  * @author admin
  */
 @WebServlet(name = "ChangePassword", urlPatterns = {"/ChangePassword"})
-public class ChangePassword extends HttpServlet {
+public class ChangePassword extends HttpServlet implements AuthorizationService{
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -59,11 +62,19 @@ public class ChangePassword extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        User userAuth = (User) request.getSession().getAttribute("userAuth");
-        if (userAuth != null) {
-            request.getRequestDispatcher("ChangePassword.jsp").forward(request, response);
-        } else {
+        User userAuth = (User)request.getSession().getAttribute("userAuth");
+        if(userAuth==null){
             response.sendRedirect("Login");
+            return;
+        }
+        List<Long> roleList = Arrays.asList(1L,2L,3L,5L);
+        boolean checkAcpt = acceptAuth(request, response, roleList);
+        if(!checkAcpt){
+            response.sendRedirect("ErrorPage");
+            return;
+        }else{
+            request.getRequestDispatcher("ChangePassword.jsp").forward(request, response);
+            return;
         }
     }
 
@@ -92,7 +103,8 @@ public class ChangePassword extends HttpServlet {
                     if (check) {
                         request.getSession().setAttribute("userAuth", findingUser);
                         request.setAttribute("change", true);
-                        doGet(request, response);
+                        response.sendRedirect("HomePage");
+                        return;
                     } else {
                         response.sendRedirect("ErrorPage");
                     }
@@ -102,6 +114,7 @@ public class ChangePassword extends HttpServlet {
                 }
 
             } catch (Exception e) {
+                e.printStackTrace();
             }
         } else {
             response.sendRedirect("Login");

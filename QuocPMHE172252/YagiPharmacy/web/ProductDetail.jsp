@@ -130,7 +130,7 @@
                         <h3>Thông tin chi tiết về Sản phẩm</h3>
                         <div class="row">
                             <div class="col">
-                                Vi xử lý Dual-core 1 Cortex-A9 tốc độ 1GHz
+                                ${product.productLongDesciption}
                             </div>
                         </div>
                     </div>
@@ -155,7 +155,7 @@
     </body>
     <script>
 
-                    const productJson = JSON.parse('${productJson}');
+                    const productJson = JSON.parse(`${productJson}`);
                     console.log(productJson);
                     var unit_id_submit = 0;
                     var product_id_submit = productJson.productId;

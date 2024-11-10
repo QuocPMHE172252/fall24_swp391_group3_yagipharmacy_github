@@ -12,6 +12,7 @@ import com.yagipharmacy.entities.Product;
 import com.yagipharmacy.entities.ProductCategory;
 import com.yagipharmacy.entities.ProductExcipient;
 import com.yagipharmacy.entities.ProductImage;
+import com.yagipharmacy.entities.ProductRevenueQuanDTO;
 import com.yagipharmacy.entities.ProductUnit;
 import com.yagipharmacy.entities.Supplier;
 import com.yagipharmacy.entities.User;
@@ -30,7 +31,7 @@ import java.util.Date;
 public class ProductDAO implements RowMapper<Product> {
 
     @Override
-    public Product mapRow(ResultSet rs) throws SQLException, ClassNotFoundException{
+    public Product mapRow(ResultSet rs) throws SQLException, ClassNotFoundException {
         Date createdDate = new Date(CalculatorService.parseLong(rs.getString("created_date")));
         User author = new UserDAO().getById(rs.getLong("authorId")+"");
         ProductCategoryDAO productCategoryDAO = new ProductCategoryDAO();
@@ -54,6 +55,9 @@ public class ProductDAO implements RowMapper<Product> {
                 .productDescription(rs.getString("product_desciption"))
                 .createdDate(createdDate)
                 .isDeleted(rs.getBoolean("is_deleted"))
+                .deleteProcess(rs.getObject("is_deleted")==null?null:rs.getLong("is_deleted"))
+                .productLongDesciption(rs.getString("product_long_desciption"))
+                .authorId(rs.getLong("authorId"))
                 .productCategory(findingProductCate)
                 .productExcipients(productExcipients)
                 .productUnits(productUnits)
@@ -78,9 +82,10 @@ public class ProductDAO implements RowMapper<Product> {
             product_specification,
             product_desciption,
             created_date,
-            is_deleted
+            is_deleted,
+            product_long_desciption
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)
     """;
         int check = 0;
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
@@ -96,6 +101,7 @@ public class ProductDAO implements RowMapper<Product> {
             ps.setObject(10, t.getProductDescription());
             ps.setObject(11, t.getCreatedDate());
             ps.setObject(12, t.isDeleted());
+            ps.setObject(13, t.getProductLongDesciption());
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,6 +114,23 @@ public class ProductDAO implements RowMapper<Product> {
         String sql = """
         SELECT *
         FROM product
+    """;
+        List<Product> products = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                products.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return products;
+    }
+
+    public List<Product> getNewTop6() throws SQLException, ClassNotFoundException {
+        String sql = """
+                SELECT top(6) *
+                FROM [product] order by [created_date]
     """;
         List<Product> products = new ArrayList<>();
         try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
@@ -157,7 +180,8 @@ public class ProductDAO implements RowMapper<Product> {
             product_specification = ?,
             product_desciption = ?,
             created_date = ?,
-            is_deleted = ?
+            is_deleted = ?,
+            product_long_desciption = ?
         WHERE
             product_id = ?
     """;
@@ -173,9 +197,10 @@ public class ProductDAO implements RowMapper<Product> {
             ps.setObject(8, t.getDosageForm());
             ps.setObject(9, t.getProductSpecification());
             ps.setObject(10, t.getProductDescription());
-            ps.setObject(11, t.getCreatedDate());
+            ps.setObject(11, t.getCreatedDate().getTime()+"");
             ps.setObject(12, t.isDeleted());
-            ps.setObject(13, CalculatorService.parseLong(id));
+            ps.setObject(13, t.getProductLongDesciption());
+            ps.setObject(14, CalculatorService.parseLong(id));
             check = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -200,7 +225,7 @@ public class ProductDAO implements RowMapper<Product> {
         }
         return check > 0;
     }
-    
+
     public Product getByProductCode(String productCode) throws SQLException, ClassNotFoundException {
         String sql = """
         SELECT *
@@ -219,7 +244,7 @@ public class ProductDAO implements RowMapper<Product> {
         }
         return product;
     }
-    
+
     public Long addNewAndGetKey(Product t) throws SQLException, ClassNotFoundException {
         String sql = """
         INSERT INTO product (
@@ -234,12 +259,13 @@ public class ProductDAO implements RowMapper<Product> {
             product_specification,
             product_desciption,
             created_date,
-            is_deleted
+            is_deleted,
+            product_long_desciption
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
     """;
         Long check = -1L;
-        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql,PreparedStatement.RETURN_GENERATED_KEYS);) {
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);) {
             ps.setObject(1, t.getProductCode());
             ps.setObject(2, t.getAuthorId());
             ps.setObject(3, t.getProductCategoryId());
@@ -251,24 +277,28 @@ public class ProductDAO implements RowMapper<Product> {
             ps.setObject(9, t.getProductSpecification());
             ps.setObject(10, t.getProductDescription());
             ps.setObject(11, t.getCreatedDate().getTime()+"");
-            ps.setObject(12, t.isDeleted());
+            ps.setObject(12, null);
+            ps.setObject(13, t.getProductLongDesciption());
             int affectedRows = ps.executeUpdate();
-            if(affectedRows>0){
-                try(ResultSet rs = ps.getGeneratedKeys()) {
-                    if(rs.next()){
+            if (affectedRows > 0) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
                         check = rs.getLong(1);
                     }
                 }
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         return check;
     }
-    
-     public List<Product> filterProduct(String status, String cateId) throws SQLException, ClassNotFoundException {
+
+    public List<Product> filterProduct(String status, String cateId) throws SQLException, ClassNotFoundException {
         String sql = " SELECT *  FROM product   where is_deleted like '%" + status + "%' ";
+        if(status==""){
+            sql = " SELECT *  FROM product   where 1=1";
+        }
         if (cateId != null && !"".equals(cateId)) {
             sql += " and product_category_id = " + cateId;
         }
@@ -295,23 +325,6 @@ public class ProductDAO implements RowMapper<Product> {
             e.printStackTrace();
         }
         return check > 0;
-    }
-
-    public List<Product> getNewTop6() throws SQLException, ClassNotFoundException {
-        String sql = """
-                SELECT top(6) *
-                FROM [product] order by [created_date]
-    """;
-        List<Product> products = new ArrayList<>();
-        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                products.add(mapRow(rs));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return products;
     }
 
     public List<String> getAllProductTarget() throws SQLException, ClassNotFoundException {
@@ -361,6 +374,100 @@ public class ProductDAO implements RowMapper<Product> {
             e.printStackTrace();
         }
         return brands;
+    }
+    
+    public List<Product> getAllNoLongDes() throws SQLException, ClassNotFoundException {
+        String sql = """
+        SELECT *
+        FROM product
+    """;
+        List<Product> products = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Product product = mapRow(rs);
+                product.setProductLongDesciption(null);
+                products.add(product);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return products;
+    }
+    
+    public boolean updateByIdAndReverseProcess(String id, Product t) throws SQLException, ClassNotFoundException {
+        String sql = """
+        UPDATE product
+        SET
+            product_code = ?,
+            authorId = ?,
+            product_category_id = ?,
+            product_country_code = ?,
+            brand = ?,
+            product_target = ?,
+            product_name = ?,
+            dosage_form = ?,
+            product_specification = ?,
+            product_desciption = ?,
+            created_date = ?,
+            is_deleted = ?,
+            product_long_desciption = ?
+        WHERE
+            product_id = ?
+    """;
+        int check = 0;
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ps.setObject(1, t.getProductCode());
+            ps.setObject(2, t.getAuthorId());
+            ps.setObject(3, t.getProductCategoryId());
+            ps.setObject(4, t.getProductCountryCode());
+            ps.setObject(5, t.getBrand());
+            ps.setObject(6, t.getProductTarget());
+            ps.setObject(7, t.getProductName());
+            ps.setObject(8, t.getDosageForm());
+            ps.setObject(9, t.getProductSpecification());
+            ps.setObject(10, t.getProductDescription());
+            ps.setObject(11, t.getCreatedDate().getTime()+"");
+            ps.setObject(12, null);
+            ps.setObject(13, t.getProductLongDesciption());
+            ps.setObject(14, CalculatorService.parseLong(id));
+            check = ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return check > 0;
+    }
+    public List<ProductRevenueQuanDTO> getTop10PRQ(){
+        List<ProductRevenueQuanDTO> list = new ArrayList<>();
+        String sql = """
+                     SELECT TOP 10
+                         p.product_name,
+                         COUNT(sod.sale_order_id) AS number_of_orders
+                     FROM
+                         sale_order_detail sod
+                     INNER JOIN
+                         [product] p ON sod.product_id = p.product_id
+                     WHERE
+                         1=1
+                     GROUP BY
+                         p.product_name
+                     ORDER BY
+                         number_of_orders DESC;
+                     """;
+        int count = 0;
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);){
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                list.add(ProductRevenueQuanDTO.builder()
+                        .productName(rs.getString("product_name"))
+                        .quantity(rs.getLong("number_of_orders"))
+                        .build());
+                count++;
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
 }

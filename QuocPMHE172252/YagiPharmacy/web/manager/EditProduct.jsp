@@ -84,21 +84,21 @@
                                         <form method="post" action="EditProduct" id="editProductForm" class="row">
                                             <input type="hidden" name="product_id" value="${product.productId}">
                                             <div class="form-group mb-3 col-md-6">
-                                                <label for="product_code">Product Code</label>
+                                                <label for="product_code">Mã đăng kí sản phẩm*</label>
                                                 <input type="text" class="form-control" name="product_code"
                                                     id="product_code" value="${product.productCode}"
-                                                    placeholder="Enter product code" required>
+                                                    placeholder="Mã đăng kí sản phẩm" readonly>
                                             </div>
 
                                             <div class="form-group mb-3 col-md-6">
-                                                <label for="product_name">Product Name</label>
+                                                <label for="product_name">Tên sản phẩm*</label>
                                                 <input type="text" class="form-control" name="product_name"
                                                     id="product_name" value="${product.productName}"
-                                                    placeholder="Enter product name" required>
+                                                    placeholder="Tên sản phẩm*" required>
                                             </div>
 
                                             <div class="form-group mb-3 col-md-6">
-                                                <label for="product_category">Product Category</label>
+                                                <label for="product_category">Danh mục</label>
                                                 <select class="form-control" name="product_category"
                                                     id="product_category" required>
                                                     <c:forEach items="${productCategorys}" var="pc">
@@ -110,27 +110,27 @@
                                             </div>
 
                                             <div class="form-group mb-3 col-md-6">
-                                                <label for="dosage_form">Dosage Form</label>
+                                                <label for="dosage_form">Dạng bào chế*</label>
                                                 <input type="text" class="form-control" name="dosage_form"
                                                     id="dosage_form" value="${product.dosageForm}"
                                                     placeholder="Enter dosage form" required>
                                             </div>
 
                                             <div class="form-group mb-3 col-md-6">
-                                                <label for="product_specification">Product Specification</label>
+                                                <label for="product_specification">Quy cách*</label>
                                                 <input type="text" class="form-control" name="product_specification"
                                                     value="${product.productSpecification}" id="product_specification"
                                                     placeholder="Enter product specification" required>
                                             </div>
 
                                             <div class="form-group mb-3 col-md-6">
-                                                <label for="product_target">Product Target</label>
+                                                <label for="product_target">Đối tượng sử dụng*</label>
                                                 <input type="text" class="form-control" name="product_target"
                                                     value="${product.productTarget}" id="product_target"
                                                     placeholder="Enter product target" required>
                                             </div>
                                             <div class="form-group mb-3 col-md-6">
-                                                <label for="product_desciption">Additional Information</label>
+                                                <label for="product_desciption">Thông tin thêm</label>
                                                 <textarea class="form-control" id="product_desciption"
                                                     name="product_desciption" rows="5"
                                                     cols="10">${product.productDescription}</textarea>
@@ -139,7 +139,7 @@
 
 
                                             <div class="form-group mb-3 col-md-6"> <label
-                                                    for="excipients">Excipients</label> <select class="form-control-sm"
+                                                    for="excipients">Thành phần*</label> <select class="form-control-sm"
                                                     type="text" id="excipients" name="excipients" required>
 
                                                     <c:forEach items="${excipientsData}" var="excipient">
@@ -151,10 +151,10 @@
                                                 <table class="form-group table">
                                                     <tbody id="exs_in_drug">
                                                         <tr>
-                                                            <th>Excipient</th>
-                                                            <th>Quantity</th>
-                                                            <th>Unit</th>
-                                                            <th>Delete</th>
+                                                            <th>Tá dược</th>
+                                                            <th>Liều lượng</th>
+                                                            <th>Đơn vị</th>
+                                                            <th>Xóa</th>
                                                         </tr>
                                                         <c:forEach items="${product.productExcipients}" var="pe"
                                                             varStatus="loop">
@@ -194,18 +194,14 @@
                                             </div>
                                             <!--  -->
                                             <div class="form-group  mb-3 col-md-6">
-                                                <label>Supplier</label><br />
-                                                <select class="form-control-sm" id="suplier_id" name="suplier_id"
-                                                    required>
-                                                    <c:forEach items="${suppliers}" var="supplier">
-                                                        <option value="${supplier.supplierId}"
-                                                            ${product.supplier.supplierId==supplier.supplierId
-                                                            ? 'selected' : '' }>${supplier.supplierName}</option>
-                                                    </c:forEach>
-                                                </select>
+                                                <label>Thương hiệu*</label><br />
+                                                <input type="text" class="form-control" name="brand" value="${product.brand}" id="brand"
+                                                    placeholder="Thương hiệu sản xuất" required>
                                             </div>
+
+
                                             <div class="form-group  mb-3 col-md-6">
-                                                <label>Country</label><br />
+                                                <label>Quốc gia*</label><br />
                                                 <select class="form-control-sm" id="product_country_code"
                                                     name="product_country_code" required>
                                                     <option value="${product.productCountryCode}" selected>
@@ -213,34 +209,34 @@
                                                 </select>
                                             </div>
                                             <div class="form-group  mb-3 col-md-6" style="display: block !important;">
-                                                <label>Prescription</label><br />
+                                                <label>Thuốc kê theo đơn bác sĩ*</label><br />
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="radio" name="is_prescription"
-                                                        id="is_prescription_yes" value="0" ${product.isPrescription
+                                                        id="is_prescription_yes" value="0" ${product.isPrescription()
                                                         ? 'checked' : '' } />
                                                     <label class="form-check-label"
                                                         for="is_prescription_yes">Yes</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="radio" name="is_prescription"
-                                                        id="is_prescription_no" value="1" ${!product.isPrescription
+                                                        id="is_prescription_no" value="1" ${!product.isPrescription()
                                                         ? 'checked' : '' } />
                                                     <label class="form-check-label" for="is_prescription_no">No</label>
                                                 </div>
                                             </div>
                                             <div class="form-group mb-3 col-md-6"> <label for="units">Product
-                                                    Units</label> <select class="form-control-sm" type="text" id="units"
+                                                Đơn vị lưu trữ*</label> <select class="form-control-sm" type="text" id="units"
                                                     name="units" required>
                                                 </select> <button class="btn-dropdown btn-success" type="button"
                                                     onclick="addNewUnit()">+</button><br>
                                                 <table class="form-group table">
                                                     <tbody id="units_in_drug">
                                                         <tr>
-                                                            <th>Unit Name</th>
-                                                            <th>Quantity Per Unit</th>
-                                                            <th>Can Be Sold</th>
-                                                            <th>Sell Price</th>
-                                                            <th>Delete</th>
+                                                            <th>Tên đơn vị lưu trữ</th>
+                                                            <th>Hệ số đơn vị con</th>
+                                                            <th>Được bán</th>
+                                                            <th>Giá bán</th>
+                                                            <th>Xóa</th>
                                                         </tr>
                                                         <c:forEach items="${product.productUnits}" var="pu"
                                                             varStatus="loop">
@@ -300,16 +296,24 @@
                                             <div class="form-group mb-3 col-md-6">
                                                 <label for="date_of_birth">Preview</label>
                                                 <img id="avatarPreview" class="mt-3"
-                                                    src="data:image/jpeg;base64,${product.productImages[0].imageBase64}"
+                                                    src="${product.productImages[0].imageBase64}"
                                                     alt="Avatar Preview" style="max-width: 300px;">
                                             </div>
 
-                                            <p>${errorMessage}</p>
+
+
+                                            <div class="">
+                                                <label for="long_description">Bài viết miêu tả sản phẩm</label>
+                                                <textarea id="long_description" name="long_description"
+                                                    rows="30">${product.productLongDesciption}</textarea>
+                                            </div>
+
                                             <div class="form-group mb-3 col-md-12">
                                                 <button type="submit" class="btn btn-success" style="width: 100px"
                                                     onclick="submitForm()">Submit</button>
                                             </div>
                                         </form>
+
                                     </div>
                                 </div>
                             </div>
@@ -348,7 +352,16 @@
             </div>
 
 
+            <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.1/dist/js/bootstrap.bundle.min.js"></script>
+            <script
+                src="https://cdn.tiny.cloud/1/bxb68lg12i11zhb0ei9ubbfw1t388posa12jg0hpmq8570dg/tinymce/5/tinymce.min.js"
+                referrerpolicy="origin"></script>
+
             <script>
+
+                // Initialize the tinymce editor
+                tinymce.init({ selector: '#long_description' });
                 // Fetch country list and populate the dropdown
                 fetch('https://restcountries.com/v3.1/all')
                     .then(response => response.json())
@@ -636,6 +649,76 @@
                     }
                 });
             </script>
+
+            <!--   Core JS Files   -->
+            <script src="./assets/js/core/jquery-3.7.1.min.js"></script>
+            <script src="./assets/js/core/popper.min.js"></script>
+            <script src="./assets/js/core/bootstrap.min.js"></script>
+
+            <!-- jQuery Scrollbar -->
+            <script src="./assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+            <!-- Chart JS -->
+            <script src="./assets/js/plugin/chart.js/chart.min.js"></script>
+
+            <!-- jQuery Sparkline -->
+            <script src="./assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+
+            <!-- Chart Circle -->
+            <script src="./assets/js/plugin/chart-circle/circles.min.js"></script>
+
+            <!-- Datatables -->
+            <script src="./assets/js/plugin/datatables/datatables.min.js"></script>
+
+            <!-- Bootstrap Notify -->
+            <!--<script src="./assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>-->
+
+            <!-- jQuery Vector Maps -->
+            <script src="./assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
+            <script src="./assets/js/plugin/jsvectormap/world.js"></script>
+
+            <!-- Sweet Alert -->
+            <script src="./assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+            <!-- Kaiadmin JS -->
+            <script src="./assets/js/kaiadmin.min.js"></script>
+
+            <!-- Kaiadmin DEMO methods, don't include it in your project! -->
+            <script src="./assets/js/setting-demo.js"></script>
+            <script src="./assets/js/demo.js"></script>
+            <script>
+                $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
+                    type: "line",
+                    height: "70",
+                    width: "100%",
+                    lineWidth: "2",
+                    lineColor: "#177dff",
+                    fillColor: "rgba(23, 125, 255, 0.14)",
+                });
+                $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
+                    type: "line",
+                    height: "70",
+                    width: "100%",
+                    lineWidth: "2",
+                    lineColor: "#f3545d",
+                    fillColor: "rgba(243, 84, 93, .14)",
+                });
+                $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
+                    type: "line",
+                    height: "70",
+                    width: "100%",
+                    lineWidth: "2",
+                    lineColor: "#ffa534",
+                    fillColor: "rgba(255, 165, 52, .14)",
+                });
+            </script>
+            <script>
+                $(document).ready(function () {
+                    $('#tables').DataTable();
+                }
+                );
+            </script>
+
         </body>
 
         </html>

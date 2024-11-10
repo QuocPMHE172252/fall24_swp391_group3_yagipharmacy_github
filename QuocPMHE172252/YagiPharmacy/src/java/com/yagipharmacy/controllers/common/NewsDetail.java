@@ -68,6 +68,11 @@ public class NewsDetail extends HttpServlet {
         try {
             NewsDAO newsDAO = new NewsDAO();
             News neww = newsDAO.getById(request.getParameter("nid"));
+            System.out.println(neww.getNewsId());
+            if(neww!=null&&neww.getNewsId()!=0L){
+                System.out.println("đi qua đây");
+                newsDAO.updateViewCount(neww.getNewsId()+"", neww.getViewCount()+1L);
+            }
             NewsCategoryDAO newsCategoryDAO = new NewsCategoryDAO();
             NewsCategory newsCate = newsCategoryDAO.getById(neww.getNewsCategoryId()+"");
             request.setAttribute("newsCate", newsCate);

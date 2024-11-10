@@ -133,7 +133,13 @@
 
                         <!-- Back Button -->
                         <div class="mt-5">
-                            <a href="staff/ListNews" class="btn btn-primary">Back to News List</a>
+                            <c:if test="${sessionScope.userAuth!=null&&sessionScope.userAuth.roleLevel<5}">
+                                <a href="staff/ListNews" class="btn btn-primary">Danh sách bài viết</a>
+                            </c:if>
+                            <c:if test="${!(sessionScope.userAuth!=null&&sessionScope.userAuth.roleLevel<1)}">
+                                <a href="NewCategoryList" class="btn btn-primary">Trở về trang sức khỏe</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <a href="HomePage" class="btn btn-primary">Trở về trang chủ</a>
+                            </c:if>
                         </div>
                     </div>
                 </div>

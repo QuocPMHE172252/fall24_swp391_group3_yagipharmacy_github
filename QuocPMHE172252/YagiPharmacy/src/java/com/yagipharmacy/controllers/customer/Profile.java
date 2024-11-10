@@ -13,6 +13,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -59,12 +61,18 @@ public class Profile extends HttpServlet implements AuthorizationService{
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        User userAuth = (User) request.getSession().getAttribute("userAuth");
-        if (userAuth != null) {
-            request.getRequestDispatcher("Profile.jsp").forward(request, response);
-        } else {
-            loginRedirect(request, response);
+        User userAuth = (User)request.getSession().getAttribute("userAuth");
+        if(userAuth==null){
+            response.sendRedirect("./Login");
+            return;
         }
+        List<Long> roleList = Arrays.asList(1L,2L,3L,4L,5L);
+        boolean checkAcpt = acceptAuth(request, response, roleList);
+        if(!checkAcpt){
+            response.sendRedirect("./ErrorPage");
+            return;
+        }
+        request.getRequestDispatcher("Profile.jsp").forward(request, response);
     }
 
     /**

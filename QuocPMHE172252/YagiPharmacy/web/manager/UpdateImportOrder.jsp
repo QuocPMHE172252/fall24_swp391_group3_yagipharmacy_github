@@ -43,7 +43,7 @@
 
         <!-- CSS Just for demo purpose, don't include it in your project -->
         <link rel="stylesheet" href="./assets/css/demo.css" />
-        
+
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     </head>
@@ -134,7 +134,10 @@
                                                             <th>Nhà cung cấp</th>
                                                             <th>Giá nhập</th>
                                                             <th>Trạng thái hàng</th>
-                                                            <th>Cập nhật</th>                                                        
+                                                            <c:if test="${sessionScope.userAuth.roleLevel==3}">
+                                                            <th>Cập nhật</th>
+                                                            </c:if>
+                                                                                                                    
                                                         </tr>
                                                     </table>
                                                     <div style="display: flex;flex-direction: row;justify-content: space-between">
@@ -150,7 +153,7 @@
                         </div>
                     </div>
                 </div>
-                    <form action="ImportOrderList" id="backToMainForm"></form>
+                <form action="ImportOrderList" id="backToMainForm"></form>
 
                 <!-- The Modal -->
                 <div class="modal" id="myModal">
@@ -169,44 +172,47 @@
                                     <input type="text" name="submit_import_detail_id" id="submit_import_detail_id" hidden="">
                                     <input type="text" name="submit_import_id" id="submit_import_id" hidden="">
                                     <table class="table">
-                                                        <tr>
-                                                            <td>Trạng thái</td>
-                                                            <td><select type="text" id="submit_processing" name="submit_processing" onchange="checkPRO()">
-                                                                    <option value="0">Chờ xác nhận</option>
-                                                                    <option value="1">Đã từ chối</option>
-                                                                    <option value="2">Đang giao hàng</option>
-                                                                    <option value="3">Đã nhận</option>
-                                                                    <option value="4">Đã kiểm định</option>
-                                                                </select></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Số lô</td>
-                                                            <td><input type="text" id="submit_batch_code" name="submit_batch_code" readonly=""></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Giá nhập</td>
-                                                            <td><input type="number" min="0" step="0.1" id="submit_import_price" name="submit_import_price" readonly></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Ngày nhập</td>
-                                                            <td><input type="date" min="0" id="submit_import_date" name="submit_import_date" readonly></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Ngày sản xuất</td>
-                                                            <td><input type="date" min="0" id="submit_MFG_date" name="submit_MFG_date" readonly></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Ngày hết hạn</td>
-                                                            <td><input type="date" min="0" id="submit_EXP_date" name="submit_EXP_date" readonly></td>
-                                                        </tr>
+                                        <tr>
+                                            <td>Trạng thái</td>
+                                            <td><select type="text" id="submit_processing" name="submit_processing" onchange="checkPRO()">
+                                                    <option value="0">Chờ hàng về</option>
+                                                    <option value="1">Đã từ chối</option>
+                                                    <option value="2">Đang giao hàng</option>
+                                                    <option value="3">Đã nhận</option>
+                                                    <option value="4">Đã kiểm định</option>
+                                                </select></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Số lô</td>
+                                            <td><input type="text" id="submit_batch_code" name="submit_batch_code" readonly=""></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Giá nhập</td>
+                                            <td><input type="number" min="0" step="0.1" id="submit_import_price" name="submit_import_price" readonly></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Ngày nhập</td>
+                                            <td><input type="date" min="0" id="submit_import_date" name="submit_import_date" readonly></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Ngày sản xuất</td>
+                                            <td><input type="date" min="0" id="submit_MFG_date" name="submit_MFG_date" readonly></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Ngày hết hạn</td>
+                                            <td><input type="date" min="0" id="submit_EXP_date" name="submit_EXP_date" readonly></td>
+                                        </tr>
                                     </table> 
                                 </form>
-                                                    
+
                             </div>
 
                             <!-- Modal Footer -->
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-success" data-dismiss="modal" onclick="triggerUpdate()">Cập nhật</button>
+                                <c:if test="${sessionScope.userAuth.roleLevel==3}">
+                                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="triggerUpdate()">Cập nhật</button>
+                                </c:if>
+                                
                                 <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
                             </div>
 
@@ -241,10 +247,10 @@
                     </div>
                 </footer>
             </div>
-                    <form action="ImportOrderList" method="get" id="backMainForm"></form>
-                    
+            <form action="ImportOrderList" method="get" id="backMainForm"></form>
 
-                    
+
+
 
         </div>
         <!--   Core JS Files   -->
@@ -255,104 +261,142 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> 
 
-        
+
         <!-- Bootstrap Notify -->
         <!--<script src="./assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>-->
 
         <!-- jQuery Vector Maps -->
-        
+
         <!-- Thư viện JS jQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- Thư viện JS Select2 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-    <!-- Khởi tạo Select2 -->
-    <script>
-        $(document).ready(function() {
-            $('.searchable-select').select2({
-                placeholder: "Select an option",
-                allowClear: true
-            });
-        });
-    </script>
-    <script>
-        const data_import_orders = JSON.parse('${dataImportOrder}');
-        console.log(data_import_orders);
-        document.getElementById('expected_date').innerHTML = data_import_orders.importExpectedDate;
-        document.getElementById('import_order_code').innerHTML = data_import_orders.importOrderCode;
-        document.getElementById('submit_import_id').value = ''+data_import_orders.importOrderId;
-        data_import_orders.importOrderDetails.forEach(importOrderDetail =>{
-            var processOfImp = '';
-            var processNum  = importOrderDetail.processing;
-            console.log(processNum);
-            if(processNum==null||processNum==0){
-                processOfImp = 'Chờ xác nhận';
-            } else if(processNum == 1){
-                processOfImp = 'Đã từ chối';
-            } else if(processNum == 2){
-                processOfImp = 'Đang giao hàng';
-            } else if(processNum == 3){
-                processOfImp = 'Đã nhận';
-            } else if(processNum == 4){
-                processOfImp = 'Đã kiểm định';
-            } else {
-                processOfImp = 'Không xác định';
-            }
-            var imp_row = `<tr>
-                                <td>`+importOrderDetail.product.productCode+`</td>
-                                <td>`+importOrderDetail.product.productName+`</td>
-                                <td>`+importOrderDetail.batchCode+`</td>
-                                <td><img style="height:60px;width:auto" class="img-fluid" src="`+importOrderDetail.product.productImages[0].imageBase64+`" alt="Ảnh sản phẩm"/></td>
-                                <td>`+importOrderDetail.unit.unitName+`</td>
-                                <td>`+importOrderDetail.quantity+`</td>
-                                <td>`+importOrderDetail.supplier.supplierName+`</td>
-                                <td>`+importOrderDetail.importPrice+`</td>
-                                <td>`+processOfImp+`</td>
-                                <td><button `+(importOrderDetail.processing==1||importOrderDetail.processing==4?'disabled class="btn btn-black"':'class="btn btn-success" ')+` type="button" onclick="viewImportDetailAction(`+importOrderDetail.importOrderDetailId+`)" id="addImportOrderDetailBtn" data-toggle="modal" data-target="#myModal">Cập nhật</button></td>
-                           </tr>`;
-            document.getElementById("import_order_table").innerHTML += imp_row;
-        });
-        function viewImportDetailAction(inp_id){
-            data_import_orders.importOrderDetails.forEach(importOrderDetail =>{
-                if(importOrderDetail.importOrderDetailId == inp_id){
-                    document.getElementById('submit_import_detail_id').value = importOrderDetail.importOrderDetailId;
-                    document.getElementById('submit_processing').value = importOrderDetail.processing;
-                    document.getElementById('submit_batch_code').value = importOrderDetail.batchCode;
-                    document.getElementById('submit_import_price').value = importOrderDetail.importPrice;
-                    let dateObject = new Date(importOrderDetail.importDate);
-                    let formattedDate = dateObject.toISOString().split('T')[0];
-                    document.getElementById('submit_import_date').value = formattedDate;
-                    if(importOrderDetail.processing==1||importOrderDetail.processing==4){
-                        document.getElementById('submit_processing').disabled = true;
-                    }
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <!-- Thư viện JS Select2 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+        <!-- Khởi tạo Select2 -->
+        <script>
+                                    $(document).ready(function () {
+                                        $('.searchable-select').select2({
+                                            placeholder: "Select an option",
+                                            allowClear: true
+                                        });
+                                    });
+        </script>
+        <script>
+            const data_import_orders = JSON.parse('${dataImportOrder}');
+            console.log(data_import_orders);
+            document.getElementById('expected_date').innerHTML = data_import_orders.importExpectedDate;
+            document.getElementById('import_order_code').innerHTML = data_import_orders.importOrderCode;
+            document.getElementById('submit_import_id').value = '' + data_import_orders.importOrderId;
+            data_import_orders.importOrderDetails.forEach(importOrderDetail => {
+                var processOfImp = '';
+                var processNum = importOrderDetail.processing;
+                console.log(processNum);
+                if (processNum == null || processNum == 0) {
+                    processOfImp = 'Chờ xác nhận';
+                } else if (processNum == 1) {
+                    processOfImp = 'Đã từ chối';
+                } else if (processNum == 2) {
+                    processOfImp = 'Đang giao hàng';
+                } else if (processNum == 3) {
+                    processOfImp = 'Đã nhận';
+                } else if (processNum == 4) {
+                    processOfImp = 'Đã kiểm định';
+                } else {
+                    processOfImp = 'Không xác định';
                 }
+                var trigName = "Xem";
+                        <c:if test="${sessionScope.userAuth.roleLevel==3}">
+                                trigName="Cập nhật";
+                        </c:if>
+                var new_btn = `<button ` + (importOrderDetail.processing == 1 || importOrderDetail.processing == 4 ? 'disabled class="btn btn-black"' : 'class="btn btn-success" ') + ` type="button" onclick="viewImportDetailAction(` + importOrderDetail.importOrderDetailId + `)" id="addImportOrderDetailBtn" data-toggle="modal" data-target="#myModal">`+trigName+`</button>`;
+                if (data_import_orders.isAccepted == undefined) {
+                    new_btn = `<td><button disabled class="btn btn-black" type="button" onclick="viewImportDetailAction(` + importOrderDetail.importOrderDetailId + `)" id="addImportOrderDetailBtn" data-toggle="modal" data-target="#myModal">Cập nhật</button></td>`;
+                }
+                            <c:if test="${sessionScope.userAuth.roleLevel!=3}">
+                                new_btn="";
+                            </c:if>
+                var imp_row = `<tr>
+                                <td>` + importOrderDetail.product.productCode + `</td>
+                                <td>` + importOrderDetail.product.productName + `</td>
+                                <td>` + importOrderDetail.batchCode + `</td>
+                                <td><img style="height:60px;width:auto" class="img-fluid" src="` + importOrderDetail.product.productImages[0].imageBase64 + `" alt="Ảnh sản phẩm"/></td>
+                                <td>` + importOrderDetail.unit.unitName + `</td>
+                                <td>` + importOrderDetail.quantity + `</td>
+                                <td>` + importOrderDetail.supplier.supplierName + `</td>
+                                <td>` + importOrderDetail.importPrice + `</td>
+                                <td>` + processOfImp + `</td>
+                                ` + new_btn + `
+                           </tr>`;
+                document.getElementById("import_order_table").innerHTML += imp_row;
             });
-        }
-        function checkPRO(){
-            var valueOfPro = document.getElementById("submit_processing").value;
-            if(valueOfPro=="4"){
-                console.log("Di qua day");
-                document.getElementById("submit_batch_code").removeAttribute("readonly");
-                document.getElementById("submit_import_date").removeAttribute("readonly");
-                document.getElementById("submit_MFG_date").removeAttribute("readonly");
-                document.getElementById("submit_EXP_date").removeAttribute("readonly");
-                document.getElementById("submit_import_price").removeAttribute("readonly");
-            } else {
-                document.getElementById("submit_batch_code").setAttribute("readonly",true);
-                document.getElementById("submit_batch_code").value = '';
-                document.getElementById("submit_import_date").readonly = true;
-                document.getElementById("submit_import_date").value = '1970-01-01';
-                document.getElementById("submit_MFG_date").setAttribute("readonly",true);
-                document.getElementById("submit_MFG_date").value = '';
-                document.getElementById("submit_EXP_date").setAttribute("readonly",true);
-                document.getElementById("submit_EXP_date").value = '';
-                document.getElementById("submit_import_price").setAttribute("readonly",true);
-                document.getElementById("submit_import_price").value = '';
+            function viewImportDetailAction(inp_id) {
+                data_import_orders.importOrderDetails.forEach(importOrderDetail => {
+                    if (importOrderDetail.importOrderDetailId == inp_id) {
+                        document.getElementById('submit_import_detail_id').value = importOrderDetail.importOrderDetailId;
+                        document.getElementById('submit_processing').value = importOrderDetail.processing;
+                        document.getElementById('submit_batch_code').value = importOrderDetail.batchCode;
+                        document.getElementById('submit_import_price').value = importOrderDetail.importPrice;
+                        let dateObject = new Date(importOrderDetail.importDate);
+                        let formattedDate = dateObject.toISOString().split('T')[0];
+                        document.getElementById('submit_import_date').value = formattedDate;
+                        if (importOrderDetail.processing == 1 || importOrderDetail.processing == 4) {
+                            document.getElementById('submit_processing').disabled = true;
+                        }
+                    }
+                });
             }
-        }
-        function triggerUpdate(){
-            document.getElementById('updateForm').submit();
-        }
-        function backToMain(){
-            document.getElementById('backMainForm').submit();
-        }
-    </script>
+            function checkPRO() {
+                var valueOfPro = document.getElementById("submit_processing").value;
+                if (valueOfPro == "4") {
+                    console.log("Di qua day");
+                    document.getElementById("submit_batch_code").removeAttribute("readonly");
+                    document.getElementById("submit_import_date").removeAttribute("readonly");
+                    document.getElementById("submit_MFG_date").removeAttribute("readonly");
+                    document.getElementById("submit_EXP_date").removeAttribute("readonly");
+                    document.getElementById("submit_import_price").removeAttribute("readonly");
+                } else {
+                    document.getElementById("submit_batch_code").setAttribute("readonly", true);
+                    document.getElementById("submit_batch_code").value = '';
+                    document.getElementById("submit_import_date").readonly = true;
+                    document.getElementById("submit_import_date").value = '1970-01-01';
+                    document.getElementById("submit_MFG_date").setAttribute("readonly", true);
+                    document.getElementById("submit_MFG_date").value = '';
+                    document.getElementById("submit_EXP_date").setAttribute("readonly", true);
+                    document.getElementById("submit_EXP_date").value = '';
+                    document.getElementById("submit_import_price").setAttribute("readonly", true);
+                    document.getElementById("submit_import_price").value = '';
+                }
+            }
+            function triggerUpdate() {
+                var tempPrc = document.getElementById("submit_processing").value;
+                var check = true;
+                if(tempPrc==4){
+                    check = checkDates();
+                }
+                if(check){
+                    document.getElementById('updateForm').submit();
+                }else{
+                    window.alert("Ngày sản xuất phải sau ngày hiện tại và ngày hết hạn phải sau ngày hiện tại ít nhất 3 tháng");
+                }
+            }
+
+
+            function checkDates() { // Lấy giá trị của hai thẻ input  
+                const d1 = new Date(document.getElementById('submit_MFG_date').value);
+                const d2 = new Date(document.getElementById('submit_EXP_date').value); // Ngày hiện tại 
+                const today = new Date();
+                // Ngày hiện tại cộng thêm 3 tháng 
+                const threeMonthsLater = new Date();
+                threeMonthsLater.setMonth(today.getMonth() + 3);
+                // Kiểm tra d1 trước ngày hiện tại và d2 sau ngày hiện tại ít nhất 3 tháng 
+                if (d1 < today && d2 >= threeMonthsLater) {
+                    console.log('true');
+                    return true;
+                } else {
+                    console.log('false');
+                    return false;
+                }
+            }
+            function backToMain() {
+                document.getElementById('backMainForm').submit();
+            }
+        </script>

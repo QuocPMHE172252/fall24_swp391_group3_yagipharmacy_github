@@ -84,7 +84,6 @@
                     <jsp:include page="./header.jsp"/>
                     <!-- End Navbar -->
                 </div>
-
                 <div class="container">
                     <div class="page-inner">
                         <div class="page-header">
@@ -109,41 +108,48 @@
                                 </li>
                             </ul>
                         </div>
+                        <form action="ListNews" method="get">
+                            <table border="0">
+                                <thead>
+                                    <tr>
+                                        <th>Danh mục:</th>
+                                        <th>Danh mục con:</th>
+                                        <th>Từ ngày:</th>
+                                        <th>Đến ngày:</th>
+                                        <th>Tiêu đề:</th>
+                                        <th>Thẻ gắn:</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><select class="form-control" id="parent_cate" name="parent_cate" onchange="changeListChild()">
+                                                <option value="all">All</option>
+                                                <c:forEach items="${listParentCates}" var="parent">
+                                                    <option value="${parent.newsCategoryId}" ${parent_cate == parent.newsCategoryId.toString()?"selected":""}>${parent.newsCategoryName}</option>
+                                                </c:forEach>
+                                            </select></td>
+                                        <td><select class="form-control" id="cateId" name="cateId">
+                                                <option value="all">All</option>
+                                            </select></td>
+                                        <td><input class="form-control me-2" type="date" name="from" value="${from}"></td>
+                                        <td><input class="form-control me-2" type="date" name="to" value="${to}"></td>
+                                        <td><input class="form-control me-2" type="search" placeholder="Tiêu đề" name="title" value="${title}"></td>
+                                        <td><input class="form-control me-2" type="search" placeholder="Thẻ được gắn" name="hashtag" value="${hashtag}"></td>
+                                        <td><button class="btn btn-outline-success" type="submit">Search</button></td>
+                                        <c:if test="${sessionScope.userAuth!=null&&sessionScope.userAuth.roleLevel==3}">
+                                            <td><a class="btn btn-info" href="./AddNews">Add news</a></td>
+                                        </c:if>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <table border="0">
-                                            <thead>
-                                                <tr>
-                                                    <th>Danh mục:</th>
-                                                    <th>Danh mục con:</th>
-                                                    <th>Từ ngày:</th>
-                                                    <th>Đến ngày:</th>
-                                                    <th>Tiêu đề:</th>
-                                                    <th>Thẻ gắn:</th>
-                                                    <th></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td><select class="form-control" id="parent_cate" name="parent_cate" onchange="changeListChild()">
-                                                            <option value="all">All</option>
-                                                            <c:forEach items="${listParentCates}" var="parent">
-                                                                <option value="${parent.newsCategoryId}" ${parent_cate == parent.newsCategoryId.toString()?"selected":""}>${parent.newsCategoryName}</option>
-                                                            </c:forEach>
-                                                        </select></td>
-                                                    <td><select class="form-control" id="cateId" name="cateId">
-                                                            <option value="all">All</option>
-                                                        </select></td>
-                                                    <td><input class="form-control me-2" type="date" name="from" value="${from}"></td>
-                                                    <td><input class="form-control me-2" type="date" name="to" value="${to}"></td>
-                                                    <td><input class="form-control me-2" type="search" placeholder="Tiêu đề" name="title" value="${title}"></td>
-                                                    <td><input class="form-control me-2" type="search" placeholder="Thẻ được gắn" name="hashtag" value="${hashtag}"></td>
-                                                    <td><button class="btn btn-outline-success" type="submit">Search</button></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+
                                     </div>
                                     <div class="card-body">
                                         <div class="table-responsive">
@@ -153,8 +159,14 @@
                                                         <th scope="col">Ảnh bìa</th>
                                                         <th scope="col">Tiêu đề</th>
                                                         <th scope="col">Xóa/Khôi phục</th>
-                                                        <th scope="col">Chỉnh sửa</th>
+                                                            <c:if test="${sessionScope.userAuth!=null&&sessionScope.userAuth.roleLevel==3}">
+                                                            <th scope="col">Chỉnh sửa</th>
+                                                            </c:if>
+
                                                         <th scope="col">Trạng thái kiểm duyệt</th>
+                                                            <c:if test="${sessionScope.userAuth.roleLevel==2}">
+                                                            <th scope="col">Kiểm duyệt</th>
+                                                            </c:if>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -162,10 +174,16 @@
                                                         <tr>
                                                             <th><img src="${e.newsImage}" alt="alt" height="100px" width="100px"></th>
                                                             <td><a target="_blank" href="../NewsDetail?nid=${e.newsId}">${e.newsTitle}</a></td>
-                                                            <td><button type="button" class='btn ${e.isDeleted()?"btn-success":"btn-danger"}'>${e.isDeleted()?"Active":"Delete"}</button></td>
-                                                            <td><a class="btn btn-success" href="UpdateNews?newsId=${e.newsId}" target="_blank">Update</a></td>
+                                                            <td><a href="DeleteNews?new_id=${e.newsId}" class='btn ${e.isDeleted()?"btn-success":"btn-danger"}'>${e.isDeleted()?"Active":"Delete"}</a></td>
+                                                            <c:if test="${sessionScope.userAuth!=null&&sessionScope.userAuth.roleLevel==3}">
+                                                                <td><a class="btn btn-success" href="UpdateNews?newsId=${e.newsId}" target="_blank">Update</a></td>
+                                                            </c:if>
+
                                                             <td><div>${e.getRejectName()}</div></td>
-                                                            <!--<td><a class="btn btn-success" href="PublishNew?newsId=${e.newsId}" target="_blank">Publish New</a></td>-->
+                                                            <c:if test="${sessionScope.userAuth.roleLevel==2}">
+                                                                <td><a href="../manager/PublishNew?newsId=${e.newsId}" class="btn btn-info">Publish</a></td>
+                                                            </c:if>
+
                                                         </tr>
                                                     </c:forEach>
                                                 </tbody>
@@ -219,32 +237,32 @@
     <script src="./assets/js/setting-demo.js"></script>
     <script src="./assets/js/demo.js"></script>
     <script>
-                                $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
-                                    type: "line",
-                                    height: "70",
-                                    width: "100%",
-                                    lineWidth: "2",
-                                    lineColor: "#177dff",
-                                    fillColor: "rgba(23, 125, 255, 0.14)",
-                                });
+                                            $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
+                                                type: "line",
+                                                height: "70",
+                                                width: "100%",
+                                                lineWidth: "2",
+                                                lineColor: "#177dff",
+                                                fillColor: "rgba(23, 125, 255, 0.14)",
+                                            });
 
-                                $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
-                                    type: "line",
-                                    height: "70",
-                                    width: "100%",
-                                    lineWidth: "2",
-                                    lineColor: "#f3545d",
-                                    fillColor: "rgba(243, 84, 93, .14)",
-                                });
+                                            $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
+                                                type: "line",
+                                                height: "70",
+                                                width: "100%",
+                                                lineWidth: "2",
+                                                lineColor: "#f3545d",
+                                                fillColor: "rgba(243, 84, 93, .14)",
+                                            });
 
-                                $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
-                                    type: "line",
-                                    height: "70",
-                                    width: "100%",
-                                    lineWidth: "2",
-                                    lineColor: "#ffa534",
-                                    fillColor: "rgba(255, 165, 52, .14)",
-                                });
+                                            $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
+                                                type: "line",
+                                                height: "70",
+                                                width: "100%",
+                                                lineWidth: "2",
+                                                lineColor: "#ffa534",
+                                                fillColor: "rgba(255, 165, 52, .14)",
+                                            });
     </script>
     <script>
         $(document).ready(function () {

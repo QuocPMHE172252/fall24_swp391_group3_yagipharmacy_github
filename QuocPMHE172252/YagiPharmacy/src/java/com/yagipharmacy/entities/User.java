@@ -24,6 +24,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class User {
+
     private Long userId;
     private String userName;
     private String userPhone;
@@ -40,8 +41,18 @@ public class User {
     private String activeCode;
     private boolean isActive;
     private boolean isDeleted;
-    
-    public String getRoleNamee(){
-        return  UserRole.getRoleNameById(roleLevel);
+
+    public String getRoleNamee() {
+        return UserRole.getRoleNameById(roleLevel);
+    }
+
+    public String getLocation() {
+        String location = "";
+        location += (userProvince != null ? (userProvince+", ") : "");
+        location += (userDistrict != null ? (userDistrict+", ") : "");
+        location += (userCommune != null ? (userCommune+", ") : "");
+        location += (specificAddress != null ? (specificAddress) : "");
+        System.out.println(location);
+        return location;
     }
 }

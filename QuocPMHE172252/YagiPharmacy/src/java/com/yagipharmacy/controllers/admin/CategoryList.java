@@ -6,6 +6,8 @@ package com.yagipharmacy.controllers.admin;
 
 import com.yagipharmacy.DAO.ProductCategoryDAO;
 import com.yagipharmacy.DAO.UserDAO;
+import com.yagipharmacy.constant.services.AuthorizationService;
+import com.yagipharmacy.entities.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,13 +15,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
  * @author author
  */
 @WebServlet(name = "CategoryList", urlPatterns = {"/admin/CategoryList"})
-public class CategoryList extends HttpServlet {
+public class CategoryList extends HttpServlet implements AuthorizationService{
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -62,6 +66,17 @@ public class CategoryList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User userAuth = (User)request.getSession().getAttribute("userAuth");
+        if(userAuth==null){
+            response.sendRedirect("../Login");
+            return;
+        }
+        List<Long> roleList = Arrays.asList(1L,2L,3L);
+        boolean checkAcpt = acceptAuth(request, response, roleList);
+        if(!checkAcpt){
+            response.sendRedirect("../ErrorPage");
+            return;
+        }
         processRequest(request, response);
     }
 

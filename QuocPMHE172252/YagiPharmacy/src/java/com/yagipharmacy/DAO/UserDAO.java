@@ -297,13 +297,12 @@ public class UserDAO implements RowMapper<User> {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 user = mapRow(rs);
-                System.out.println(user);
                 return user;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return user;
     }
 
     public User getByUsername(String username) throws SQLException, ClassNotFoundException {
@@ -317,7 +316,6 @@ public class UserDAO implements RowMapper<User> {
             ps.setObject(1, username);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                System.out.println(user);
 
                 user = mapRow(rs);
                 return user;
@@ -340,14 +338,13 @@ public class UserDAO implements RowMapper<User> {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 user = mapRow(rs);
-                System.out.println(user);
 
                 return user;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return user;
     }
 
     public List<User> getAllAvailable() throws SQLException, ClassNotFoundException {

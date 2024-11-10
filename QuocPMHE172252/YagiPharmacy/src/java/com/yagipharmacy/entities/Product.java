@@ -25,6 +25,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {
+
     private Long productId;
     private String productCode;
     private Long authorId;
@@ -39,11 +40,30 @@ public class Product {
     private Date createdDate;
     private boolean isPrescription;
     private boolean isDeleted;
+    private Long deleteProcess;
+    private String productLongDesciption;
     private ProductCategory productCategory;
     private Supplier supplier;
     private User author;
     private List<ProductExcipient> productExcipients;
-    private  List<ProductUnit> productUnits;
+    private List<ProductUnit> productUnits;
     private List<ProductImage> productImages;
+    
+    public ProductUnit getLastUnit(){
+        ProductUnit productUnit = ProductUnit.builder()
+                .canBeSold(true)
+                .isDeleted(false)
+                .sellPrice(0.0)
+                .build();
+        for (ProductUnit pUnit : productUnits) {
+            productUnit = pUnit;
+        }
+        return productUnit;
+    }
+
+    public Product coppyNewProduct() {
+        return new Product(productId, productCode, authorId, productCategoryId, productCountryCode, brand, productTarget, productName, dosageForm, productSpecification, productDescription, createdDate, isPrescription, isDeleted,deleteProcess, productLongDesciption, productCategory, supplier, author, productExcipients, productUnits, productImages);
+    }
+    
 
 }

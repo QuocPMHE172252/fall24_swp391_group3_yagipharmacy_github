@@ -23,7 +23,6 @@ public class ProductImageDAO implements RowMapper<ProductImage> {
 
     @Override
     public ProductImage mapRow(ResultSet rs) throws SQLException {
-        System.out.println(rs.getLong("product_image_id"));
         return ProductImage.builder()
                 .productImageId(rs.getLong("product_image_id"))
                 .productId(rs.getLong("product_id"))
@@ -159,10 +158,8 @@ public class ProductImageDAO implements RowMapper<ProductImage> {
         try {
             ProductImage findingImg1 = productImageDAO.getById("6");
             ProductImage img2 = productImageDAO.getById("9");
-            System.out.println(img2.getProductId());
             img2.setImageBase64(findingImg1.getImageBase64());
             boolean check = productImageDAO.updateById(img2.getProductImageId()+"", img2);
-            System.out.println(check);
         } catch (Exception e) {
             e.printStackTrace();
         }

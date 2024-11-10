@@ -107,6 +107,9 @@ public class PublishNew extends HttpServlet {
             News findingNews = new News();
             findingNews.setIsRejected(Integer.valueOf(reject));
             findingNews.setRejectedReason(rejectReason);
+            if(Integer.valueOf(reject)==2){
+                findingNews.setRejectedReason("");
+            }
             findingNews.setUpdatedId(null);
             boolean check = newsDAO.updateRejectById(newsId, findingNews);
             News newsss = newsDAO.getById(newsId);

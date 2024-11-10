@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <style>
     .dropdown-menu{
         background-color: peru;
@@ -78,39 +78,44 @@
     <div class="header-top">
         <div class="container">
             <div class="top-bar left">
-                <ul>
-                    <li><a href="#"><i class="fa fa-envelope" aria-hidden="true"></i> eBay@gmail.com</a></li>
-                    <li><a href="#">Free Shipping for all Order of $99</a></li>
-                </ul>
             </div>
             <div class="top-bar right">
                 <ul>
                     <li style="display: none"><a href="#" class="login-link"><i class="fa fa-tasks "></i> Manager Page</a></li>
                     <li style="display: none"><a href="#" class="login-link"><i class="fa fa-user"></i></i> Profile</a></li>
-                    <li <c:if test="${account!=null}">
+                    <li>
+                        <c:if test="${sessionScope.userAuth==null}">
+                            <a  href="Login" class="login-link">Đăng nhập</a></li>
+                        </c:if>
+                        
+                        <c:if test="${sessionScope.userAuth!=null}">
+                            <a  href="Logout" class="login-link">Đăng xuất</a></li>
+                        </c:if>
+
+                    <li <c:if test="${sessionScope.userAuth!=null}">
                             style="display: none"
-                        </c:if>><a  href="Login" class="login-link">Login</a></li>
-                    <li <c:if test="${account!=null}">
-                            style="display: none"
-                        </c:if>><a  href="Register" class="register-link">Register</a></li>
-                    <li <c:if test="${account==null}">
+                        </c:if>><a  href="Register" class="register-link">Đăng kí</a></li>
+                    <li <c:if test="${sessionScope.userAuth==null}">
                             style="display: none"
                         </c:if>>
                         <div class="dropdown">
                             <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                ${account.fullname}
+                                ${sessionScope.userAuth.userName}
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#myModal-2" data-toggle="modal">My Profile</a>
-                                <a class="dropdown-item" href="#changePass" data-toggle="modal">Change Password</a>
-                                <c:if test="${account.getRole()==18}">
-                                    <a class="dropdown-item" href="marketingdasboard">Admin page</a>
+                                <a class="dropdown-item" href="#myModal-2" data-toggle="modal">Trang của tôi</a>
+                                <a class="dropdown-item" href="ChangePassword">Thay đổi mật khẩu</a>
+                                <c:if test="${sessionScope.userAuth.roleLevel==1}">
+                                    <a class="dropdown-item" href="./admin/AdminDashboard">Trang admin</a>
                                 </c:if>
-                                <c:if test="${account.getRole()==30}">
-                                    <a class="dropdown-item" href="marketingdasboard">Seller page</a>
+                                <c:if test="${sessionScope.userAuth.roleLevel==2}">
+                                    <a class="dropdown-item" href="./admin/AdminDashboard">Trang quản lý</a>
                                 </c:if>
-                                <a class="dropdown-item" href="MyOrder">My Order</a>
-                                <a class="dropdown-item" href="logout">Logout</a>
+                                <c:if test="${sessionScope.userAuth.roleLevel==3}">
+                                    <a class="dropdown-item" href="./admin/AdminDashboard">Trang quản lý</a>
+                                </c:if>
+                                <a class="dropdown-item" href="CustomerOrders">My Order</a>
+                                <a class="dropdown-item" href="Logout">Đăng xuất</a>
                             </div>
 
                         </div>
@@ -123,14 +128,15 @@
         <div class="container">
             <div class="main-content">
                 <div class="logo">
-                    <img onclick="window.location = 'Home'" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0D7dpBePJfDZT-n0aqbnoCSgVrD3GP_vH_Q&s" alt="biolife logo" width="auto" height="120">
+                    <img onclick="window.location = 'http://localhost:9999/YagiPharmacy/HomePage'" src="https://fptsoftware.com/-/media/project/fpt-software/fso/uplift/logo-fpt.png?modified=20241017090751" alt="biolife logo" width="auto" height="120">
                 </div>
                 <div class="main-menu">
                     <ul>
-                        <li><a href="HomePage" class="${requestScope['jakarta.servlet.forward.request_uri'].toString().endsWith("Home")?"menu-active":""}">Home</a></li>
-                        <li><a href="CommonProducts" class="${requestScope['jakarta.servlet.forward.request_uri'].toString().endsWith("ProductList")?"menu-active":""}">Product</a></li>
-                        <li><a href="NewList" class="${requestScope['jakarta.servlet.forward.request_uri'].toString().endsWith("NewList")?"menu-active":""}">News</a></li>
-                        <li><a href="NewCategoryList" class="${requestScope['jakarta.servlet.forward.request_uri'].toString().endsWith("NewCategoryList")?"menu-active":""}">News Categories </a></li>
+                        <li><a href="HomePage" class="${requestScope['jakarta.servlet.forward.request_uri'].toString().endsWith("HomePage")?"menu-active":""}">Trang chủ</a></li>
+                        <li><a href="CommonProducts" class="${requestScope['jakarta.servlet.forward.request_uri'].toString().endsWith("CommonProducts")?"menu-active":""}">Sản phẩm</a></li>
+                        <li><a href="NewList" class="${requestScope['jakarta.servlet.forward.request_uri'].toString().endsWith("NewList")?"menu-active":""}">Bài viết</a></li>
+                        <li><a href="NewCategoryList" class="${requestScope['jakarta.servlet.forward.request_uri'].toString().endsWith("NewCategoryList")?"menu-active":""}">Chuyên mục sức khỏe</a></li>
+                        <li><a href="CustomerOrders" class="${requestScope['jakarta.servlet.forward.request_uri'].toString().endsWith("CustomerOrders")?"menu-active":""}">Lịch sử đặt hàng</a></li>
                     </ul>
                     <div class="search">
                         <form action="CommonProducts" class="form-search" method="get">
@@ -154,7 +160,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">User Profile</h4>
-                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">?</button>
+                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">X</button>
                 </div>
                 <div class="modal-body">
 
@@ -162,48 +168,34 @@
                         <div class="form-group">
                             <div class="col-lg-12">
                                 <div class="profile-pic">
-
-                                    <img id="myAvatar" style="border-radius: 15px;" src="${account.avatar}" width="120" >
-
-                                    <input id="fileAvatar" onchange="changeAvatar()" type="file" accept=".jpg, .jpeg, .png">
+                                    <img id="myAvatar" style="border-radius: 15px;" src="${sessionScope.userAuth.userAvatar}" width="120" >
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="email" class="col-lg-2 col-sm-2 control-label">Email<span style="color:#ff0000"> (*)</span></label>
+                            <label for="email" class="col-lg-2 col-sm-2 control-label">Email</label>
                             <div class="col-lg-12">
-                                <input type="text" class="form-control" id="emailaccount" readonly value="${account.email}">
+                                <input type="text" class="form-control" id="emailaccount" disabled value="${sessionScope.userAuth.userEmail}">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="newFullname" class="col-lg-2 col-sm-2 control-label">Fullname<span style="color:#ff0000">(*)</span></label>
+                            <label for="newFullname" class="col-lg-2 col-sm-2 control-label">Tên tài khoản</label>
                             <div class="col-lg-12">
-                                <input id="fullnamepf" type="text" class="form-control" placeholder="Fullname" value="${account.fullname}">
+                                <input id="fullnamepf" type="text" class="form-control" placeholder="Fullname" value="${sessionScope.userAuth.userName}" disabled>
                                 <p class="help-block" style="color: red" id="errorFullName"></p>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label style="
-                                   margin-right: 50px;
-                                   " for="newTitle" class="col-lg-2 col-sm-2 control-label">Gender<span style="color:#ff0000"> (*)</span></label>
-                            <label style="margin-right: 15px"> Male
-                                <input id="malepf" type="radio" name="genderpf" value="male" ${account.gender==true?"checked":""}/>
-                            </label>
-                            <label> Female
-                                <input id="femalepf" type="radio" name="genderpf" value="female" ${account.gender==false  ?"checked":""}/>
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label for="newMobile" class="col-lg-2 col-sm-2 control-label">Mobile<span style="color:#ff0000"> (*)</span></label>
+                            <label for="newMobile" class="col-lg-2 col-sm-2 control-label">Điện thoại</label>
                             <div class="col-lg-12">
-                                <input id="phonepf" type="text" class="form-control" placeholder="Mobile" value="${account.phone}">
+                                <input id="phonepf" type="text" class="form-control" placeholder="Mobile" value="${sessionScope.userAuth.userPhone}" disabled>
                                 <p class="help-block" style="color: red" id="errorPhone"></p>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="newAddress" class="col-lg-2 col-sm-2 control-label">Address<span style="color:#ff0000">(*)</span></label>
+                            <label for="newAddress" class="col-lg-2 col-sm-2 control-label">Địa chỉ</label>
                             <div class="col-lg-12">
-                                <input id="addresspf" type="text" class="form-control" placeholder="Address" value="${account.address}">
+                                <input disabled id="addresspf" type="text" class="form-control" placeholder="Address" value="${sessionScope.userAuth.specificAddress},${sessionScope.userAuth.userCommune},${sessionScope.userAuth.userDistrict},${sessionScope.userAuth.userProvince}">
                                 <p class="help-block" style="color: red" id="errorAddress"></p>
                             </div>
                         </div>
@@ -212,7 +204,7 @@
                         </span>
                         <div class="form-group">
                             <div class="col-lg-offset-2 col-lg-12">
-                                <button type="button" class="btn btn-danger get" onclick="btnChangeProfile()" id="saveC">Save changes</button>
+                                <a href="ChangeProfile" class="btn btn-danger get" onclick="" id="saveC">Xem chi tiết</a>
                             </div>
                         </div>
 
@@ -229,7 +221,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Change Password</h4>
-                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">?</button>
+                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">X</button>
                 </div>
                 <div class="modal-body">
 
@@ -294,22 +286,6 @@
                                     }
                                     function loginOutClick() {
                                         loginForm.style.display = 'none';
-                                    }
-
-                                    function btnLogin() {
-                                        axios.get('login', {
-                                            params: {
-                                                email: document.getElementById("emailid").value,
-                                                password: document.getElementById("passwordid").value
-                                            }
-                                        }).then((response) => {
-                                            if (response.data == "success") {
-                                                location.reload();
-
-                                            } else {
-                                                document.getElementById("msg").innerHTML = response.data;
-                                            }
-                                        })
                                     }
 
                                     function btnChangePass() {

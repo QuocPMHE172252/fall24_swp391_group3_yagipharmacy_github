@@ -197,4 +197,21 @@ public class ProductCategoryDAO implements RowMapper<ProductCategory> {
         }
         return list;
     }
+    
+    public List<ProductCategory> getLastChildren() throws SQLException, ClassNotFoundException {
+        String sql = """
+                SELECT *
+                FROM [product_category] where [product_category_level] = 3
+                """;
+        List<ProductCategory> list = new ArrayList<>();
+        try (Connection con = SQLServerConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

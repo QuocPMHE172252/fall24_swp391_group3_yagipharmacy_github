@@ -30,4 +30,7 @@ public class Stock {
     private Date mfgDate;
     private Date expDate;
     private boolean isDeleted;
+    private Product product;
+    private Unit unit;
+    private ProductUnit productUnit;
 }

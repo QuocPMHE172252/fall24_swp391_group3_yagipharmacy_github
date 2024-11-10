@@ -5,7 +5,9 @@
 package com.yagipharmacy.controllers.admin;
 
 import com.yagipharmacy.DAO.ProductCategoryDAO;
+import com.yagipharmacy.constant.services.AuthorizationService;
 import com.yagipharmacy.entities.ProductCategory;
+import com.yagipharmacy.entities.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,6 +16,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,7 +26,7 @@ import java.util.logging.Logger;
  * @author author
  */
 @WebServlet(name = "CategoryUpdate", urlPatterns = {"/admin/CategoryUpdate"})
-public class CategoryUpdate extends HttpServlet {
+public class CategoryUpdate extends HttpServlet implements AuthorizationService{
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -62,6 +66,17 @@ public class CategoryUpdate extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User userAuth = (User)request.getSession().getAttribute("userAuth");
+        if(userAuth==null){
+            response.sendRedirect("../Login");
+            return;
+        }
+        List<Long> roleList = Arrays.asList(3L,2L);
+        boolean checkAcpt = acceptAuth(request, response, roleList);
+        if(!checkAcpt){
+            response.sendRedirect("../ErrorPage");
+            return;
+        }
         ProductCategoryDAO uDao = new ProductCategoryDAO();
         String errorMessage = request.getParameter("errorMessage");
         request.setAttribute("errorMessage", errorMessage);
@@ -89,9 +104,19 @@ public class CategoryUpdate extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User userAuth = (User)request.getSession().getAttribute("userAuth");
+        if(userAuth==null){
+            response.sendRedirect("../Login");
+            return;
+        }
+        List<Long> roleList = Arrays.asList(3L);
+        boolean checkAcpt = acceptAuth(request, response, roleList);
+        if(!checkAcpt){
+            response.sendRedirect("../ErrorPage");
+            return;
+        }
         String parentCategoryIdStr = request.getParameter("product_category_parent_id");
         Long parentCategoryId = parentCategoryIdStr == null || parentCategoryIdStr.isEmpty() ? null : Long.parseLong(parentCategoryIdStr);
-        System.out.println(request.getParameter("is_deleted"));
         ProductCategoryDAO categoryDao = new ProductCategoryDAO();
         ProductCategory category = ProductCategory.builder()
                 .productCategoryId(Long.parseLong(request.getParameter("product_category_id")))

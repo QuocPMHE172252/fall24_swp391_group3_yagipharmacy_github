@@ -173,7 +173,9 @@
             <div class="row">
                 <div class="col-md-8 cart" id="listCartDetail">
                     <div class="title">
+                        <a href="CommonProducts" class="" style="font-size: 20px;font-weight: 30px">⬅</a>
                         <div class="row">
+                            
                             <div class="col">
                                 <h4><b>Shopping Cart</b></h4>
                             </div>
@@ -236,7 +238,7 @@
             newRow.id = 'product_row_' + cartDetail.product.productId;
             var unit_name = "";
             cartDetail.product.productUnits.forEach(productU =>{
-                if(productU.productUnitId==cartDetail.selectedUnit){
+                if(productU.unitId==cartDetail.selectedUnit){
                     unit_name = productU.unit.unitName;
                 }
             });
@@ -246,12 +248,12 @@
                                 <div class="row text-muted">`+cartDetail.product.productName+`</div>
                             </div>
                             <div class="col">
-                                <div class="row text-muted">Hộp</div>
+                                <div class="row text-muted">`+unit_name+`</div>
                             </div>
                             <div class="col">
                                 <a href="#" onclick="minus(` + cartDetail.product.productId + `)">-</a><a href="#" class="border" id="quantity_` + cartDetail.product.productId + `">` + cartDetail.quantity + `</a><a onclick="plus(` + cartDetail.product.productId + `)" href="#">+</a>
                             </div>
-                            <div class="col"> <div id="price_product_` + cartDetail.product.productId + `">`+getItemPrice(cartDetail.product.productId)+` VND</div> <span class="close" onclick="deleteRow(` + cartDetail.product.productId + `)">&#10005;</span></div>
+                            <div class="col"> <div id="price_product_` + cartDetail.product.productId + `">`+getItemPrice(cartDetail.product.productId).toLocaleString('en-US')+` VND</div> <span class="close" onclick="deleteRow(` + cartDetail.product.productId + `)">&#10005;</span></div>
                         </div>`;
             newRow.innerHTML = rowContent;
             document.getElementById("listCartDetail").appendChild(newRow);
@@ -293,7 +295,7 @@
                     }
                 });
             });
-            return totalPr;
+            return totalPr.toLocaleString('en-US');
         }
         function minus(product_id) {
             var quanStr = document.getElementById("quantity_" + product_id).innerHTML;

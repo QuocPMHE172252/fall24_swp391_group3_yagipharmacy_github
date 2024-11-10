@@ -274,5 +274,11 @@ INSERT INTO supplier (supplier_code, supplier_name, supplier_country_code, suppl
 ('SUP004', N'Công ty Dược Chida Pharma', 'JP', '0945678901', 'ghi@duoc.com', 0),
 ('SUP005', N'Công ty Dược Shiu Chen Yang', 'CN', '0956789012', 'jkl@duoc.com', 0);
 
+CREATE TABLE major_category(
+	major_category_id int primary key identity(1,1),
+	major_category_name nvarchar(200),
+	major_category_description nvarchar(500),
+	is_deleted bit default(0)
+)
 
 SELECT DISTINCT product_target FROM product;

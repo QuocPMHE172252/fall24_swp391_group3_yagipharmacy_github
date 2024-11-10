@@ -13,6 +13,7 @@ import com.yagipharmacy.DAO.ProductImageDAO;
 import com.yagipharmacy.DAO.ProductUnitDAO;
 import com.yagipharmacy.DAO.SupplierDAO;
 import com.yagipharmacy.DAO.UnitDAO;
+import com.yagipharmacy.constant.services.AuthorizationService;
 import com.yagipharmacy.constant.services.CalculatorService;
 import com.yagipharmacy.entities.Excipient;
 import com.yagipharmacy.entities.Product;
@@ -22,6 +23,7 @@ import com.yagipharmacy.entities.ProductImage;
 import com.yagipharmacy.entities.ProductUnit;
 import com.yagipharmacy.entities.Supplier;
 import com.yagipharmacy.entities.Unit;
+import com.yagipharmacy.entities.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -30,6 +32,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -38,7 +41,7 @@ import java.util.List;
  * @author admin
  */
 @WebServlet(name = "EditProduct", urlPatterns = {"/manager/EditProduct"})
-public class EditProduct extends HttpServlet {
+public class EditProduct extends HttpServlet implements AuthorizationService{
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -78,6 +81,17 @@ public class EditProduct extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User userAuth = (User)request.getSession().getAttribute("userAuth");
+        if(userAuth==null){
+            response.sendRedirect("../Login");
+            return;
+        }
+        List<Long> roleList = Arrays.asList(3L);
+        boolean checkAcpt = acceptAuth(request, response, roleList);
+        if(!checkAcpt){
+            response.sendRedirect("../ErrorPage");
+            return;
+        }
         UnitDAO unitDAO = new UnitDAO();
         SupplierDAO supplierDAO = new SupplierDAO();
         ExcipientDAO excipientDAO = new ExcipientDAO();
@@ -128,12 +142,14 @@ public class EditProduct extends HttpServlet {
             request.setAttribute("product_images", productImages);
             request.setAttribute("excipients_string", excipients_string);
             request.setAttribute("units_string", units_string);
-            request.getRequestDispatcher("EditProduct.jsp").forward(request, response);
             
             request.setAttribute("success", false);
             request.getRequestDispatcher("EditProduct.jsp").forward(request, response);
+            return;
         } catch (Exception e) {
             e.printStackTrace();
+            request.getRequestDispatcher("EditProduct.jsp").forward(request, response);
+            return;
         }
     }
 
@@ -162,6 +178,7 @@ public class EditProduct extends HttpServlet {
         String product_image_submit = request.getParameter("product_image_submit");
         String product_target = request.getParameter("product_target");
         String product_desciption = request.getParameter("product_desciption");
+        String long_description = request.getParameter("long_description");
 
         ProductDAO productDAO = new ProductDAO();
         ProductUnitDAO productUnitDAO = new ProductUnitDAO();
@@ -185,9 +202,11 @@ public class EditProduct extends HttpServlet {
                         .createdDate(existingProduct.getCreatedDate())
                         .isDeleted(existingProduct.isDeleted())
                         .isPrescription(isPrescription)
+                        .productLongDesciption(long_description==null?null:long_description.replace('\"', '\''))
                         .build();
-                boolean updateProductSuccess = productDAO.updateById(product_id + "", updatedProduct);
+                boolean updateProductSuccess = productDAO.updateByIdAndReverseProcess(product_id + "", updatedProduct);
                 if (updateProductSuccess) {
+                   
                     String[] arrExcipients = excipients_string.split(",");
                     String[] arrUnits = units_string.split(",");
 
@@ -241,20 +260,16 @@ public class EditProduct extends HttpServlet {
                     productImageDAO.updateById(existingProductImage.getProductImageId() + "", existingProductImage);
                     
                    
-                    request.setAttribute("success", true);
-                    doGet(request, response);
-                } else {
-                    request.setAttribute("error", "Cập nhật sản phẩm thất bại.");
-                    request.setAttribute("success", false);
-                    doGet(request, response);
-                    response.sendRedirect("ListProduct");
-                }
+                    request.setAttribute("success", true); 
+                    request.getRequestDispatcher("/admin/ProductsList").forward(request,response);
+                } 
             } else {
-                request.setAttribute("error", "Sản phẩm không tồn tại.");
-                doGet(request, response);
+                request.setAttribute("error", "Lỗi cập nhật sản phẩm");
+                request.getRequestDispatcher("/admin/ProductsList").forward(request,response);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            request.setAttribute("error", "Sản phẩm không tồn tại. Vui lòng kiểm tra lại mã sản phẩm.");
+            request.getRequestDispatcher("/admin/ProductsList").forward(request, response);
         }
 
     }

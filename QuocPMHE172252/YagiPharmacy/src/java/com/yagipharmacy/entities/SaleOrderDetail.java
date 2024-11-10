@@ -30,6 +30,7 @@ public class SaleOrderDetail {
     private boolean isDeleted;
     private Product product;
     private Unit unit;
+    private ProductUnit productUnit;
     
     
 }

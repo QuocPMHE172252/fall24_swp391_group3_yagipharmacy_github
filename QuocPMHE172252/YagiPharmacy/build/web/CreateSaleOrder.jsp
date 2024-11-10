@@ -192,13 +192,19 @@
                     </div>
                     <form id="check_out_form" action="CreateSaleOrder" method="post">
                         <p>Số điện thoại:*<span id="phone_error" style="color: red"></span></p>
-                        <input name="phone" id="phone" placeholder="" required="">
+                        <input name="phone" id="phone" placeholder="" required="" value="${sessionScope.userAuth!=null?sessionScope.userAuth.userPhone:""}">
                         <p>Email:*<span id="email_error" style="color: red"></span></p>
-                        <input name="email" id="email" placeholder="" required="">
+                        <input name="email" id="email" placeholder="" required="" value="${sessionScope.userAuth!=null?sessionScope.userAuth.userEmail:""}">
                         <p>Tên người nhận:*<span id="name_error" style="color: red"></span></p>
-                        <input name="name" id="name" placeholder="" required>
+                        <input name="name" id="name" placeholder="" required value="${sessionScope.userAuth!=null?sessionScope.userAuth.userName:""}">
                         <p>Địa chỉ:*<span id="location_error" style="color: red"></span></p>
-                        <input name="location" id="location" placeholder="" required>
+                        <c:if test="${sessionScope.userAuth!=null}">
+                        <input name="location" id="location" placeholder="" required value="${sessionScope.userAuth.getLocation()}">
+                        </c:if>
+                        <c:if test="${sessionScope.userAuth==null}">
+                        <input name="location" id="location" placeholder="" required value="">
+                        </c:if>
+                        
                         <input type="text" id="total_submit" name="total_submit" hidden="">
                     </form>
                     <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
@@ -280,7 +286,7 @@
                     });
                 }
             });
-            return totalPr;
+            return totalPr.toLocaleString('en-US');
         }
         function getTotalPrice() {
             var totalPr = 0;
@@ -291,7 +297,7 @@
                     }
                 });
             });
-            return totalPr;
+            return totalPr.toLocaleString('en-US');
         }
         function minus(product_id) {
             var quanStr = document.getElementById("quantity_" + product_id).innerHTML;

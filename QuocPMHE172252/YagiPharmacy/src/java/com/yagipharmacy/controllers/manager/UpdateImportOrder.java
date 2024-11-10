@@ -11,6 +11,8 @@ import com.yagipharmacy.DAO.StockDAO;
 import com.yagipharmacy.constant.services.CalculatorService;
 import com.yagipharmacy.entities.ImportOrder;
 import com.yagipharmacy.entities.ImportOrderDetail;
+import com.yagipharmacy.entities.Product;
+import com.yagipharmacy.entities.ProductUnit;
 import com.yagipharmacy.entities.Stock;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -72,6 +74,9 @@ public class UpdateImportOrder extends HttpServlet {
         String imp_id = request.getParameter("imp_id");
         try {
             ImportOrder importOrder = new ImportOrderDAO().getById(imp_id);
+            for (ImportOrderDetail importOrderDetail : importOrder.getImportOrderDetails()) {
+                importOrderDetail.getProduct().setProductLongDesciption(null);
+            }
             String dataImportOrder = new Gson().toJson(importOrder);
             request.setAttribute("dataImportOrder", dataImportOrder);
             request.getRequestDispatcher("UpdateImportOrder.jsp").forward(request, response);
@@ -133,6 +138,21 @@ public class UpdateImportOrder extends HttpServlet {
                                 .isDeleted(false)
                                 .build();
                         boolean checkAddStock = stockDAO.addNew(newStock);
+                        List<ProductUnit> findingProductUnits = findingImportOrderDetail.getProduct().getProductUnits();
+                        for (ProductUnit findingProductUnit : findingProductUnits) {
+                            if(findingImportOrderDetail.getProductId()==findingProductUnit.getProductId()&&findingImportOrderDetail.getUnitId()==findingProductUnit.getUnitId()){
+                                continue;
+                            }
+                            Stock otherStock = Stock.builder()
+                                    .batchCode(submit_batch_code)
+                                    .quantity(0L)
+                                    .productId(findingImportOrderDetail.getProductId())
+                                    .unitId(findingImportOrderDetail.getUnitId())
+                                    .mfgDate(mfgDate)
+                                    .expDate(expDate)
+                                    .build();
+                            stockDAO.addNew(otherStock);
+                        }
                     } else {
                         boolean checkNotEx = true;
                         for (Stock findingStock : findingStocks) {

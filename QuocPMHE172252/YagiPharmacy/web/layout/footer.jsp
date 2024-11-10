@@ -7,7 +7,7 @@
         <div class="footer-left">
             <h4>Useful Links</h4>
             <a href="HomePage">Home</a><br />
-            <a href="Product">Product</a><br />
+            <a href="CommonProducts">Product</a><br />
             <a href="NewList">News</a>
 
         </div>
@@ -19,6 +19,6 @@
         </div>
     </div>
     <div class="footer-bottom">
-        Copyright © 2022. Designed by Group2
+        Copyright © 2024. Designed by Group3
     </div>
 </footer>

@@ -22,6 +22,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductUnit {
+
     private Long productUnitId;
     private Long parentId;
     private Long productId;
@@ -32,8 +33,9 @@ public class ProductUnit {
     private boolean canBeSold;
     private boolean isDeleted;
     private ProductUnit parentProductUnit;
-    private Unit unit; 
-        public String formatPrice() {
+    private Unit unit;
+
+    public String formatPrice() {
         NumberFormat formatter = NumberFormat.getInstance(new Locale("en", "US"));
         return formatter.format(this.sellPrice);
     }

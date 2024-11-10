@@ -111,7 +111,7 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <a href="./CreateImportOrder" class="btn btn-primary">Tạo yêu cầu nhập hàng</a>
+                                        <a href="./CreateImportOrder" class="btn btn-primary">Tạo đơn mua hàng</a>
                                     </div>
                                     <div class="card-body">
                                         <div class="table-responsive">
@@ -145,7 +145,10 @@
                                                         <th>Ngày chấp thuận</th>
                                                         <th>Ngày nhận dự kiến</th>
                                                         <th>Kiểm định</th>
-                                                        <th>Xác nhận</th>
+                                                        <c:if test="${sessionScope.userAuth!=null&&sessionScope.userAuth.roleLevel==2}">
+                                                            <th>Xác nhận</th>
+                                                        </c:if>
+
                                                         <th>Xóa</th>
                                                         <th>Xóa/Khôi phục</th>
                                                         <th>Chi tiết</th>
@@ -166,18 +169,24 @@
                                                             <c:if test="${imp_order.isAccepted!=null}">
                                                                 <td style="color: ${imp_order.isAccepted.booleanValue()?"green":"red"}">${imp_order.isAccepted.booleanValue()?"Đã xác nhận":"Đã hủy đơn"}</td>
                                                             </c:if>
-                                                            <c:if test="${imp_order.isAccepted==null}">
-                                                                <td style="display: flex;flex-direction: row;">
-                                                                    <a class="btn-sm btn-success" href="ApproveImportOrder?import_order_id=${imp_order.importOrderId}&status=1">Approve</a>
-                                                                    <a href="#" class="btn-sm btn-danger" onclick="showRejectModal(${imp_order.importOrderId})" data-toggle="modal" data-target="#myModal">Reject</a>
-                                                                </td>
-                                                            </c:if>
-                                                            <c:if test="${imp_order.isAccepted!=null}">
+                                                            <c:if test="${sessionScope.userAuth!=null&&sessionScope.userAuth.roleLevel==2}">
+                                                                <c:if test="${imp_order.isAccepted==null}">
+                                                                    <td style="display: flex;flex-direction: row;">
+                                                                        <a class="btn-sm btn-success" href="ApproveImportOrder?import_order_id=${imp_order.importOrderId}&status=1">Approve</a>
+                                                                        <a href="#" class="btn-sm btn-danger" onclick="showRejectModal(${imp_order.importOrderId})" data-toggle="modal" data-target="#myModal">Reject</a>
+                                                                    </td>
+                                                                </c:if>
+                                                                <c:if test="${imp_order.isAccepted!=null}">
                                                                     <td style="display: flex;flex-direction: row">
                                                                         <a class="btn-sm" style="background-color: ${imp_order.isAccepted.booleanValue()==true?"gray":"white"}">Approve</a>
                                                                         <a class="btn-sm" style="background-color: ${imp_order.isAccepted.booleanValue()!=true?"gray":"white"}">Reject</a>
                                                                     </td>
+                                                                </c:if>
+
                                                             </c:if>
+
+
+
                                                             <td>${imp_order.isDeleted()?"yes":"no"}</td>
                                                             <td><a href="./DeleteImportOrder?id=${imp_order.importOrderId}" class="btn btn-warning">${imp_order.isDeleted()?"Khôi phục":"Xóa"}</a></td>
                                                             <td><a href="UpdateImportOrder?imp_id=${imp_order.importOrderId}" class="btn btn-warning">Xem</a></td>
@@ -299,9 +308,9 @@
         <!-- Khởi tạo Select2 -->
         <script>
             <c:if test="${created!=null}">
-                if('${created}'=='true'){
-                    window.alert('Tạo đơn nhập thành công');
-                }
+                                if ('${created}' == 'true') {
+                                    window.alert('Tạo đơn nhập thành công');
+                                }
             </c:if>
                                 $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
                                     type: "line",

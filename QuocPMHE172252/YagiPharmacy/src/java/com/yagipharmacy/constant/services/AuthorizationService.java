@@ -23,19 +23,36 @@ public interface AuthorizationService {
         User userAuth = (User) request.getSession().getAttribute("userAuth");
         Long role = userAuth.getRoleLevel();
         if (role == SystemVariable.ADMIN) {
-            response.sendRedirect(request.getContextPath() + "/admin/AdminDashboard");
+            response.sendRedirect(request.getContextPath() + "/HomePage");
             return;
         }
         if (role == SystemVariable.MANAGER) {
+            response.sendRedirect("HomePage");
+            return;
         }
         if (role == SystemVariable.STAFF) {
+            response.sendRedirect("HomePage");
+            return;
         }
         if (role == SystemVariable.CUSTOMER) {
-            request.getRequestDispatcher("index.html").forward(request, response);
+            response.sendRedirect("HomePage");
+            return;
         }
     }
 
-    default void acceptAuth(HttpServletRequest request, HttpServletResponse response, List<Long> roleListAccept) throws ServletException, IOException {
-
+    default boolean acceptAuth(HttpServletRequest request, HttpServletResponse response, List<Long> roleListAccept) throws ServletException, IOException {
+        User userAuth = (User)request.getSession().getAttribute("userAuth");
+        boolean isAccept= false; 
+        if(userAuth==null){
+            return false;
+        } else{
+            for (Long roleLv : roleListAccept) {
+                if(userAuth.getRoleLevel()==roleLv){
+                    isAccept = true;
+                    break;
+                }
+            }
+        }
+        return isAccept;
     }
 }

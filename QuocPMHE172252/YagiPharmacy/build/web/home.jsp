@@ -74,7 +74,7 @@
                                 <h5>Latest  Post</h5>
                                 <c:forEach var="pro" items="${bloList}">
                                     <div style="border: 1px solid lightgray;padding: 5px;margin-bottom: 10px">
-                                        <h5 class="latest-product-title"  ><a href="BlogDetail?id=${pro.newsId}" class="product-name" style="font-weight: bold;text-decoration: none; color: black">${pro.newsTitle}</a></h5>
+                                        <h5 class="latest-product-title"  ><a href="NewsDetail?nid=${pro.newsId}" class="product-name" style="font-weight: bold;text-decoration: none; color: black">${pro.newsTitle}</a></h5>
                                         <div class="latest-product-item">
                                             <a href="BlogDetail?id=${pro.newsId}" title="product thumbnail" style="width: 45%;"><img src="${pro.newsImage}" alt="" width="100%"></a>
                                             <div class="latest-product-info">
@@ -97,14 +97,13 @@
                                     <div class="product-info">
                                         <h4 class="product-title"><a href="ProductDetail?pid=${pro.productId}" class="product-name">${pro.productName}</a></h4>
                                         <div class="price">
-                                            <p><span class="price-amount">${pro.productUnits.get(0).sellPrice}<span>đ</span>/${pro.productUnits.get(0).unit.unitName}</span></p>
+                                            <p><span class="price-amount" id="price_sale">${pro.getLastUnit().formatPrice()}<span>đ</span>/${pro.getLastUnit().unit.unitName}</span></p>
                                         </div>
                                         <div class="product-description">
                                             <p>${pro.brand}</p>
                                         </div>
-                                        <div class="btn-list">
-                                            <a href="ProductDetail?pid=${pro.productId}" class="product-btn" onclick=""><i class="fa fa-eye"></i> Show More</a>
-                                            <a href="./cart?pid=${pro.productId}&quantity=1" class="product-btn" onclick="addCart()"><i class="fa fa-cart-arrow-down"></i> ADD TO CART</a>
+                                        <div class="btn-list" style="display: flex;flex-direction: row;justify-content: center">
+                                            <a href="ProductDetail?pid=${pro.productId}" class="product-btn" onclick=""><i class="fa fa-eye"></i>Chọn mua</a>
                                         </div>
                                     </div>
                                 </div>
@@ -136,7 +135,7 @@
 
                                     </div>
                                     <div class="btn-list" style="margin-top: 15px;">
-                                        <a href="BlogDetail?id=${p.newsId}" class="product-btn" style="color: white; background-color: #1da1f2;border-radius: 10px;padding: 5px; text-align: center;"> Show</a>
+                                        <a href="NewsDetail?nid=${p.newsId}" class="product-btn" style="color: white; background-color: #1da1f2;border-radius: 10px;padding: 5px; text-align: center;"> Show</a>
                                     </div>
                                 </div>
                             </c:forEach>

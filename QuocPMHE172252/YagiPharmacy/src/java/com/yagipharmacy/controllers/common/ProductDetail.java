@@ -64,9 +64,10 @@ public class ProductDetail extends HttpServlet {
         try {
             Product findingProduct = productDAO.getById(product_id);
             if(findingProduct.getProductId() !=0){
-                String productJson = new Gson().toJson(findingProduct);
-                System.out.println(findingProduct.getProductId());
                 request.setAttribute("product", findingProduct);
+                Product tempProduct = findingProduct.coppyNewProduct();
+                tempProduct.setProductLongDesciption(null);
+                String productJson = new Gson().toJson(tempProduct);
                 request.setAttribute("productJson", productJson);
             }
         } catch (Exception e) {

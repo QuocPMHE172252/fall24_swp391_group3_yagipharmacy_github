@@ -5,7 +5,9 @@
 package com.yagipharmacy.controllers.manager;
 
 import com.yagipharmacy.DAO.ImportOrderDAO;
+import com.yagipharmacy.constant.services.AuthorizationService;
 import com.yagipharmacy.entities.ImportOrder;
+import com.yagipharmacy.entities.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,6 +16,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -21,7 +24,7 @@ import java.util.List;
  * @author admin
  */
 @WebServlet(name = "ImportOrderList", urlPatterns = {"/manager/ImportOrderList"})
-public class ImportOrderList extends HttpServlet {
+public class ImportOrderList extends HttpServlet implements AuthorizationService{
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -61,6 +64,17 @@ public class ImportOrderList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User userAuth = (User)request.getSession().getAttribute("userAuth");
+        if(userAuth==null){
+            response.sendRedirect("../Login");
+            return;
+        }
+        List<Long> roleList = Arrays.asList(1L,2L,3L);
+        boolean checkAcpt = acceptAuth(request, response, roleList);
+        if(!checkAcpt){
+            response.sendRedirect("../ErrorPage");
+            return;
+        }
         ImportOrderDAO importOrderDAO = new ImportOrderDAO();
         List<ImportOrder> dataAll = new ArrayList<>();
         List<ImportOrder> data = new ArrayList<>();

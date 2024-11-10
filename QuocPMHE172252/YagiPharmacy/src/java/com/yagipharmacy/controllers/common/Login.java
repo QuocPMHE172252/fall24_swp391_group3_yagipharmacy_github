@@ -76,6 +76,7 @@ public class Login extends HttpServlet implements AuthorizationService {
         User userAuth = (User) request.getSession().getAttribute("userAuth");
         if (userAuth != null) {
             loginRedirect(request, response);
+            return;
         } else {
             request.getRequestDispatcher("Login.jsp").forward(request, response);
         }
